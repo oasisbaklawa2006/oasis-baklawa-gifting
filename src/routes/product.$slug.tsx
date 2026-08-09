@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { createFileRoute, notFound } from "@tanstack/react-router";
+import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { toast } from "sonner";
 
 import { useShop } from "@/lib/store";
