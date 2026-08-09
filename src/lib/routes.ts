@@ -18,6 +18,7 @@ const known = [
 
 type KnownPath = (typeof known)[number];
 
-export function toRoute(path: string): LinkProps["to"] {
+export function toRoute(path: string): KnownPath {
   return (known as readonly string[]).includes(path) ? (path as KnownPath) : "/";
 }
+
