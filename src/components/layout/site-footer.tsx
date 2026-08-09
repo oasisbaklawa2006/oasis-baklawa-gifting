@@ -18,7 +18,12 @@ export function SiteFooter() {
           <p className="mt-4 text-[0.75rem] uppercase tracking-[0.14em] text-driftwood">
             Contact details to be added
           </p>
+          <h2 className="eyebrow mt-8">Follow</h2>
+          <SocialRow className="mt-3" />
+          <h2 className="eyebrow mt-6">Also available on</h2>
+          <MarketplaceRow className="mt-3" />
         </div>
+
 
         <div className="grid gap-10 sm:grid-cols-3">
           {footerColumns.map((column) => (
