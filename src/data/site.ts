@@ -34,6 +34,8 @@ export const primaryNav: NavigationItem[] = [
         title: "Shop all",
         items: [
           { label: "All products", to: "/shop" },
+          { label: "Shipping & delivery", to: "/shipping" },
+          { label: "Track your order", to: "/track-order" },
           { label: "Collections", to: "/collections" },
           { label: "Saved items", to: "/wishlist" },
         ],
@@ -196,6 +198,8 @@ export const footerColumns = [
     title: "Support",
     links: [
       { label: "Contact", to: "/contact" },
+      { label: "Shipping & delivery", to: "/shipping" },
+      { label: "Track your order", to: "/track-order" },
       { label: "FAQ", to: "/faq" },
       { label: "Your bag", to: "/cart" },
     ],

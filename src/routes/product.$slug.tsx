@@ -11,6 +11,7 @@ import { QuantityControl } from "@/components/oasis/quantity-control";
 import { WishlistButton } from "@/components/oasis/wishlist-button";
 import { ProductCard } from "@/components/oasis/product-card";
 import { SectionHeading } from "@/components/oasis/section-heading";
+import { DeliveryEstimator } from "@/components/oasis/delivery-estimator";
 import { ShareRow } from "@/components/oasis/share-row";
 import { BrandBadge } from "@/components/oasis/chips";
 import { Button } from "@/components/ui/button";
@@ -237,7 +238,7 @@ function ProductPage() {
             {[
               { icon: ShieldCheck, label: "Secure payments", detail: "Provider to be confirmed" },
               { icon: PackageCheck, label: "Careful packing", detail: "Rigid box with inner tray" },
-              { icon: Truck, label: "Delivery", detail: "Timelines shown at checkout" },
+              { icon: Truck, label: "Delivery", detail: "Estimate by PIN code below" },
             ].map(({ icon: Icon, label, detail }) => (
               <li key={label} className="flex gap-3">
                 <Icon className="mt-0.5 size-4 shrink-0 text-gold" aria-hidden="true" />
@@ -248,6 +249,8 @@ function ProductPage() {
               </li>
             ))}
           </ul>
+
+          <DeliveryEstimator compact className="mt-6" />
 
           <Accordion type="single" collapsible className="mt-4" defaultValue="description">
             <AccordionItem value="description" className="border-border">
@@ -276,8 +279,21 @@ function ProductPage() {
             <AccordionItem value="shipping" className="border-border">
               <AccordionTrigger className="text-[0.9375rem]">Shipping</AccordionTrigger>
               <AccordionContent className="text-[0.875rem] leading-relaxed text-muted-foreground">
-                Serviceable areas, dispatch windows and charges will be confirmed at checkout once
-                logistics are finalised.
+                <p>
+                  Dispatched in a rigid insulated box, tracked end to end. Orders placed before the
+                  daily cut-off join the same day&rsquo;s dispatch run; there is no Sunday dispatch.
+                </p>
+                <p className="mt-3">
+                  See{" "}
+                  <Link to="/shipping" className="text-foreground underline decoration-gold/70 underline-offset-4">
+                    shipping zones and delivery times
+                  </Link>{" "}
+                  or{" "}
+                  <Link to="/track-order" className="text-foreground underline decoration-gold/70 underline-offset-4">
+                    track an existing order
+                  </Link>
+                  .
+                </p>
               </AccordionContent>
             </AccordionItem>
             <AccordionItem value="details" className="border-border">
