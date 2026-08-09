@@ -86,17 +86,21 @@ export function ChannelStrip() {
             title="Marketplaces"
             intro="Selected boxes are listed on the marketplaces below alongside this site."
             links={marketplaceLinks}
+            medium="marketplace"
           />
           <ChannelColumn
             title="Social"
             intro="Follow the kitchen, or message us directly on the channel you prefer."
             links={socialLinks}
+            medium="social"
           />
           <ChannelColumn
             title="Maps & listings"
             intro="Verified profiles for directions, hours and reviews."
             links={discoveryLinks}
+            medium="listing"
           />
+
         </div>
       </div>
     </section>
