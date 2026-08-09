@@ -124,7 +124,7 @@ export function SocialRow({ className }: { className?: string }) {
       {live.map((link) => (
         <li key={link.id}>
           <a
-            href={link.href}
+            href={withUtm(link.href, { source: link.id, medium: "social", campaign: "footer" })}
             target="_blank"
             rel="noopener noreferrer me"
             className="link-underline text-[0.8125rem] text-muted-foreground hover:text-foreground"
@@ -154,7 +154,7 @@ export function MarketplaceRow({ className }: { className?: string }) {
       {live.map((link) => (
         <li key={link.id}>
           <a
-            href={link.href}
+            href={withUtm(link.href, { source: link.id, medium: "marketplace", campaign: "footer" })}
             target="_blank"
             rel="noopener noreferrer"
             className="link-underline text-[0.8125rem] text-muted-foreground hover:text-foreground"
