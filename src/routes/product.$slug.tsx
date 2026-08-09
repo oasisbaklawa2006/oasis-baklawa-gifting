@@ -11,6 +11,7 @@ import { QuantityControl } from "@/components/oasis/quantity-control";
 import { WishlistButton } from "@/components/oasis/wishlist-button";
 import { ProductCard } from "@/components/oasis/product-card";
 import { SectionHeading } from "@/components/oasis/section-heading";
+import { ShareRow } from "@/components/oasis/share-row";
 import { BrandBadge } from "@/components/oasis/chips";
 import { Button } from "@/components/ui/button";
 import {
