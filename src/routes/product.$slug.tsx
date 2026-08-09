@@ -21,7 +21,7 @@ import { getProductBySlug, products } from "@/data/catalog";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/product/$slug")({
-  loader: ({ params }) => {
+  loader: ({ params }): { product: Product } => {
     const product = getProductBySlug(params.slug);
     if (!product) throw notFound();
     return { product };
