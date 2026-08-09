@@ -9,6 +9,8 @@ import { TrustStrip } from "@/components/oasis/trust-strip";
 import { StoreCard, TestimonialCard } from "@/components/oasis/story-cards";
 import { NewsletterModule } from "@/components/oasis/newsletter";
 import { ChannelStrip } from "@/components/oasis/channel-links";
+import { ArticleCard } from "@/components/oasis/article-card";
+import { articlesByDate } from "@/data/journal";
 import { PartnershipModule } from "@/components/oasis/partnership-module";
 import { Button } from "@/components/ui/button";
 import { bestSellers, categories, collections, getProductsByCollection } from "@/data/catalog";
@@ -134,6 +136,24 @@ function HomePage() {
               <TestimonialCard key={testimonial.id} testimonial={testimonial} />
             ))}
           </div>
+        </div>
+      </section>
+
+      <section className="container-oasis section-y">
+        <SectionHeading
+          eyebrow="The Journal"
+          title="Gift guides, ingredients and stories"
+          intro="Editorial notes on choosing, serving and sharing — with links straight into the range."
+          action={
+            <Button asChild variant="outline">
+              <Link to="/journal">Read the Journal</Link>
+            </Button>
+          }
+        />
+        <div className="mt-12 grid gap-x-6 gap-y-12 md:grid-cols-3">
+          {articlesByDate.slice(0, 3).map((article) => (
+            <ArticleCard key={article.slug} article={article} />
+          ))}
         </div>
       </section>
 

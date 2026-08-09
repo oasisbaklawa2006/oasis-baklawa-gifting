@@ -58,11 +58,13 @@ export const primaryNav: NavigationItem[] = [
         items: [
           { label: "All collections", to: "/collections" },
           { label: "Gifting guide", to: "/gifting" },
+          { label: "Journal", to: "/journal" },
         ],
       },
     ],
   },
   { label: "Gifting", to: "/gifting" },
+  { label: "Journal", to: "/journal" },
   { label: "Corporate & B2B", to: "/business" },
   { label: "Our Story", to: "/about" },
   { label: "Stores", to: "/stores" },
@@ -185,6 +187,7 @@ export const footerColumns = [
     title: "Company",
     links: [
       { label: "Our story", to: "/about" },
+      { label: "Journal", to: "/journal" },
       { label: "Stores", to: "/stores" },
       { label: "Corporate & B2B", to: "/business" },
     ],

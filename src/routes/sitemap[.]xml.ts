@@ -3,6 +3,7 @@ import type {} from "@tanstack/react-start";
 
 import { products } from "@/data/catalog";
 import { collections } from "@/data/catalog";
+import { articles } from "@/data/journal";
 
 // TODO: replace with your project URL once a project name or custom domain is set.
 const BASE_URL = "";
@@ -22,6 +23,7 @@ export const Route = createFileRoute("/sitemap.xml")({
           { path: "/shop", changefreq: "weekly", priority: "0.9" },
           { path: "/collections", changefreq: "weekly", priority: "0.8" },
           { path: "/gifting", changefreq: "monthly", priority: "0.8" },
+          { path: "/journal", changefreq: "weekly", priority: "0.7" },
           { path: "/business", changefreq: "monthly", priority: "0.8" },
           { path: "/about", changefreq: "monthly", priority: "0.6" },
           { path: "/stores", changefreq: "monthly", priority: "0.6" },
@@ -32,6 +34,11 @@ export const Route = createFileRoute("/sitemap.xml")({
             path: `/collections/${collection.slug}`,
             changefreq: "weekly" as const,
             priority: "0.7",
+          })),
+          ...articles.map((article) => ({
+            path: `/journal/${article.slug}`,
+            changefreq: "monthly" as const,
+            priority: "0.6",
           })),
           ...products.map((product) => ({
             path: `/product/${product.slug}`,
