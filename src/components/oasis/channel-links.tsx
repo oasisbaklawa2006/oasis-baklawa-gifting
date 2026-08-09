@@ -1,10 +1,20 @@
 import { ArrowUpRight } from "lucide-react";
 
 import { cn } from "@/lib/utils";
-import type { ChannelLink } from "@/data/marketing";
-import { discoveryLinks, marketplaceLinks, socialLinks } from "@/data/marketing";
+import type { ChannelLink, UtmMedium } from "@/data/marketing";
+import { discoveryLinks, marketplaceLinks, socialLinks, withUtm } from "@/data/marketing";
 
-function ChannelItem({ link, className }: { link: ChannelLink; className?: string }) {
+function ChannelItem({
+  link,
+  medium,
+  campaign,
+  className,
+}: {
+  link: ChannelLink;
+  medium: UtmMedium;
+  campaign: string;
+  className?: string;
+}) {
   const shared =
     "group flex min-h-11 items-center justify-between gap-3 border-b border-border py-3 text-[0.875rem]";
 
@@ -23,7 +33,7 @@ function ChannelItem({ link, className }: { link: ChannelLink; className?: strin
 
   return (
     <a
-      href={link.href}
+      href={withUtm(link.href, { source: link.id, medium, campaign })}
       target="_blank"
       rel="noopener noreferrer me"
       className={cn(shared, "text-foreground transition-colors hover:text-earth", className)}
@@ -38,10 +48,12 @@ function ChannelColumn({
   title,
   intro,
   links,
+  medium,
 }: {
   title: string;
   intro: string;
   links: ChannelLink[];
+  medium: UtmMedium;
 }) {
   return (
     <div className="min-w-0">
@@ -49,12 +61,13 @@ function ChannelColumn({
       <p className="mt-3 text-[0.8125rem] leading-relaxed text-muted-foreground">{intro}</p>
       <div className="mt-5">
         {links.map((link) => (
-          <ChannelItem key={link.id} link={link} />
+          <ChannelItem key={link.id} link={link} medium={medium} campaign="channel_strip" />
         ))}
       </div>
     </div>
   );
 }
+
 
 /** "Also available on" — marketplaces, profiles and map listings. */
 export function ChannelStrip() {
@@ -73,17 +86,21 @@ export function ChannelStrip() {
             title="Marketplaces"
             intro="Selected boxes are listed on the marketplaces below alongside this site."
             links={marketplaceLinks}
+            medium="marketplace"
           />
           <ChannelColumn
             title="Social"
             intro="Follow the kitchen, or message us directly on the channel you prefer."
             links={socialLinks}
+            medium="social"
           />
           <ChannelColumn
             title="Maps & listings"
             intro="Verified profiles for directions, hours and reviews."
             links={discoveryLinks}
+            medium="listing"
           />
+
         </div>
       </div>
     </section>
@@ -107,7 +124,7 @@ export function SocialRow({ className }: { className?: string }) {
       {live.map((link) => (
         <li key={link.id}>
           <a
-            href={link.href}
+            href={withUtm(link.href, { source: link.id, medium: "social", campaign: "footer" })}
             target="_blank"
             rel="noopener noreferrer me"
             className="link-underline text-[0.8125rem] text-muted-foreground hover:text-foreground"
@@ -137,7 +154,7 @@ export function MarketplaceRow({ className }: { className?: string }) {
       {live.map((link) => (
         <li key={link.id}>
           <a
-            href={link.href}
+            href={withUtm(link.href, { source: link.id, medium: "marketplace", campaign: "footer" })}
             target="_blank"
             rel="noopener noreferrer"
             className="link-underline text-[0.8125rem] text-muted-foreground hover:text-foreground"
