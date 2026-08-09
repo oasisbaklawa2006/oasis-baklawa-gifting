@@ -195,7 +195,7 @@ export function SiteHeader() {
       </div>
 
       <div className="container-oasis hidden h-16 grid-cols-[1fr_auto_1fr] items-center gap-6 lg:grid">
-        <nav aria-label="Primary" className="flex items-center gap-7">
+        <nav aria-label="Primary" className="flex items-center gap-6 xl:gap-7">
           {primaryNav.slice(0, 3).map((item) =>
             item.columns ? (
               <MegaMenu key={item.label} item={item} />
@@ -203,7 +203,7 @@ export function SiteHeader() {
               <Link
                 key={item.label}
                 to={toRoute(item.to)}
-                className="link-underline text-[0.8125rem] uppercase tracking-[0.14em] text-foreground"
+                className="link-underline whitespace-nowrap text-[0.8125rem] uppercase tracking-[0.14em] text-foreground"
                 activeProps={{ className: "text-earth" }}
               >
                 {item.label}
@@ -216,13 +216,13 @@ export function SiteHeader() {
           <Wordmark />
         </div>
 
-        <div className="flex items-center justify-end gap-7">
-          <nav aria-label="Secondary" className="flex items-center gap-7">
+        <div className="flex items-center justify-end gap-6 xl:gap-7">
+          <nav aria-label="Secondary" className="flex items-center gap-6 xl:gap-7">
             {primaryNav.slice(3).map((item) => (
               <Link
                 key={item.label}
                 to={toRoute(item.to)}
-                className="link-underline text-[0.8125rem] uppercase tracking-[0.14em] text-foreground"
+                className="link-underline whitespace-nowrap text-[0.8125rem] uppercase tracking-[0.14em] text-foreground"
                 activeProps={{ className: "text-earth" }}
               >
                 {item.label}
