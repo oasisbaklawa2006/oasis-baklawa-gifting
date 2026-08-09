@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { createFileRoute, notFound } from "@tanstack/react-router";
 import { toast } from "sonner";
+
+import { useShop } from "@/lib/store";
 import { PackageCheck, ShieldCheck, Truck } from "lucide-react";
 
 import { Breadcrumbs } from "@/components/oasis/breadcrumbs";
@@ -60,10 +62,17 @@ function ProductPage() {
   const image = product.images[activeImage] ?? product.images[0];
   const related = products.filter((p) => p.id !== product.id && p.categoryId === product.categoryId).slice(0, 4);
 
-  const addToCart = () =>
+  const { addToCart: addLine, setCartOpen } = useShop();
+
+  const addToCart = () => {
+    if (!variant) return;
+    addLine(product.id, variant.id, quantity);
+    setCartOpen(true);
     toast.success(`${product.name} added`, {
-      description: `${variant?.label} × ${quantity} — cart is a UI placeholder in this build.`,
+      description: `${variant.label} × ${quantity}`,
     });
+  };
+
 
   return (
     <>
@@ -172,7 +181,7 @@ function ProductPage() {
             <Button size="lg" variant="outline" className="min-w-40 flex-1 sm:flex-none" onClick={addToCart}>
               Buy now
             </Button>
-            <WishlistButton productName={product.name} />
+            <WishlistButton productId={product.id} productName={product.name} />
           </div>
 
           <ul className="mt-9 grid gap-4 border-y border-border py-6 sm:grid-cols-3">

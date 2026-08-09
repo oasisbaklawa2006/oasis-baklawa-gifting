@@ -12,6 +12,8 @@ import { useEffect, type ReactNode } from "react";
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { SiteHeader } from "@/components/layout/site-header";
+import { ShopProvider } from "@/lib/store";
+import { CartDrawer } from "@/components/layout/cart-drawer";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { Toaster } from "@/components/ui/sonner";
 import { Button } from "@/components/ui/button";
@@ -117,15 +119,18 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <div className="flex min-h-dvh flex-col bg-background">
-        <SiteHeader />
-        <main id="content" className="flex-1">
-          {/* Required: nested routes render here. */}
-          <Outlet />
-        </main>
-        <SiteFooter />
-      </div>
-      <Toaster position="bottom-right" />
+      <ShopProvider>
+        <div className="flex min-h-dvh flex-col bg-background">
+          <SiteHeader />
+          <main id="content" className="flex-1">
+            {/* Required: nested routes render here. */}
+            <Outlet />
+          </main>
+          <SiteFooter />
+        </div>
+        <CartDrawer />
+        <Toaster position="bottom-right" />
+      </ShopProvider>
     </QueryClientProvider>
   );
 }

@@ -12,18 +12,9 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { cn } from "@/lib/utils";
+import { toRoute } from "@/lib/routes";
+import { useShop } from "@/lib/store";
 
-const routeMap = {
-  "/shop": "/shop",
-  "/about": "/about",
-  "/business": "/business",
-  "/stores": "/stores",
-  "/search": "/search",
-} as const;
-
-type KnownRoute = keyof typeof routeMap;
-
-const toRoute = (path: string) => routeMap[path as KnownRoute] ?? "/";
 
 function Wordmark() {
   return (
@@ -38,6 +29,8 @@ function Wordmark() {
 }
 
 function UtilityIcons({ className }: { className?: string }) {
+  const { cartCount, setCartOpen, wishlist } = useShop();
+
   return (
     <div className={cn("flex items-center", className)}>
       <Link
@@ -47,26 +40,35 @@ function UtilityIcons({ className }: { className?: string }) {
       >
         <Search className="size-[1.125rem]" />
       </Link>
-      <button
-        type="button"
+      <Link
+        to="/contact"
         className="hidden size-11 place-items-center rounded-sm text-foreground transition-colors hover:bg-premium sm:grid"
-        aria-label="Account (placeholder)"
+        aria-label="Contact us"
       >
         <User className="size-[1.125rem]" />
-      </button>
-      <button
-        type="button"
-        className="hidden size-11 place-items-center rounded-sm text-foreground transition-colors hover:bg-premium sm:grid"
-        aria-label="Wishlist (placeholder)"
+      </Link>
+      <Link
+        to="/wishlist"
+        className="relative hidden size-11 place-items-center rounded-sm text-foreground transition-colors hover:bg-premium sm:grid"
+        aria-label={`Saved items, ${wishlist.length} saved`}
       >
         <Heart className="size-[1.125rem]" />
-      </button>
+        {wishlist.length > 0 ? (
+          <span className="absolute right-1.5 top-1.5 size-1.5 rounded-full bg-gold" aria-hidden="true" />
+        ) : null}
+      </Link>
       <button
         type="button"
-        className="grid size-11 place-items-center rounded-sm text-foreground transition-colors hover:bg-premium"
-        aria-label="Cart, 0 items (placeholder)"
+        onClick={() => setCartOpen(true)}
+        className="relative grid size-11 place-items-center rounded-sm text-foreground transition-colors hover:bg-premium"
+        aria-label={`Bag, ${cartCount} ${cartCount === 1 ? "item" : "items"}`}
       >
         <ShoppingBag className="size-[1.125rem]" />
+        {cartCount > 0 ? (
+          <span className="absolute right-0.5 top-1 min-w-4 rounded-full bg-espresso px-1 text-[0.625rem] font-medium leading-4 text-background tabular-nums">
+            {cartCount}
+          </span>
+        ) : null}
       </button>
     </div>
   );
