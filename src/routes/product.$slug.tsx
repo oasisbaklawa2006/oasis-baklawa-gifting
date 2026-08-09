@@ -18,6 +18,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { getProductBySlug, products } from "@/data/catalog";
+import type { Product } from "@/data/types";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/product/$slug")({
