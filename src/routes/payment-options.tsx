@@ -50,7 +50,7 @@ function PaymentOptionsPage() {
       </header>
 
       <section className="mt-14" aria-labelledby="india-heading">
-        <SectionHeading id="india-heading" eyebrow="Within India" title="Domestic methods" />
+        <SectionHeading eyebrow="Within India" title="Domestic methods" />
         <ul className="mt-8 grid gap-px border border-border bg-border sm:grid-cols-2 lg:grid-cols-3">
           {india.map((method) => (
             <li key={method.id} className="bg-canvas p-6">
@@ -75,7 +75,7 @@ function PaymentOptionsPage() {
 
       <section className="mt-16" aria-labelledby="intl-heading">
         <SectionHeading
-          id="intl-heading"
+         
           eyebrow="Outside India"
           title="International methods"
           description="Cross-border orders are quoted in your currency and settled by the gateway."
@@ -103,7 +103,7 @@ function PaymentOptionsPage() {
       </section>
 
       <section className="mt-16" aria-labelledby="currency-heading">
-        <SectionHeading id="currency-heading" eyebrow="Currencies" title="Pricing display" />
+        <SectionHeading eyebrow="Currencies" title="Pricing display" />
         <dl className="mt-8 grid gap-8 sm:grid-cols-3">
           {supportedCurrencies.map((currency) => (
             <div key={currency.code} className="border-t border-border pt-5">
@@ -120,7 +120,7 @@ function PaymentOptionsPage() {
 
       <section className="mt-16" aria-labelledby="routing-heading">
         <SectionHeading
-          id="routing-heading"
+         
           eyebrow="Gateway routing"
           title="How payments will be processed"
           description="Planned routing. Provider names and terms are confirmed at connection time."
@@ -144,7 +144,7 @@ function PaymentOptionsPage() {
       </section>
 
       <section className="mt-16" aria-labelledby="trust-heading">
-        <SectionHeading id="trust-heading" eyebrow="Safeguards" title="Paying with confidence" />
+        <SectionHeading eyebrow="Safeguards" title="Paying with confidence" />
         <ul className="mt-8 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
           {paymentAssurances.map((item) => (
             <li key={item.title} className="border-t border-border pt-5">
