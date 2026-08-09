@@ -293,6 +293,13 @@ function ProductPage() {
               </AccordionContent>
             </AccordionItem>
           </Accordion>
+
+          <ShareRow
+            title={`${product.name} — Oasis Baklawa`}
+            path={`/product/${product.slug}`}
+            className="mt-8 border-t border-border pt-6"
+          />
+
         </div>
       </section>
 
