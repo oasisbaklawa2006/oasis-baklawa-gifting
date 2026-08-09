@@ -78,7 +78,7 @@ function JournalIndex() {
         if (items.length === 0) return null;
         return (
           <section key={category} className="container-oasis mt-16">
-            <SectionHeading eyebrow={category} title={categoryTitles[category]} />
+            <SectionHeading eyebrow={category} title={categoryTitles[category] ?? category} />
             <div className="mt-10 grid gap-x-6 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
               {items.map((article) => (
                 <ArticleCard key={article.slug} article={article} />
