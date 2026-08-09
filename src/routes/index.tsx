@@ -8,9 +8,12 @@ import { CategoryTile, CollectionCard } from "@/components/oasis/cards";
 import { TrustStrip } from "@/components/oasis/trust-strip";
 import { StoreCard, TestimonialCard } from "@/components/oasis/story-cards";
 import { NewsletterModule } from "@/components/oasis/newsletter";
+import { ChannelStrip } from "@/components/oasis/channel-links";
+import { PartnershipModule } from "@/components/oasis/partnership-module";
 import { Button } from "@/components/ui/button";
 import { bestSellers, categories, collections, getProductsByCollection } from "@/data/catalog";
 import { stores, testimonials } from "@/data/site";
+
 
 export const Route = createFileRoute("/")({
   head: () => ({

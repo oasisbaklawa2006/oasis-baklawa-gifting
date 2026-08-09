@@ -18,6 +18,7 @@ import { Route as FaqRouteImport } from './routes/faq'
 import { Route as GiftingRouteImport } from './routes/gifting'
 import { Route as SearchRouteImport } from './routes/search'
 import { Route as ShopRouteImport } from './routes/shop'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as StoresRouteImport } from './routes/stores'
 import { Route as WishlistRouteImport } from './routes/wishlist'
 import { Route as CollectionsIndexRouteImport } from './routes/collections.index'
@@ -69,6 +70,11 @@ const ShopRoute = ShopRouteImport.update({
   path: '/shop',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const StoresRoute = StoresRouteImport.update({
   id: '/stores',
   path: '/stores',
@@ -105,6 +111,7 @@ export interface FileRoutesByFullPath {
   '/gifting': typeof GiftingRoute
   '/search': typeof SearchRoute
   '/shop': typeof ShopRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/stores': typeof StoresRoute
   '/wishlist': typeof WishlistRoute
   '/collections/$slug': typeof CollectionsSlugRoute
@@ -121,6 +128,7 @@ export interface FileRoutesByTo {
   '/gifting': typeof GiftingRoute
   '/search': typeof SearchRoute
   '/shop': typeof ShopRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/stores': typeof StoresRoute
   '/wishlist': typeof WishlistRoute
   '/collections/$slug': typeof CollectionsSlugRoute
@@ -138,6 +146,7 @@ export interface FileRoutesById {
   '/gifting': typeof GiftingRoute
   '/search': typeof SearchRoute
   '/shop': typeof ShopRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/stores': typeof StoresRoute
   '/wishlist': typeof WishlistRoute
   '/collections/$slug': typeof CollectionsSlugRoute
@@ -156,6 +165,7 @@ export interface FileRouteTypes {
     | '/gifting'
     | '/search'
     | '/shop'
+    | '/sitemap.xml'
     | '/stores'
     | '/wishlist'
     | '/collections/$slug'
@@ -172,6 +182,7 @@ export interface FileRouteTypes {
     | '/gifting'
     | '/search'
     | '/shop'
+    | '/sitemap.xml'
     | '/stores'
     | '/wishlist'
     | '/collections/$slug'
@@ -188,6 +199,7 @@ export interface FileRouteTypes {
     | '/gifting'
     | '/search'
     | '/shop'
+    | '/sitemap.xml'
     | '/stores'
     | '/wishlist'
     | '/collections/$slug'
@@ -205,6 +217,7 @@ export interface RootRouteChildren {
   GiftingRoute: typeof GiftingRoute
   SearchRoute: typeof SearchRoute
   ShopRoute: typeof ShopRoute
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   StoresRoute: typeof StoresRoute
   WishlistRoute: typeof WishlistRoute
   CollectionsSlugRoute: typeof CollectionsSlugRoute
@@ -277,6 +290,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ShopRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/stores': {
       id: '/stores'
       path: '/stores'
@@ -325,6 +345,7 @@ const rootRouteChildren: RootRouteChildren = {
   GiftingRoute: GiftingRoute,
   SearchRoute: SearchRoute,
   ShopRoute: ShopRoute,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
   StoresRoute: StoresRoute,
   WishlistRoute: WishlistRoute,
   CollectionsSlugRoute: CollectionsSlugRoute,
@@ -334,13 +355,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
