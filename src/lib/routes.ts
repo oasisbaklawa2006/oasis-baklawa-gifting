@@ -1,4 +1,3 @@
-import type { LinkProps } from "@tanstack/react-router";
 
 /** Paths used by mock navigation data, narrowed to real router routes. */
 const known = [
