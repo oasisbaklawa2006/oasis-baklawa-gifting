@@ -127,12 +127,12 @@ function CartPage() {
               <span className="eyebrow">Estimated total</span>
               <span className="font-display text-xl tabular-nums">{formatMoney(subtotal)}</span>
             </div>
-            <Button size="lg" className="mt-6 w-full" disabled>
-              Checkout unavailable
+            <Button size="lg" className="mt-6 w-full" asChild>
+              <Link to="/checkout">Proceed to checkout</Link>
             </Button>
             <p className="mt-3 text-xs leading-relaxed text-muted-foreground">
-              Payments are not connected in this build. For volume or corporate orders, use the
-              business enquiry form.
+              Delivery speed, personalisation and payment method are chosen at checkout. No gateway
+              is connected yet, so nothing is charged.
             </p>
             <Button variant="outline" className="mt-4 w-full" asChild>
               <Link to="/business">Corporate & bulk enquiry</Link>

@@ -34,6 +34,7 @@ export const primaryNav: NavigationItem[] = [
         title: "Shop all",
         items: [
           { label: "All products", to: "/shop" },
+          { label: "Build your own box", to: "/build-your-box" },
           { label: "Shipping & delivery", to: "/shipping" },
           { label: "Track your order", to: "/track-order" },
           { label: "Collections", to: "/collections" },
@@ -66,6 +67,7 @@ export const primaryNav: NavigationItem[] = [
     ],
   },
   { label: "Gifting", to: "/gifting" },
+  { label: "Build a Box", to: "/build-your-box" },
   { label: "Journal", to: "/journal" },
   { label: "Corporate & B2B", to: "/business" },
   { label: "Our Story", to: "/about" },
@@ -181,6 +183,7 @@ export const footerColumns = [
       { label: "All products", to: "/shop" },
       { label: "Collections", to: "/collections" },
       { label: "Gifting", to: "/gifting" },
+      { label: "Build your own box", to: "/build-your-box" },
       { label: "Saved items", to: "/wishlist" },
       { label: "Search", to: "/search" },
     ],
@@ -199,6 +202,7 @@ export const footerColumns = [
     links: [
       { label: "Contact", to: "/contact" },
       { label: "Shipping & delivery", to: "/shipping" },
+      { label: "Payment options", to: "/payment-options" },
       { label: "Track your order", to: "/track-order" },
       { label: "FAQ", to: "/faq" },
       { label: "Your bag", to: "/cart" },
