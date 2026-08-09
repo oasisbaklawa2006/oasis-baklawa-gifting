@@ -49,7 +49,7 @@ function PaymentOptionsPage() {
         </p>
       </header>
 
-      <section className="mt-14" aria-labelledby="india-heading">
+      <section className="mt-14" aria-label="Domestic payment methods">
         <SectionHeading eyebrow="Within India" title="Domestic methods" />
         <ul className="mt-8 grid gap-px border border-border bg-border sm:grid-cols-2 lg:grid-cols-3">
           {india.map((method) => (
@@ -73,7 +73,7 @@ function PaymentOptionsPage() {
         </ul>
       </section>
 
-      <section className="mt-16" aria-labelledby="intl-heading">
+      <section className="mt-16" aria-label="International payment methods">
         <SectionHeading
          
           eyebrow="Outside India"
@@ -102,7 +102,7 @@ function PaymentOptionsPage() {
         </ul>
       </section>
 
-      <section className="mt-16" aria-labelledby="currency-heading">
+      <section className="mt-16" aria-label="Currencies">
         <SectionHeading eyebrow="Currencies" title="Pricing display" />
         <dl className="mt-8 grid gap-8 sm:grid-cols-3">
           {supportedCurrencies.map((currency) => (
@@ -118,7 +118,7 @@ function PaymentOptionsPage() {
         </dl>
       </section>
 
-      <section className="mt-16" aria-labelledby="routing-heading">
+      <section className="mt-16" aria-label="Gateway routing">
         <SectionHeading
          
           eyebrow="Gateway routing"
@@ -143,7 +143,7 @@ function PaymentOptionsPage() {
         </ul>
       </section>
 
-      <section className="mt-16" aria-labelledby="trust-heading">
+      <section className="mt-16" aria-label="Payment safeguards">
         <SectionHeading eyebrow="Safeguards" title="Paying with confidence" />
         <ul className="mt-8 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
           {paymentAssurances.map((item) => (
