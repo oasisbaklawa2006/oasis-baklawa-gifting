@@ -137,7 +137,12 @@ function HomePage() {
         </div>
       </section>
 
+      <ChannelStrip />
+
+      <PartnershipModule />
+
       <NewsletterModule />
+
     </>
   );
 }
