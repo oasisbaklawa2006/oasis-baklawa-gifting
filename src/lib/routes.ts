@@ -15,6 +15,9 @@ const known = [
   "/contact",
   "/faq",
   "/cart",
+  "/checkout",
+  "/payment-options",
+  "/build-your-box",
   "/wishlist",
 ] as const;
 

@@ -11,11 +11,14 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AboutRouteImport } from './routes/about'
+import { Route as BuildYourBoxRouteImport } from './routes/build-your-box'
 import { Route as BusinessRouteImport } from './routes/business'
 import { Route as CartRouteImport } from './routes/cart'
+import { Route as CheckoutRouteImport } from './routes/checkout'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as FaqRouteImport } from './routes/faq'
 import { Route as GiftingRouteImport } from './routes/gifting'
+import { Route as PaymentOptionsRouteImport } from './routes/payment-options'
 import { Route as SearchRouteImport } from './routes/search'
 import { Route as ShippingRouteImport } from './routes/shipping'
 import { Route as ShopRouteImport } from './routes/shop'
@@ -39,6 +42,11 @@ const AboutRoute = AboutRouteImport.update({
   path: '/about',
   getParentRoute: () => rootRouteImport,
 } as any)
+const BuildYourBoxRoute = BuildYourBoxRouteImport.update({
+  id: '/build-your-box',
+  path: '/build-your-box',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const BusinessRoute = BusinessRouteImport.update({
   id: '/business',
   path: '/business',
@@ -47,6 +55,11 @@ const BusinessRoute = BusinessRouteImport.update({
 const CartRoute = CartRouteImport.update({
   id: '/cart',
   path: '/cart',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CheckoutRoute = CheckoutRouteImport.update({
+  id: '/checkout',
+  path: '/checkout',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ContactRoute = ContactRouteImport.update({
@@ -62,6 +75,11 @@ const FaqRoute = FaqRouteImport.update({
 const GiftingRoute = GiftingRouteImport.update({
   id: '/gifting',
   path: '/gifting',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PaymentOptionsRoute = PaymentOptionsRouteImport.update({
+  id: '/payment-options',
+  path: '/payment-options',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SearchRoute = SearchRouteImport.update({
@@ -128,11 +146,14 @@ const ProductSlugRoute = ProductSlugRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/build-your-box': typeof BuildYourBoxRoute
   '/business': typeof BusinessRoute
   '/cart': typeof CartRoute
+  '/checkout': typeof CheckoutRoute
   '/contact': typeof ContactRoute
   '/faq': typeof FaqRoute
   '/gifting': typeof GiftingRoute
+  '/payment-options': typeof PaymentOptionsRoute
   '/search': typeof SearchRoute
   '/shipping': typeof ShippingRoute
   '/shop': typeof ShopRoute
@@ -149,11 +170,14 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/build-your-box': typeof BuildYourBoxRoute
   '/business': typeof BusinessRoute
   '/cart': typeof CartRoute
+  '/checkout': typeof CheckoutRoute
   '/contact': typeof ContactRoute
   '/faq': typeof FaqRoute
   '/gifting': typeof GiftingRoute
+  '/payment-options': typeof PaymentOptionsRoute
   '/search': typeof SearchRoute
   '/shipping': typeof ShippingRoute
   '/shop': typeof ShopRoute
@@ -171,11 +195,14 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/build-your-box': typeof BuildYourBoxRoute
   '/business': typeof BusinessRoute
   '/cart': typeof CartRoute
+  '/checkout': typeof CheckoutRoute
   '/contact': typeof ContactRoute
   '/faq': typeof FaqRoute
   '/gifting': typeof GiftingRoute
+  '/payment-options': typeof PaymentOptionsRoute
   '/search': typeof SearchRoute
   '/shipping': typeof ShippingRoute
   '/shop': typeof ShopRoute
@@ -194,11 +221,14 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/about'
+    | '/build-your-box'
     | '/business'
     | '/cart'
+    | '/checkout'
     | '/contact'
     | '/faq'
     | '/gifting'
+    | '/payment-options'
     | '/search'
     | '/shipping'
     | '/shop'
@@ -215,11 +245,14 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/about'
+    | '/build-your-box'
     | '/business'
     | '/cart'
+    | '/checkout'
     | '/contact'
     | '/faq'
     | '/gifting'
+    | '/payment-options'
     | '/search'
     | '/shipping'
     | '/shop'
@@ -236,11 +269,14 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/about'
+    | '/build-your-box'
     | '/business'
     | '/cart'
+    | '/checkout'
     | '/contact'
     | '/faq'
     | '/gifting'
+    | '/payment-options'
     | '/search'
     | '/shipping'
     | '/shop'
@@ -258,11 +294,14 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
+  BuildYourBoxRoute: typeof BuildYourBoxRoute
   BusinessRoute: typeof BusinessRoute
   CartRoute: typeof CartRoute
+  CheckoutRoute: typeof CheckoutRoute
   ContactRoute: typeof ContactRoute
   FaqRoute: typeof FaqRoute
   GiftingRoute: typeof GiftingRoute
+  PaymentOptionsRoute: typeof PaymentOptionsRoute
   SearchRoute: typeof SearchRoute
   ShippingRoute: typeof ShippingRoute
   ShopRoute: typeof ShopRoute
@@ -293,6 +332,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AboutRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/build-your-box': {
+      id: '/build-your-box'
+      path: '/build-your-box'
+      fullPath: '/build-your-box'
+      preLoaderRoute: typeof BuildYourBoxRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/business': {
       id: '/business'
       path: '/business'
@@ -305,6 +351,13 @@ declare module '@tanstack/react-router' {
       path: '/cart'
       fullPath: '/cart'
       preLoaderRoute: typeof CartRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/checkout': {
+      id: '/checkout'
+      path: '/checkout'
+      fullPath: '/checkout'
+      preLoaderRoute: typeof CheckoutRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/contact': {
@@ -326,6 +379,13 @@ declare module '@tanstack/react-router' {
       path: '/gifting'
       fullPath: '/gifting'
       preLoaderRoute: typeof GiftingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/payment-options': {
+      id: '/payment-options'
+      path: '/payment-options'
+      fullPath: '/payment-options'
+      preLoaderRoute: typeof PaymentOptionsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/search': {
@@ -418,11 +478,14 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
+  BuildYourBoxRoute: BuildYourBoxRoute,
   BusinessRoute: BusinessRoute,
   CartRoute: CartRoute,
+  CheckoutRoute: CheckoutRoute,
   ContactRoute: ContactRoute,
   FaqRoute: FaqRoute,
   GiftingRoute: GiftingRoute,
+  PaymentOptionsRoute: PaymentOptionsRoute,
   SearchRoute: SearchRoute,
   ShippingRoute: ShippingRoute,
   ShopRoute: ShopRoute,
