@@ -26,7 +26,25 @@ export const Route = createFileRoute("/faq")({
         content: "Common questions about ordering, ingredients, delivery and gifting.",
       },
     ],
+    links: [{ rel: "canonical", href: "/faq" }],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          mainEntity: faqs.flatMap((group) =>
+            group.items.map((item) => ({
+              "@type": "Question",
+              name: item.q,
+              acceptedAnswer: { "@type": "Answer", text: item.a },
+            })),
+          ),
+        }),
+      },
+    ],
   }),
+
   component: FaqPage,
 });
 
