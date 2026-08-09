@@ -119,3 +119,33 @@ export function SocialRow({ className }: { className?: string }) {
     </ul>
   );
 }
+
+/** Compact marketplace row, used in the footer. */
+export function MarketplaceRow({ className }: { className?: string }) {
+  const live = marketplaceLinks.filter((link) => link.href);
+
+  if (live.length === 0) {
+    return (
+      <p className={cn("text-[0.75rem] uppercase tracking-[0.14em] text-driftwood", className)}>
+        Marketplace listings to be added
+      </p>
+    );
+  }
+
+  return (
+    <ul className={cn("flex flex-wrap items-center gap-x-5 gap-y-2", className)}>
+      {live.map((link) => (
+        <li key={link.id}>
+          <a
+            href={link.href}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="link-underline text-[0.8125rem] text-muted-foreground hover:text-foreground"
+          >
+            {link.label}
+          </a>
+        </li>
+      ))}
+    </ul>
+  );
+}

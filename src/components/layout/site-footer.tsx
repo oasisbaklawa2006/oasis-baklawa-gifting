@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { footerColumns } from "@/data/site";
+import { MarketplaceRow, SocialRow } from "@/components/oasis/channel-links";
 import { toRoute } from "@/lib/routes";
 
 export function SiteFooter() {
