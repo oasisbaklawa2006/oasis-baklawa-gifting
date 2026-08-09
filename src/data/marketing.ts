@@ -118,3 +118,40 @@ export const referralProgramme = {
 
 export const socialProofPlaceholder =
   "Ratings, review counts and press mentions will appear here once verified sources are supplied.";
+
+/** Campaign tagging so outbound clicks are attributable in analytics later. */
+export type UtmMedium = "marketplace" | "social" | "listing" | "referral";
+
+export type UtmOptions = {
+  /** Channel id, e.g. "amazon" — becomes utm_source. */
+  source: string;
+  medium: UtmMedium;
+  /** Where on the site the link was clicked, e.g. "footer". */
+  campaign: string;
+  content?: string;
+};
+
+/**
+ * Appends utm_* parameters to an outbound URL.
+ * Leaves empty, relative, mailto/tel and already-tagged links untouched.
+ */
+export function withUtm(href: string, options: UtmOptions): string {
+  if (!href) return href;
+
+  let url: URL;
+  try {
+    url = new URL(href);
+  } catch {
+    return href;
+  }
+
+  if (url.protocol !== "http:" && url.protocol !== "https:") return href;
+  if (url.searchParams.has("utm_source")) return href;
+
+  url.searchParams.set("utm_source", options.source);
+  url.searchParams.set("utm_medium", options.medium);
+  url.searchParams.set("utm_campaign", options.campaign);
+  if (options.content) url.searchParams.set("utm_content", options.content);
+
+  return url.toString();
+}
