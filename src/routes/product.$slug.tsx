@@ -11,6 +11,7 @@ import { QuantityControl } from "@/components/oasis/quantity-control";
 import { WishlistButton } from "@/components/oasis/wishlist-button";
 import { ProductCard } from "@/components/oasis/product-card";
 import { SectionHeading } from "@/components/oasis/section-heading";
+import { ShareRow } from "@/components/oasis/share-row";
 import { BrandBadge } from "@/components/oasis/chips";
 import { Button } from "@/components/ui/button";
 import {
@@ -34,15 +35,63 @@ export const Route = createFileRoute("/product/$slug")({
       return { meta: [{ title: "Product unavailable — Oasis Baklawa" }, { name: "robots", content: "noindex" }] };
     }
     const { product } = loaderData;
+    const variant = product.variants[0];
     return {
       meta: [
         { title: `${product.name} — Oasis Baklawa` },
         { name: "description", content: product.shortDescription },
         { property: "og:title", content: `${product.name} — Oasis Baklawa` },
         { property: "og:description", content: product.shortDescription },
+        { property: "og:type", content: "product" },
+        { property: "og:url", content: `/product/${product.slug}` },
+      ],
+      links: [{ rel: "canonical", href: `/product/${product.slug}` }],
+      scripts: [
+        {
+          type: "application/ld+json",
+          children: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Product",
+            name: product.name,
+            description: product.shortDescription,
+            category: product.categoryCue,
+            brand: { "@type": "Brand", name: "Oasis Baklawa" },
+            offers: variant
+              ? {
+                  "@type": "Offer",
+                  price: variant.price.amount,
+                  priceCurrency: variant.price.currency,
+                  availability:
+                    variant.availability === "in-stock"
+                      ? "https://schema.org/InStock"
+                      : variant.availability === "low-stock"
+                        ? "https://schema.org/LimitedAvailability"
+                        : "https://schema.org/PreOrder",
+                }
+              : undefined,
+          }),
+        },
+        {
+          type: "application/ld+json",
+          children: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            itemListElement: [
+              { "@type": "ListItem", position: 1, name: "Home", item: "/" },
+              { "@type": "ListItem", position: 2, name: "Shop", item: "/shop" },
+              {
+                "@type": "ListItem",
+                position: 3,
+                name: product.name,
+                item: `/product/${product.slug}`,
+              },
+            ],
+          }),
+        },
       ],
     };
   },
+
   component: ProductPage,
 });
 
@@ -245,6 +294,13 @@ function ProductPage() {
               </AccordionContent>
             </AccordionItem>
           </Accordion>
+
+          <ShareRow
+            title={`${product.name} — Oasis Baklawa`}
+            path={`/product/${product.slug}`}
+            className="mt-8 border-t border-border pt-6"
+          />
+
         </div>
       </section>
 
