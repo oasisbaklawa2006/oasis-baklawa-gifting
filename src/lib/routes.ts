@@ -4,6 +4,7 @@ const known = [
   "/",
   "/shop",
   "/collections",
+  "/journal",
   "/gifting",
   "/about",
   "/business",
