@@ -1,15 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { footerColumns } from "@/data/site";
-
-const routeMap = {
-  "/shop": "/shop",
-  "/about": "/about",
-  "/business": "/business",
-  "/stores": "/stores",
-  "/search": "/search",
-} as const;
-
-type FooterTo = keyof typeof routeMap;
+import { toRoute } from "@/lib/routes";
 
 export function SiteFooter() {
   return (
@@ -37,7 +28,7 @@ export function SiteFooter() {
                 {column.links.map((link) => (
                   <li key={link.label}>
                     <Link
-                      to={routeMap[link.to as FooterTo]}
+                      to={toRoute(link.to)}
                       className="link-underline text-[0.875rem] text-muted-foreground hover:text-foreground"
                     >
                       {link.label}

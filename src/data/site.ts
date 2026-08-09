@@ -23,37 +23,6 @@ export const primaryNav: NavigationItem[] = [
         ],
       },
       {
-        title: "By format",
-        items: [
-          { label: "Trays & boxes", to: "/shop" },
-          { label: "Small formats", to: "/shop" },
-          { label: "Hampers", to: "/shop" },
-        ],
-      },
-      {
-        title: "Shop all",
-        items: [
-          { label: "All products", to: "/shop" },
-          { label: "New arrivals", to: "/shop" },
-          { label: "Best sellers", to: "/shop" },
-        ],
-      },
-    ],
-  },
-  {
-    label: "Collections",
-    to: "/shop",
-    columns: [
-      {
-        title: "Collections",
-        items: [
-          { label: "The Signature Collection", to: "/shop" },
-          { label: "Gifting", to: "/shop" },
-          { label: "New & Noteworthy", to: "/shop" },
-          { label: "Corporate Selection", to: "/shop" },
-        ],
-      },
-      {
         title: "By occasion",
         items: [
           { label: "Festive", to: "/shop" },
@@ -61,9 +30,39 @@ export const primaryNav: NavigationItem[] = [
           { label: "Thank you", to: "/shop" },
         ],
       },
+      {
+        title: "Shop all",
+        items: [
+          { label: "All products", to: "/shop" },
+          { label: "Collections", to: "/collections" },
+          { label: "Saved items", to: "/wishlist" },
+        ],
+      },
     ],
   },
-  { label: "Gifting", to: "/shop" },
+  {
+    label: "Collections",
+    to: "/collections",
+    columns: [
+      {
+        title: "Collections",
+        items: [
+          { label: "The Signature Collection", to: "/collections" },
+          { label: "Gifting", to: "/collections" },
+          { label: "New & Noteworthy", to: "/collections" },
+          { label: "Corporate Selection", to: "/collections" },
+        ],
+      },
+      {
+        title: "Explore",
+        items: [
+          { label: "All collections", to: "/collections" },
+          { label: "Gifting guide", to: "/gifting" },
+        ],
+      },
+    ],
+  },
+  { label: "Gifting", to: "/gifting" },
   { label: "Corporate & B2B", to: "/business" },
   { label: "Our Story", to: "/about" },
   { label: "Stores", to: "/stores" },
@@ -176,7 +175,9 @@ export const footerColumns = [
     title: "Shop",
     links: [
       { label: "All products", to: "/shop" },
-      { label: "Gift boxes", to: "/shop" },
+      { label: "Collections", to: "/collections" },
+      { label: "Gifting", to: "/gifting" },
+      { label: "Saved items", to: "/wishlist" },
       { label: "Search", to: "/search" },
     ],
   },
@@ -191,9 +192,100 @@ export const footerColumns = [
   {
     title: "Support",
     links: [
-      { label: "Contact", to: "/about" },
-      { label: "Shipping information", to: "/about" },
-      { label: "Allergen information", to: "/about" },
+      { label: "Contact", to: "/contact" },
+      { label: "FAQ", to: "/faq" },
+      { label: "Your bag", to: "/cart" },
     ],
+  },
+];
+
+export const faqs: { category: string; items: { q: string; a: string }[] }[] = [
+  {
+    category: "Orders",
+    items: [
+      {
+        q: "How do I place an order?",
+        a: "Online ordering is being set up. In the meantime you can browse the range here and contact us directly to arrange an order.",
+      },
+      {
+        q: "Can I order for a specific date?",
+        a: "Date-based ordering will be supported once ordering goes live. For now, share your date when you enquire and we will confirm feasibility.",
+      },
+      {
+        q: "Is there a minimum order?",
+        a: "Retail minimums are not applied. Volume, corporate and wholesale requirements are discussed per enquiry.",
+      },
+    ],
+  },
+  {
+    category: "Products & ingredients",
+    items: [
+      {
+        q: "What is baklawa made from?",
+        a: "Layered filo pastry, clarified butter and nuts, finished with syrup. Exact recipes vary by product and are listed on each product page.",
+      },
+      {
+        q: "Do your products contain nuts?",
+        a: "Most products contain nuts and are produced in a kitchen that handles nuts, dairy and gluten. Allergen details on each product page are placeholders until final specifications are published.",
+      },
+      {
+        q: "How should products be stored?",
+        a: "Storage guidance is shown on each product page. As a general rule, keep in a cool, dry place in the sealed box.",
+      },
+    ],
+  },
+  {
+    category: "Delivery & gifting",
+    items: [
+      {
+        q: "Where do you deliver?",
+        a: "Delivery coverage will be confirmed when ordering goes live. Please enquire for current options.",
+      },
+      {
+        q: "Can you send an order as a gift?",
+        a: "Yes — presentation packaging is available across the range, and card inserts can be discussed for gifting and corporate orders.",
+      },
+      {
+        q: "Do you handle corporate gifting at volume?",
+        a: "Yes. Share volume, timeline and presentation requirements through the business enquiry form and we will respond with options.",
+      },
+    ],
+  },
+];
+
+export const giftingServices = [
+  {
+    title: "Presentation packaging",
+    detail: "Rigid boxes with inner trays, finished for handing over directly.",
+  },
+  {
+    title: "Card inserts",
+    detail: "Message cards can be included; formats to be confirmed per order.",
+  },
+  {
+    title: "Multi-address sending",
+    detail: "Splitting a single order across recipients is discussed per enquiry.",
+  },
+  {
+    title: "Volume gifting",
+    detail: "Repeatable presentation across larger quantities for teams and clients.",
+  },
+];
+
+export const contactChannels = [
+  {
+    title: "Customer care",
+    detail: "Questions about products, orders and gifting.",
+    value: "Email address to be added",
+  },
+  {
+    title: "Corporate & wholesale",
+    detail: "Volume supply, retail listings and gifting programmes.",
+    value: "Email address to be added",
+  },
+  {
+    title: "Press & partnerships",
+    detail: "Media requests and collaboration proposals.",
+    value: "Email address to be added",
   },
 ];

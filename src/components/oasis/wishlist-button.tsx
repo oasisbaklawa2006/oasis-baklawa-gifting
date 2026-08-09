@@ -1,21 +1,24 @@
-import { useState } from "react";
 import { Heart } from "lucide-react";
+
 import { cn } from "@/lib/utils";
+import { useShop } from "@/lib/store";
 
 type Props = {
+  productId: string;
   productName: string;
   className?: string;
   size?: "sm" | "md";
 };
 
-/** Local UI state only — wire to a real wishlist service later. */
-export function WishlistButton({ productName, className, size = "md" }: Props) {
-  const [saved, setSaved] = useState(false);
+/** Persisted to localStorage via ShopProvider — wire to an account service later. */
+export function WishlistButton({ productId, productName, className, size = "md" }: Props) {
+  const { isWishlisted, toggleWishlist } = useShop();
+  const saved = isWishlisted(productId);
 
   return (
     <button
       type="button"
-      onClick={() => setSaved((s) => !s)}
+      onClick={() => toggleWishlist(productId)}
       aria-pressed={saved}
       aria-label={saved ? `Remove ${productName} from wishlist` : `Save ${productName} to wishlist`}
       className={cn(

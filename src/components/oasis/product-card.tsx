@@ -1,6 +1,8 @@
 import { Link } from "@tanstack/react-router";
 import { toast } from "sonner";
 
+import { useShop } from "@/lib/store";
+
 import { BrandBadge } from "./chips";
 import { PriceDisplay } from "./price-display";
 import { WishlistButton } from "./wishlist-button";
@@ -14,6 +16,7 @@ type Props = {
 };
 
 export function ProductCard({ product, priority = false, className }: Props) {
+  const { addToCart, setCartOpen } = useShop();
   const variant = product.variants[0];
   const image = product.images[0];
 
@@ -46,16 +49,17 @@ export function ProductCard({ product, priority = false, className }: Props) {
           </div>
         ) : null}
 
-        <WishlistButton productName={product.name} size="sm" className="absolute right-3 top-3" />
+        <WishlistButton productId={product.id} productName={product.name} size="sm" className="absolute right-3 top-3" />
 
         <div className="absolute inset-x-3 bottom-3 opacity-100 transition-opacity duration-300 md:opacity-0 md:group-hover:opacity-100 md:group-focus-within:opacity-100">
           <button
             type="button"
-            onClick={() =>
-              toast.success(`${product.name} added`, {
-                description: "Cart is a UI placeholder in this build.",
-              })
-            }
+            onClick={() => {
+              if (!variant) return;
+              addToCart(product.id, variant.id, 1);
+              setCartOpen(true);
+              toast.success(`${product.name} added`, { description: variant.label });
+            }}
             className="h-11 w-full rounded-sm border border-border bg-background/95 text-[0.8125rem] font-medium tracking-wide text-foreground backdrop-blur-[2px] transition-colors hover:bg-espresso hover:text-background"
           >
             Quick add
