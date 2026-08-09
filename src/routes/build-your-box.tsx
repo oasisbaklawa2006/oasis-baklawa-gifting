@@ -165,7 +165,7 @@ function BuildYourBoxPage() {
             <SectionHeading
               eyebrow="Step 2"
               title="Fill your box"
-              description={
+              intro={
                 remaining > 0
                   ? `${remaining} of ${box.slots} selections remaining.`
                   : "Your box is full — adjust a selection to swap something out."

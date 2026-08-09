@@ -78,7 +78,7 @@ function PaymentOptionsPage() {
          
           eyebrow="Outside India"
           title="International methods"
-          description="Cross-border orders are quoted in your currency and settled by the gateway."
+          intro="Cross-border orders are quoted in your currency and settled by the gateway."
         />
         <ul className="mt-8 grid gap-px border border-border bg-border sm:grid-cols-2">
           {intl.map((method) => (
@@ -123,7 +123,7 @@ function PaymentOptionsPage() {
          
           eyebrow="Gateway routing"
           title="How payments will be processed"
-          description="Planned routing. Provider names and terms are confirmed at connection time."
+          intro="Planned routing. Provider names and terms are confirmed at connection time."
         />
         <ul className="mt-8 grid gap-px border border-border bg-border md:grid-cols-3">
           {paymentProviders.map((provider) => (
