@@ -93,7 +93,40 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       },
       { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
     ],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "Organization",
+              "@id": "#organization",
+              name: "Oasis Baklawa",
+              description:
+                "Middle Eastern confectionery house producing baklawa and Arabic sweets in small batches, with gifting, corporate and wholesale supply.",
+              // TODO(oasis): add url, logo, sameAs profile URLs and contactPoint once live.
+            },
+            {
+              "@type": "WebSite",
+              "@id": "#website",
+              name: "Oasis Baklawa",
+              publisher: { "@id": "#organization" },
+              potentialAction: {
+                "@type": "SearchAction",
+                target: {
+                  "@type": "EntryPoint",
+                  urlTemplate: "/search?q={search_term_string}",
+                },
+                "query-input": "required name=search_term_string",
+              },
+            },
+          ],
+        }),
+      },
+    ],
   }),
+
   shellComponent: RootShell,
   component: RootComponent,
   notFoundComponent: NotFoundComponent,
