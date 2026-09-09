@@ -393,27 +393,67 @@ function CheckoutPage() {
             <div className="mt-5 grid gap-5 sm:grid-cols-2">
               <div>
                 <Label htmlFor="co-name">Full name</Label>
-                <Input id="co-name" autoComplete="name" className="mt-2" />
+                <Input
+                  id="co-name"
+                  autoComplete="name"
+                  className="mt-2"
+                  value={contact.name}
+                  onChange={(e) => setContact((c) => ({ ...c, name: e.target.value }))}
+                />
               </div>
               <div>
                 <Label htmlFor="co-phone">Phone</Label>
-                <Input id="co-phone" type="tel" autoComplete="tel" className="mt-2" />
+                <Input
+                  id="co-phone"
+                  type="tel"
+                  autoComplete="tel"
+                  className="mt-2"
+                  value={contact.phone}
+                  onChange={(e) => setContact((c) => ({ ...c, phone: e.target.value }))}
+                />
               </div>
               <div className="sm:col-span-2">
                 <Label htmlFor="co-email">Email</Label>
-                <Input id="co-email" type="email" autoComplete="email" className="mt-2" />
+                <Input
+                  id="co-email"
+                  type="email"
+                  autoComplete="email"
+                  className="mt-2"
+                  value={contact.email}
+                  onChange={(e) => setContact((c) => ({ ...c, email: e.target.value }))}
+                />
               </div>
               <div className="sm:col-span-2">
                 <Label htmlFor="co-address">Address</Label>
-                <Textarea id="co-address" rows={3} autoComplete="street-address" className="mt-2" />
+                <Textarea
+                  id="co-address"
+                  rows={3}
+                  autoComplete="street-address"
+                  className="mt-2"
+                  value={address.line1}
+                  onChange={(e) => setAddress((a) => ({ ...a, line1: e.target.value }))}
+                />
               </div>
               <div>
                 <Label htmlFor="co-city">City</Label>
-                <Input id="co-city" autoComplete="address-level2" className="mt-2" />
+                <Input
+                  id="co-city"
+                  autoComplete="address-level2"
+                  className="mt-2"
+                  value={address.city}
+                  onChange={(e) => setAddress((a) => ({ ...a, city: e.target.value }))}
+                />
               </div>
               <div>
                 <Label htmlFor="co-pin">PIN / ZIP code</Label>
-                <Input id="co-pin" inputMode="numeric" autoComplete="postal-code" className="mt-2" />
+                <Input
+                  id="co-pin"
+                  inputMode="numeric"
+                  autoComplete="postal-code"
+                  className="mt-2"
+                  value={address.pincode}
+                  onChange={(e) => setAddress((a) => ({ ...a, pincode: e.target.value }))}
+                />
               </div>
             </div>
           </section>
