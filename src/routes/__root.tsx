@@ -161,6 +161,13 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+
+  useEffect(() => {
+    track({ name: "page_view", params: { page_path: pathname } });
+  }, [pathname]);
+
+
 
   return (
     <QueryClientProvider client={queryClient}>
