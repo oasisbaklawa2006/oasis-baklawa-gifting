@@ -17,6 +17,7 @@ import { Route as BusinessRouteImport } from './routes/business'
 import { Route as CartRouteImport } from './routes/cart'
 import { Route as CheckoutRouteImport } from './routes/checkout'
 import { Route as ContactRouteImport } from './routes/contact'
+import { Route as CorporateRouteImport } from './routes/corporate'
 import { Route as FaqRouteImport } from './routes/faq'
 import { Route as GiftingRouteImport } from './routes/gifting'
 import { Route as PaymentOptionsRouteImport } from './routes/payment-options'
@@ -71,6 +72,11 @@ const CheckoutRoute = CheckoutRouteImport.update({
 const ContactRoute = ContactRouteImport.update({
   id: '/contact',
   path: '/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CorporateRoute = CorporateRouteImport.update({
+  id: '/corporate',
+  path: '/corporate',
   getParentRoute: () => rootRouteImport,
 } as any)
 const FaqRoute = FaqRouteImport.update({
@@ -158,6 +164,7 @@ export interface FileRoutesByFullPath {
   '/cart': typeof CartRoute
   '/checkout': typeof CheckoutRoute
   '/contact': typeof ContactRoute
+  '/corporate': typeof CorporateRoute
   '/faq': typeof FaqRoute
   '/gifting': typeof GiftingRoute
   '/payment-options': typeof PaymentOptionsRoute
@@ -183,6 +190,7 @@ export interface FileRoutesByTo {
   '/cart': typeof CartRoute
   '/checkout': typeof CheckoutRoute
   '/contact': typeof ContactRoute
+  '/corporate': typeof CorporateRoute
   '/faq': typeof FaqRoute
   '/gifting': typeof GiftingRoute
   '/payment-options': typeof PaymentOptionsRoute
@@ -209,6 +217,7 @@ export interface FileRoutesById {
   '/cart': typeof CartRoute
   '/checkout': typeof CheckoutRoute
   '/contact': typeof ContactRoute
+  '/corporate': typeof CorporateRoute
   '/faq': typeof FaqRoute
   '/gifting': typeof GiftingRoute
   '/payment-options': typeof PaymentOptionsRoute
@@ -236,6 +245,7 @@ export interface FileRouteTypes {
     | '/cart'
     | '/checkout'
     | '/contact'
+    | '/corporate'
     | '/faq'
     | '/gifting'
     | '/payment-options'
@@ -261,6 +271,7 @@ export interface FileRouteTypes {
     | '/cart'
     | '/checkout'
     | '/contact'
+    | '/corporate'
     | '/faq'
     | '/gifting'
     | '/payment-options'
@@ -286,6 +297,7 @@ export interface FileRouteTypes {
     | '/cart'
     | '/checkout'
     | '/contact'
+    | '/corporate'
     | '/faq'
     | '/gifting'
     | '/payment-options'
@@ -312,6 +324,7 @@ export interface RootRouteChildren {
   CartRoute: typeof CartRoute
   CheckoutRoute: typeof CheckoutRoute
   ContactRoute: typeof ContactRoute
+  CorporateRoute: typeof CorporateRoute
   FaqRoute: typeof FaqRoute
   GiftingRoute: typeof GiftingRoute
   PaymentOptionsRoute: typeof PaymentOptionsRoute
@@ -385,6 +398,13 @@ declare module '@tanstack/react-router' {
       path: '/contact'
       fullPath: '/contact'
       preLoaderRoute: typeof ContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/corporate': {
+      id: '/corporate'
+      path: '/corporate'
+      fullPath: '/corporate'
+      preLoaderRoute: typeof CorporateRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/faq': {
@@ -504,6 +524,7 @@ const rootRouteChildren: RootRouteChildren = {
   CartRoute: CartRoute,
   CheckoutRoute: CheckoutRoute,
   ContactRoute: ContactRoute,
+  CorporateRoute: CorporateRoute,
   FaqRoute: FaqRoute,
   GiftingRoute: GiftingRoute,
   PaymentOptionsRoute: PaymentOptionsRoute,
