@@ -17,6 +17,7 @@ import { CartDrawer } from "@/components/layout/cart-drawer";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { Toaster } from "@/components/ui/sonner";
 import { Button } from "@/components/ui/button";
+import { siteUrl } from "@/lib/site-url";
 
 function NotFoundComponent() {
   return (
@@ -103,20 +104,22 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
               "@type": "Organization",
               "@id": "#organization",
               name: "Oasis Baklawa",
+              url: siteUrl("/"),
               description:
                 "Middle Eastern confectionery house producing baklawa and Arabic sweets in small batches, with gifting, corporate and wholesale supply.",
-              // TODO(oasis): add url, logo, sameAs profile URLs and contactPoint once live.
+              // TODO(oasis): add logo, sameAs profile URLs and contactPoint once live.
             },
             {
               "@type": "WebSite",
               "@id": "#website",
               name: "Oasis Baklawa",
+              url: siteUrl("/"),
               publisher: { "@id": "#organization" },
               potentialAction: {
                 "@type": "SearchAction",
                 target: {
                   "@type": "EntryPoint",
-                  urlTemplate: "/search?q={search_term_string}",
+                  urlTemplate: `${siteUrl("/search")}?q={search_term_string}`,
                 },
                 "query-input": "required name=search_term_string",
               },

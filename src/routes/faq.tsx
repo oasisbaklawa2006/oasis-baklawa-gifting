@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
 import { faqs } from "@/data/site";
+import { canonicalUrl } from "@/lib/site-url";
 
 export const Route = createFileRoute("/faq")({
   head: () => ({
@@ -26,7 +27,7 @@ export const Route = createFileRoute("/faq")({
         content: "Common questions about ordering, ingredients, delivery and gifting.",
       },
     ],
-    links: [{ rel: "canonical", href: "/faq" }],
+    links: [{ rel: "canonical", href: canonicalUrl("/faq") }],
     scripts: [
       {
         type: "application/ld+json",

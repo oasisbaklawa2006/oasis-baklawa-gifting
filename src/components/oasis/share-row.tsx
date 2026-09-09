@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Check, Link2 } from "lucide-react";
 
 import { cn } from "@/lib/utils";
+import { siteUrl } from "@/lib/site-url";
 
 type ShareRowProps = {
   title: string;
@@ -10,9 +11,9 @@ type ShareRowProps = {
   className?: string;
 };
 
+/** Fully qualified when a site origin is configured or a browser origin exists. */
 function absoluteUrl(path: string) {
-  if (typeof window === "undefined") return path;
-  return new URL(path, window.location.origin).toString();
+  return siteUrl(path);
 }
 
 /** Lightweight share row — plain links, no third-party scripts or trackers. */
