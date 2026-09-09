@@ -50,7 +50,10 @@ export const Route = createFileRoute("/api/public/payments/webhook")({
         const forwardUrl = process.env["APPVERSE_BASE_URL"];
         if (!forwardUrl) {
           // Verified but nowhere to hand off yet: acknowledge without inventing state.
-          console.warn("Verified payment webhook received with no Central connector configured", event.event);
+          console.warn(
+            "Verified payment webhook received with no Central connector configured",
+            event.event,
+          );
           return new Response(JSON.stringify({ received: true, forwarded: false }), {
             status: 202,
             headers: { "content-type": "application/json" },

@@ -17,7 +17,13 @@ const sizes = {
 
 export function PriceDisplay({ price, compareAtPrice, size = "md", className }: Props) {
   return (
-    <p className={cn("flex flex-wrap items-baseline gap-2 font-medium tabular-nums", sizes[size], className)}>
+    <p
+      className={cn(
+        "flex flex-wrap items-baseline gap-2 font-medium tabular-nums",
+        sizes[size],
+        className,
+      )}
+    >
       <span className="text-foreground">{formatMoney(price)}</span>
       {compareAtPrice ? (
         <>

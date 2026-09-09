@@ -61,8 +61,12 @@ function JournalIndex() {
             />
             <div className="max-w-lg">
               <p className="eyebrow">{lead.category}</p>
-              <h2 className="mt-3 font-display text-2xl leading-tight md:text-[2rem]">{lead.title}</h2>
-              <p className="mt-4 text-[0.9375rem] leading-relaxed text-muted-foreground">{lead.excerpt}</p>
+              <h2 className="mt-3 font-display text-2xl leading-tight md:text-[2rem]">
+                {lead.title}
+              </h2>
+              <p className="mt-4 text-[0.9375rem] leading-relaxed text-muted-foreground">
+                {lead.excerpt}
+              </p>
               <Button asChild className="mt-7">
                 <Link to="/journal/$slug" params={{ slug: lead.slug }}>
                   Read the guide

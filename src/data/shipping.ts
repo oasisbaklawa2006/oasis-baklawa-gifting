@@ -94,7 +94,25 @@ export const shippingZones: ShippingZone[] = [
     id: "zone-regional",
     name: "Zone C — Regional & tier-2",
     blurb: "Standard tracked delivery on our regular dispatch schedule.",
-    pincodePrefixes: ["13", "14", "18", "21", "24", "30", "34", "42", "44", "45", "48", "52", "57", "62", "68", "72", "75"],
+    pincodePrefixes: [
+      "13",
+      "14",
+      "18",
+      "21",
+      "24",
+      "30",
+      "34",
+      "42",
+      "44",
+      "45",
+      "48",
+      "52",
+      "57",
+      "62",
+      "68",
+      "72",
+      "75",
+    ],
     minDays: 2,
     maxDays: 4,
     services: ["standard", "freight"],
@@ -189,11 +207,31 @@ export type TrackingStage = {
 };
 
 export const trackingStages: TrackingStage[] = [
-  { id: "confirmed", label: "Order confirmed", description: "Your order is received and queued for the kitchen." },
-  { id: "preparing", label: "Freshly prepared", description: "Trays are baked, cut and rested before boxing." },
-  { id: "packed", label: "Packed & sealed", description: "Boxed with an insulated liner and tamper seal." },
-  { id: "dispatched", label: "Dispatched", description: "Handed to the courier with a tracking reference." },
-  { id: "out-for-delivery", label: "Out for delivery", description: "On the vehicle for its final leg." },
+  {
+    id: "confirmed",
+    label: "Order confirmed",
+    description: "Your order is received and queued for the kitchen.",
+  },
+  {
+    id: "preparing",
+    label: "Freshly prepared",
+    description: "Trays are baked, cut and rested before boxing.",
+  },
+  {
+    id: "packed",
+    label: "Packed & sealed",
+    description: "Boxed with an insulated liner and tamper seal.",
+  },
+  {
+    id: "dispatched",
+    label: "Dispatched",
+    description: "Handed to the courier with a tracking reference.",
+  },
+  {
+    id: "out-for-delivery",
+    label: "Out for delivery",
+    description: "On the vehicle for its final leg.",
+  },
   { id: "delivered", label: "Delivered", description: "Signed for at the delivery address." },
 ];
 
@@ -232,7 +270,14 @@ export function lookupTracking(reference: string, now: Date = new Date()): Track
   const stageIndex = seed % trackingStages.length;
   const zone = shippingZones[seed % shippingZones.length] ?? shippingZones[0]!;
   const service = serviceLevels[seed % 2 === 0 ? 0 : 1] ?? serviceLevels[0]!;
-  const locations = ["Kitchen — dispatch bay", "Origin hub", "Transit hub", "Destination hub", "Local facility", "Delivery address"];
+  const locations = [
+    "Kitchen — dispatch bay",
+    "Origin hub",
+    "Transit hub",
+    "Destination hub",
+    "Local facility",
+    "Delivery address",
+  ];
 
   const events: TrackingEvent[] = trackingStages.map((stage, i) => {
     const timestamp = new Date(now);

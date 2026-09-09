@@ -30,15 +30,21 @@ export function ProductCard({ product, priority = false, className }: Props) {
           tabIndex={-1}
           aria-hidden="true"
         >
-          <img
-            src={image?.src}
-            alt=""
-            width={1200}
-            height={1500}
-            loading={priority ? "eager" : "lazy"}
-            decoding="async"
-            className="size-full object-cover transition-transform duration-700 ease-[cubic-bezier(0.22,0.61,0.36,1)] group-hover:scale-[1.03]"
-          />
+          {image ? (
+            <img
+              src={image.src}
+              alt=""
+              width={1200}
+              height={1500}
+              loading={priority ? "eager" : "lazy"}
+              decoding="async"
+              className="size-full object-cover transition-transform duration-700 ease-[cubic-bezier(0.22,0.61,0.36,1)] group-hover:scale-[1.03]"
+            />
+          ) : (
+            <span className="grid size-full place-items-center bg-premium text-center font-display text-lg text-driftwood">
+              Oasis Baklawa
+            </span>
+          )}
         </Link>
 
         {product.badges.length > 0 ? (
@@ -49,7 +55,12 @@ export function ProductCard({ product, priority = false, className }: Props) {
           </div>
         ) : null}
 
-        <WishlistButton productId={product.id} productName={product.name} size="sm" className="absolute right-3 top-3" />
+        <WishlistButton
+          productId={product.id}
+          productName={product.name}
+          size="sm"
+          className="absolute right-3 top-3"
+        />
 
         <div className="absolute inset-x-3 bottom-3 opacity-100 transition-opacity duration-300 md:opacity-0 md:group-hover:opacity-100 md:group-focus-within:opacity-100">
           <button

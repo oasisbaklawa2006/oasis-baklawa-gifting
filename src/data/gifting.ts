@@ -1,6 +1,6 @@
 import type { GiftBoxFormat, GiftFinish, GiftingOccasion, Money } from "./types";
 
-/** MOCK GIFTING CONTENT — structure is final, values are placeholders. */
+/** Gifting families as published by Oasis. */
 
 const inr = (amount: number): Money => ({ amount, currency: "INR" });
 
@@ -12,23 +12,23 @@ export const occasionGroups = [
   },
   {
     id: "wedding",
-    title: "Wedding Gifting",
-    intro: "Trousseau, welcome hampers and guest favours in matched formats.",
+    title: "Wedding & Mehendi Gifting",
+    intro: "Trousseau, mehendi favours, welcome hampers and guest gifting in matched formats.",
   },
   {
     id: "festival",
-    title: "Festival Gifting",
+    title: "Festive Gifting",
     intro: "Diwali, Eid, Holi, Raksha Bandhan, Christmas and Navratri selections.",
   },
   {
     id: "baby-family",
-    title: "Baby & Family Celebrations",
+    title: "Baby Shower Gifting",
     intro: "Baby shower, naming and annaprashan gifting for close circles.",
   },
   {
     id: "personal",
-    title: "Personal Occasions",
-    intro: "Birthdays, anniversaries, housewarmings and thank-yous.",
+    title: "Casual Gifting",
+    intro: "Birthdays, anniversaries, housewarmings and everyday thank-yous.",
   },
   {
     id: "premium",

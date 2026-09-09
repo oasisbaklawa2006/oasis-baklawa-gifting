@@ -17,13 +17,19 @@ const STRIPE_WEBHOOK = "whsec_test_local";
 describe("razorpay signatures", () => {
   it("accepts a correctly signed checkout handshake", () => {
     const signature = razorpayCallbackSignature("order_1", "pay_1", RZP_SECRET);
-    expect(verifyRazorpayCallback({ orderId: "order_1", paymentId: "pay_1", signature }, RZP_SECRET)).toBe(true);
+    expect(
+      verifyRazorpayCallback({ orderId: "order_1", paymentId: "pay_1", signature }, RZP_SECRET),
+    ).toBe(true);
   });
 
   it("rejects a tampered handshake or missing secret", () => {
     const signature = razorpayCallbackSignature("order_1", "pay_1", RZP_SECRET);
-    expect(verifyRazorpayCallback({ orderId: "order_2", paymentId: "pay_1", signature }, RZP_SECRET)).toBe(false);
-    expect(verifyRazorpayCallback({ orderId: "order_1", paymentId: "pay_1", signature }, "")).toBe(false);
+    expect(
+      verifyRazorpayCallback({ orderId: "order_2", paymentId: "pay_1", signature }, RZP_SECRET),
+    ).toBe(false);
+    expect(verifyRazorpayCallback({ orderId: "order_1", paymentId: "pay_1", signature }, "")).toBe(
+      false,
+    );
   });
 
   it("verifies webhook bodies against the webhook secret", () => {
@@ -53,11 +59,15 @@ describe("stripe signatures", () => {
   });
 
   it("rejects replays outside the tolerance window", () => {
-    expect(verifyStripeWebhook(body, header(now - 3600), STRIPE_WEBHOOK, { nowSeconds: now })).toBe(false);
+    expect(verifyStripeWebhook(body, header(now - 3600), STRIPE_WEBHOOK, { nowSeconds: now })).toBe(
+      false,
+    );
   });
 
   it("rejects a wrong secret or missing configuration", () => {
-    expect(verifyStripeWebhook(body, header(now, "whsec_other"), STRIPE_WEBHOOK, { nowSeconds: now })).toBe(false);
+    expect(
+      verifyStripeWebhook(body, header(now, "whsec_other"), STRIPE_WEBHOOK, { nowSeconds: now }),
+    ).toBe(false);
     expect(verifyStripeWebhook(body, header(now), "", { nowSeconds: now })).toBe(false);
   });
 });

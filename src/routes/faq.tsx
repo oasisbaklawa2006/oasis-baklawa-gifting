@@ -73,7 +73,9 @@ function FaqPage() {
                 <Accordion type="single" collapsible className="mt-4">
                   {group.items.map((item) => (
                     <AccordionItem key={item.q} value={item.q} className="border-border">
-                      <AccordionTrigger className="text-left text-[0.9375rem]">{item.q}</AccordionTrigger>
+                      <AccordionTrigger className="text-left text-[0.9375rem]">
+                        {item.q}
+                      </AccordionTrigger>
                       <AccordionContent className="text-[0.875rem] leading-relaxed text-muted-foreground">
                         {item.a}
                       </AccordionContent>

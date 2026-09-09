@@ -148,7 +148,11 @@ function AccountPage() {
         </p>
 
         {draft ? (
-          <form onSubmit={submitDraft} className="mt-6 border border-border bg-utility p-6" noValidate>
+          <form
+            onSubmit={submitDraft}
+            className="mt-6 border border-border bg-utility p-6"
+            noValidate
+          >
             <div className="grid gap-5 sm:grid-cols-2">
               {(
                 [
@@ -174,7 +178,11 @@ function AccountPage() {
                     onChange={(event) => setDraft({ ...draft, [field]: event.target.value })}
                   />
                   {errors[field] ? (
-                    <p id={`addr-${field}-error`} role="alert" className="mt-1 text-[0.8125rem] text-truffle">
+                    <p
+                      id={`addr-${field}-error`}
+                      role="alert"
+                      className="mt-1 text-[0.8125rem] text-truffle"
+                    >
                       {errors[field]}
                     </p>
                   ) : null}
@@ -223,7 +231,10 @@ function AccountPage() {
           {addresses.map((address) => (
             <div
               key={address.id}
-              className={cn("border p-6", address.isDefault ? "border-foreground bg-premium" : "border-border")}
+              className={cn(
+                "border p-6",
+                address.isDefault ? "border-foreground bg-premium" : "border-border",
+              )}
             >
               <p className="eyebrow">{address.label || "Address"}</p>
               <p className="mt-2 font-display text-lg">{address.name}</p>
@@ -250,7 +261,9 @@ function AccountPage() {
                   <Button
                     variant="ghost"
                     className="px-0"
-                    onClick={() => persist(upsertAddress(addresses, { ...address, isDefault: true }))}
+                    onClick={() =>
+                      persist(upsertAddress(addresses, { ...address, isDefault: true }))
+                    }
                   >
                     Make default
                   </Button>
@@ -301,7 +314,10 @@ function AccountPage() {
         ) : (
           <ul className="mt-6 divide-y divide-border border-y border-border">
             {orders.map((order) => (
-              <li key={order.reference} className="flex flex-wrap items-center justify-between gap-4 py-5">
+              <li
+                key={order.reference}
+                className="flex flex-wrap items-center justify-between gap-4 py-5"
+              >
                 <div>
                   <p className="font-display text-lg tabular-nums">{order.reference}</p>
                   <p className="text-[0.8125rem] text-muted-foreground">
@@ -336,8 +352,15 @@ function AccountPage() {
         ) : (
           <ul className="mt-6 divide-y divide-border border-y border-border">
             {saved.slice(0, 5).map((product) => (
-              <li key={product.id} className="flex flex-wrap items-center justify-between gap-4 py-5">
-                <Link to="/product/$slug" params={{ slug: product.slug }} className="link-underline font-display text-lg">
+              <li
+                key={product.id}
+                className="flex flex-wrap items-center justify-between gap-4 py-5"
+              >
+                <Link
+                  to="/product/$slug"
+                  params={{ slug: product.slug }}
+                  className="link-underline font-display text-lg"
+                >
                   {product.name}
                 </Link>
                 {product.variants[0] ? (

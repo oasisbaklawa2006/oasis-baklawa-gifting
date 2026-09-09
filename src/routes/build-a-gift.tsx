@@ -18,6 +18,7 @@ import {
   ribbonFinishes,
   sealFinishes,
 } from "@/data/gifting";
+import { noImage } from "@/data/brand";
 import { useShop } from "@/lib/store";
 import { canonicalUrl, siteUrl } from "@/lib/site-url";
 
@@ -56,7 +57,10 @@ function BuildAGiftPage() {
   const [conceal, setConceal] = useState(false);
 
   const format = giftBoxFormats.find((f) => f.id === formatId) ?? giftBoxFormats[1]!;
-  const choices = useMemo(() => products.filter((p) => p.categoryId !== "cat-gifting").slice(0, 12), []);
+  const choices = useMemo(
+    () => products.filter((p) => p.categoryId !== "cat-gifting").slice(0, 12),
+    [],
+  );
 
   const used = Object.values(selection).reduce((s, n) => s + n, 0);
   const remaining = format.capacity - used;
@@ -65,7 +69,8 @@ function BuildAGiftPage() {
   const seal = sealFinishes.find((s) => s.id === sealId)!;
 
   const total = {
-    amount: format.basePrice.amount + used * perPiecePrice.amount + ribbon.surcharge + seal.surcharge,
+    amount:
+      format.basePrice.amount + used * perPiecePrice.amount + ribbon.surcharge + seal.surcharge,
     currency: format.basePrice.currency,
   };
 
@@ -139,7 +144,9 @@ function BuildAGiftPage() {
                     aria-pressed={f.id === formatId}
                     className={cn(
                       "rounded-sm border p-5 text-left transition-colors duration-200 ease-out",
-                      f.id === formatId ? "border-espresso bg-premium" : "border-border hover:border-driftwood",
+                      f.id === formatId
+                        ? "border-espresso bg-premium"
+                        : "border-border hover:border-driftwood",
                     )}
                   >
                     <p className="eyebrow">{f.format === "chest" ? "Chest" : "Box"}</p>
@@ -158,7 +165,10 @@ function BuildAGiftPage() {
             <div>
               <div className="flex flex-wrap items-baseline justify-between gap-3">
                 <p className="eyebrow">Step 2 — Choose confections</p>
-                <p aria-live="polite" className="text-[0.8125rem] tabular-nums text-muted-foreground">
+                <p
+                  aria-live="polite"
+                  className="text-[0.8125rem] tabular-nums text-muted-foreground"
+                >
                   {used} of {format.capacity} compartments filled
                 </p>
               </div>
@@ -174,7 +184,7 @@ function BuildAGiftPage() {
                       )}
                     >
                       <img
-                        src={p.images[0]?.src}
+                        src={p.images[0]?.src ?? noImage.src}
                         alt=""
                         width={160}
                         height={160}
@@ -221,7 +231,9 @@ function BuildAGiftPage() {
               </p>
               <div
                 className="mt-6 grid gap-2 rounded-sm border border-border bg-premium p-4"
-                style={{ gridTemplateColumns: `repeat(${Math.round(Math.sqrt(format.capacity))}, minmax(0, 1fr))` }}
+                style={{
+                  gridTemplateColumns: `repeat(${Math.round(Math.sqrt(format.capacity))}, minmax(0, 1fr))`,
+                }}
               >
                 {compartments.map((i) => (
                   <div
@@ -277,7 +289,9 @@ function BuildAGiftPage() {
                       aria-pressed={r.id === ribbonId}
                       className={cn(
                         "h-12 rounded-sm border px-4 text-[0.8125rem] transition-colors duration-200 ease-out",
-                        r.id === ribbonId ? "border-espresso bg-espresso text-background" : "border-border",
+                        r.id === ribbonId
+                          ? "border-espresso bg-espresso text-background"
+                          : "border-border",
                       )}
                     >
                       {r.label}
@@ -297,7 +311,9 @@ function BuildAGiftPage() {
                       aria-pressed={s.id === sealId}
                       className={cn(
                         "h-12 rounded-sm border px-4 text-[0.8125rem] transition-colors duration-200 ease-out",
-                        s.id === sealId ? "border-espresso bg-espresso text-background" : "border-border",
+                        s.id === sealId
+                          ? "border-espresso bg-espresso text-background"
+                          : "border-border",
                       )}
                     >
                       {s.label}
@@ -320,11 +336,17 @@ function BuildAGiftPage() {
           ) : null}
 
           <div className="mt-10 flex flex-wrap gap-3">
-            <Button variant="outline" disabled={step === 0} onClick={() => setStep((s) => Math.max(0, s - 1))}>
+            <Button
+              variant="outline"
+              disabled={step === 0}
+              onClick={() => setStep((s) => Math.max(0, s - 1))}
+            >
               Back
             </Button>
             {step < steps.length - 1 ? (
-              <Button onClick={() => setStep((s) => Math.min(steps.length - 1, s + 1))}>Continue</Button>
+              <Button onClick={() => setStep((s) => Math.min(steps.length - 1, s + 1))}>
+                Continue
+              </Button>
             ) : (
               <Button
                 onClick={() => {
@@ -371,8 +393,8 @@ function BuildAGiftPage() {
               <span className="font-medium tabular-nums">{formatMoney(total)}</span>
             </div>
             <p className="mt-3 text-xs text-muted-foreground">
-              Illustrative pricing only. Final pricing will come from the governed catalogue and bill of
-              materials.
+              Illustrative pricing only. Final pricing will come from the governed catalogue and
+              bill of materials.
             </p>
             <Button asChild variant="outline" className="mt-5 w-full">
               <Link to="/gifting">Browse ready-made gifts</Link>

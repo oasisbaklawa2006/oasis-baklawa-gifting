@@ -27,7 +27,9 @@ export function CategoryTile({ category, className }: { category: Category; clas
       <div className="mt-4 flex items-start justify-between gap-3">
         <div className="min-w-0">
           <h3 className="font-display text-xl">{category.name}</h3>
-          <p className="mt-1 text-[0.8125rem] leading-relaxed text-muted-foreground">{category.description}</p>
+          <p className="mt-1 text-[0.8125rem] leading-relaxed text-muted-foreground">
+            {category.description}
+          </p>
         </div>
         <ArrowUpRight className="mt-1 size-4 shrink-0 text-driftwood transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
       </div>

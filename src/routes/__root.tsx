@@ -168,8 +168,6 @@ function RootComponent() {
     track({ name: "page_view", params: { page_path: pathname } });
   }, [pathname]);
 
-
-
   return (
     <QueryClientProvider client={queryClient}>
       <ShopProvider>

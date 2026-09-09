@@ -86,7 +86,9 @@ function GiftingPage() {
           {occasionGroups.map((group) => (
             <section key={group.id} className="border-t border-border pt-6">
               <h3 className="font-display text-2xl">{group.title}</h3>
-              <p className="mt-2 text-[0.875rem] leading-relaxed text-muted-foreground">{group.intro}</p>
+              <p className="mt-2 text-[0.875rem] leading-relaxed text-muted-foreground">
+                {group.intro}
+              </p>
               <ul className="mt-5 grid gap-4">
                 {giftingOccasions
                   .filter((o) => o.group === group.id)
@@ -125,7 +127,6 @@ function GiftingPage() {
           ))}
         </ul>
       </section>
-
 
       <section className="container-oasis mt-16 md:mt-24">
         <SectionHeading

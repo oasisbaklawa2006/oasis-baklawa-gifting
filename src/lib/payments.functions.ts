@@ -66,6 +66,7 @@ export const confirmPayment = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     const { resolvePaymentAdapter } = await import("@/payments/index.server");
     const adapter = resolvePaymentAdapter();
-    if (!adapter) return { valid: false as const, reason: "Payments are not available at the moment." };
+    if (!adapter)
+      return { valid: false as const, reason: "Payments are not available at the moment." };
     return adapter.verifyCallback(data.payload);
   });

@@ -75,7 +75,6 @@ function PaymentOptionsPage() {
 
       <section className="mt-16" aria-label="International payment methods">
         <SectionHeading
-         
           eyebrow="Outside India"
           title="International methods"
           intro="Cross-border orders are quoted in your currency and settled by the gateway."
@@ -120,7 +119,6 @@ function PaymentOptionsPage() {
 
       <section className="mt-16" aria-label="Gateway routing">
         <SectionHeading
-         
           eyebrow="Gateway routing"
           title="How payments will be processed"
           intro="Planned routing. Provider names and terms are confirmed at connection time."
@@ -150,7 +148,9 @@ function PaymentOptionsPage() {
             <li key={item.title} className="border-t border-border pt-5">
               <ShieldCheck className="size-5 text-olive" aria-hidden />
               <h3 className="mt-3 font-display text-lg">{item.title}</h3>
-              <p className="mt-2 text-[0.875rem] leading-relaxed text-muted-foreground">{item.body}</p>
+              <p className="mt-2 text-[0.875rem] leading-relaxed text-muted-foreground">
+                {item.body}
+              </p>
             </li>
           ))}
         </ul>

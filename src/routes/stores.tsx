@@ -7,6 +7,7 @@ import { StoreCard } from "@/components/oasis/story-cards";
 import { EmptyState } from "@/components/oasis/states";
 import { NewsletterModule } from "@/components/oasis/newsletter";
 import { stores } from "@/data/site";
+import { contact } from "@/data/brand";
 
 export const Route = createFileRoute("/stores")({
   head: () => ({
@@ -15,7 +16,7 @@ export const Route = createFileRoute("/stores")({
       {
         name: "description",
         content:
-          "Find Oasis Baklawa stores and counters. Addresses, opening hours and services — store details are placeholders in this build.",
+          "Oasis Baklawa counters in Delhi NCR, Amritsar and Srinagar, with the head office and production unit at Kirti Nagar, New Delhi.",
       },
       { property: "og:title", content: "Stores — Oasis Baklawa" },
       { property: "og:description", content: "Oasis Baklawa store locations and services." },
@@ -40,10 +41,16 @@ function StoresPage() {
           <span className="gold-rule inline-block" aria-hidden="true" />
           Store discovery
         </p>
-        <h1 className="mt-4 max-w-2xl text-4xl leading-tight md:text-[3rem]">Find an Oasis counter</h1>
+        <h1 className="mt-4 max-w-2xl text-4xl leading-tight md:text-[3rem]">
+          Find an Oasis counter
+        </h1>
         <p className="mt-5 max-w-xl text-[0.9375rem] leading-relaxed text-muted-foreground">
-          Locations, hours and contact numbers are placeholders in this build. A map view will be added
-          once addresses are confirmed.
+          Our counters across Delhi NCR, Amritsar and Srinagar, plus the head office and production
+          unit at Kirti Nagar. For timings at a specific counter, call {""}
+          <a href={contact.phoneHref} className="link-underline text-foreground">
+            {contact.phone}
+          </a>
+          .
         </p>
       </section>
 
@@ -74,10 +81,13 @@ function StoresPage() {
           )}
         </div>
 
-        <div className="mt-10 border border-dashed border-border bg-utility p-10 text-center">
-          <p className="eyebrow">Map</p>
-          <p className="mt-3 text-[0.875rem] text-muted-foreground">
-            Map integration is intentionally not included in this build.
+        <div className="mt-10 border border-border bg-utility p-8">
+          <p className="eyebrow">Head office &amp; production</p>
+          <p className="mt-3 text-[0.9375rem] text-muted-foreground">
+            {contact.headOffice.lines.join(", ")} · {""}
+            <a href={contact.emailHref} className="link-underline text-foreground">
+              {contact.email}
+            </a>
           </p>
         </div>
       </section>

@@ -36,7 +36,9 @@ export function SectionHeading({
           </p>
         ) : null}
         <Tag className="mt-3 text-3xl leading-[1.15] md:text-[2.5rem]">{title}</Tag>
-        {intro ? <p className="mt-4 text-[0.9375rem] leading-relaxed text-muted-foreground">{intro}</p> : null}
+        {intro ? (
+          <p className="mt-4 text-[0.9375rem] leading-relaxed text-muted-foreground">{intro}</p>
+        ) : null}
       </div>
       {action ? <div className="shrink-0">{action}</div> : null}
     </div>

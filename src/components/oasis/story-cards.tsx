@@ -35,18 +35,23 @@ export function StoreCard({ store }: { store: Store }) {
             {store.addressLines.join(", ")}
             <br />
             {store.city}, {store.region}
+            {store.postalCode ? ` ${store.postalCode}` : ""}
           </dd>
         </div>
-        <div className="flex gap-3">
-          <dt className="sr-only">Hours</dt>
-          <Clock className="mt-0.5 size-4 shrink-0 text-driftwood" aria-hidden="true" />
-          <dd>{store.hours}</dd>
-        </div>
-        <div className="flex gap-3">
-          <dt className="sr-only">Phone</dt>
-          <Phone className="mt-0.5 size-4 shrink-0 text-driftwood" aria-hidden="true" />
-          <dd>{store.phone}</dd>
-        </div>
+        {store.hours ? (
+          <div className="flex gap-3">
+            <dt className="sr-only">Hours</dt>
+            <Clock className="mt-0.5 size-4 shrink-0 text-driftwood" aria-hidden="true" />
+            <dd>{store.hours}</dd>
+          </div>
+        ) : null}
+        {store.phone ? (
+          <div className="flex gap-3">
+            <dt className="sr-only">Phone</dt>
+            <Phone className="mt-0.5 size-4 shrink-0 text-driftwood" aria-hidden="true" />
+            <dd>{store.phone}</dd>
+          </div>
+        ) : null}
       </dl>
 
       <ul className="mt-auto flex flex-wrap gap-2 pt-6">

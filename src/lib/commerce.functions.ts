@@ -77,7 +77,10 @@ export const placeOrder = createServerFn({ method: "POST" })
       });
     } catch (error) {
       console.error("placeOrder failed", error);
-      return { status: "unavailable" as const, reason: "The order service is temporarily unavailable." };
+      return {
+        status: "unavailable" as const,
+        reason: "The order service is temporarily unavailable.",
+      };
     }
   });
 
@@ -91,7 +94,9 @@ export const lookupOrder = createServerFn({ method: "POST" })
 export const integrationHealth = createServerFn({ method: "GET" }).handler(async () => {
   const provider = await commerce.health();
   const paymentSecretPresent = Boolean(
-    process.env["PAYMENT_PROVIDER_SECRET"] || process.env["RAZORPAY_KEY_SECRET"] || process.env["STRIPE_SECRET_KEY"],
+    process.env["PAYMENT_PROVIDER_SECRET"] ||
+    process.env["RAZORPAY_KEY_SECRET"] ||
+    process.env["STRIPE_SECRET_KEY"],
   );
   const webhookSecretPresent = Boolean(process.env["PAYMENT_WEBHOOK_SECRET"]);
 

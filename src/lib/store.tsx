@@ -29,7 +29,12 @@ export type GiftState = {
   concealInvoice: boolean;
 };
 
-const emptyGift: GiftState = { message: "", ribbonId: "rib-none", sealId: "seal-none", concealInvoice: false };
+const emptyGift: GiftState = {
+  message: "",
+  ribbonId: "rib-none",
+  sealId: "seal-none",
+  concealInvoice: false,
+};
 
 type ShopState = {
   lines: CartLine[];
@@ -156,7 +161,17 @@ export function ShopProvider({ children }: { children: ReactNode }) {
       cartOpen,
       setCartOpen,
     }),
-    [state, ready, addToCart, setQuantity, removeLine, clearCart, toggleWishlist, setGift, cartOpen],
+    [
+      state,
+      ready,
+      addToCart,
+      setQuantity,
+      removeLine,
+      clearCart,
+      toggleWishlist,
+      setGift,
+      cartOpen,
+    ],
   );
 
   return <ShopContext.Provider value={value}>{children}</ShopContext.Provider>;
@@ -185,7 +200,10 @@ export function resolveLines(lines: CartLine[]): ResolvedLine[] {
         line,
         product,
         variant,
-        lineTotal: { amount: variant.price.amount * line.quantity, currency: variant.price.currency },
+        lineTotal: {
+          amount: variant.price.amount * line.quantity,
+          currency: variant.price.currency,
+        },
       },
     ];
   });

@@ -92,12 +92,15 @@ function CheckoutPage() {
   const [submit, setSubmit] = useState<SubmitState>({ kind: "idle" });
   // Stable per-attempt key: a retried submit can never create a second order.
   const idempotencyKey = useRef(
-    typeof crypto !== "undefined" && "randomUUID" in crypto ? crypto.randomUUID() : `co-${Date.now()}`,
+    typeof crypto !== "undefined" && "randomUUID" in crypto
+      ? crypto.randomUUID()
+      : `co-${Date.now()}`,
   );
   const inFlight = useRef(false);
 
   const delivery = deliveryOptions.find((option) => option.id === deliveryId)!;
-  const deliveryFee = delivery.freeAbove && subtotal.amount >= delivery.freeAbove ? 0 : delivery.fee;
+  const deliveryFee =
+    delivery.freeAbove && subtotal.amount >= delivery.freeAbove ? 0 : delivery.fee;
 
   const extrasFee = useMemo(
     () =>
@@ -127,7 +130,9 @@ function CheckoutPage() {
         pincode: saved.pincode,
       });
     }
-    void readPaymentStatus().then((status) => setPaymentLive(status.live)).catch(() => setPaymentLive(false));
+    void readPaymentStatus()
+      .then((status) => setPaymentLive(status.live))
+      .catch(() => setPaymentLive(false));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -198,18 +203,24 @@ function CheckoutPage() {
     try {
       // The server prices the cart immediately before the order is created:
       // the browser total is only ever a display of the approved snapshot.
-      const priced = await repriceCart({ data: { lines: cartLines, deliveryOptionId: deliveryId } });
+      const priced = await repriceCart({
+        data: { lines: cartLines, deliveryOptionId: deliveryId },
+      });
 
       if (priced.lines.length !== cartLines.length) {
         setSubmit({
           kind: "error",
-          message: "One of the items in your bag is no longer available. Please review your bag and try again.",
+          message:
+            "One of the items in your bag is no longer available. Please review your bag and try again.",
         });
         inFlight.current = false;
         return;
       }
 
-      if (submit.kind !== "price-changed" && Math.abs(priced.subtotal.amount - subtotal.amount) > 0.5) {
+      if (
+        submit.kind !== "price-changed" &&
+        Math.abs(priced.subtotal.amount - subtotal.amount) > 0.5
+      ) {
         setSubmit({ kind: "price-changed", newTotal: priced.subtotal.amount });
         inFlight.current = false;
         return;
@@ -249,7 +260,9 @@ function CheckoutPage() {
                 business: {
                   legalName: business.legalName.trim(),
                   ...(business.gstin.trim() ? { gstin: business.gstin.trim().toUpperCase() } : {}),
-                  ...(business.placeOfSupply.trim() ? { placeOfSupply: business.placeOfSupply.trim() } : {}),
+                  ...(business.placeOfSupply.trim()
+                    ? { placeOfSupply: business.placeOfSupply.trim() }
+                    : {}),
                 },
               }
             : {}),
@@ -289,7 +302,10 @@ function CheckoutPage() {
 
       setSubmit({ kind: "error", message: result.reason });
     } catch {
-      setSubmit({ kind: "error", message: "We couldn’t reach the order service. Please try again." });
+      setSubmit({
+        kind: "error",
+        message: "We couldn’t reach the order service. Please try again.",
+      });
     } finally {
       inFlight.current = false;
     }
@@ -331,7 +347,9 @@ function CheckoutPage() {
 
   return (
     <div className="container-oasis py-8 md:py-12">
-      <Breadcrumbs items={[{ label: "Home", to: "/" }, { label: "Bag", to: "/cart" }, { label: "Checkout" }]} />
+      <Breadcrumbs
+        items={[{ label: "Home", to: "/" }, { label: "Bag", to: "/cart" }, { label: "Checkout" }]}
+      />
       <h1 className="mt-6 text-3xl md:text-[2.5rem]">Checkout</h1>
       <p className="mt-3 max-w-2xl text-[0.9375rem] leading-relaxed text-muted-foreground">
         No account needed — order as a guest. Your total is confirmed by our order system before
@@ -345,8 +363,8 @@ function CheckoutPage() {
               1. Delivery speed
             </h2>
             <p className="mt-2 text-[0.875rem] text-muted-foreground">
-              Faster windows carry a surcharge, shown before you pay. Availability for your PIN code is
-              confirmed when your order is accepted.
+              Faster windows carry a surcharge, shown before you pay. Availability for your PIN code
+              is confirmed when your order is accepted.
             </p>
             <div className="mt-5 grid gap-3 sm:grid-cols-2">
               {deliveryOptions.map((option) => {
@@ -360,7 +378,9 @@ function CheckoutPage() {
                     onClick={() => setDeliveryId(option.id)}
                     className={cn(
                       "flex flex-col items-start gap-1 border p-4 text-left transition-colors",
-                      selected ? "border-foreground bg-premium" : "border-border hover:border-driftwood",
+                      selected
+                        ? "border-foreground bg-premium"
+                        : "border-border hover:border-driftwood",
                     )}
                   >
                     <span className="flex w-full items-baseline justify-between gap-3">
@@ -395,14 +415,18 @@ function CheckoutPage() {
                     onClick={() => toggleExtra(option.id)}
                     className={cn(
                       "flex w-full items-start gap-4 border p-4 text-left transition-colors",
-                      selected ? "border-foreground bg-premium" : "border-border hover:border-driftwood",
+                      selected
+                        ? "border-foreground bg-premium"
+                        : "border-border hover:border-driftwood",
                     )}
                   >
                     <span
                       aria-hidden
                       className={cn(
                         "mt-0.5 flex size-5 shrink-0 items-center justify-center border",
-                        selected ? "border-foreground bg-foreground text-background" : "border-border",
+                        selected
+                          ? "border-foreground bg-foreground text-background"
+                          : "border-border",
                       )}
                     >
                       {selected ? <Check className="size-3.5" /> : null}
@@ -424,7 +448,10 @@ function CheckoutPage() {
             </div>
 
             <label className="mt-6 flex items-start gap-3 text-[0.9375rem]">
-              <Checkbox checked={isGift} onCheckedChange={(checked) => setIsGift(checked === true)} />
+              <Checkbox
+                checked={isGift}
+                onCheckedChange={(checked) => setIsGift(checked === true)}
+              />
               This order is a gift for someone else
             </label>
 
@@ -484,7 +511,9 @@ function CheckoutPage() {
                         onClick={() => setRibbon(colour.id)}
                         className={cn(
                           "flex min-h-11 items-center gap-2 border px-3 py-2 text-[0.8125rem] transition-colors",
-                          ribbon === colour.id ? "border-foreground" : "border-border hover:border-driftwood",
+                          ribbon === colour.id
+                            ? "border-foreground"
+                            : "border-border hover:border-driftwood",
                         )}
                       >
                         <span
@@ -505,7 +534,11 @@ function CheckoutPage() {
             <h2 id="payment-heading" className="font-display text-xl">
               3. Payment
             </h2>
-            <div className="mt-4 inline-flex border border-border" role="tablist" aria-label="Payment region">
+            <div
+              className="mt-4 inline-flex border border-border"
+              role="tablist"
+              aria-label="Payment region"
+            >
               {(["india", "international"] as const).map((value) => (
                 <button
                   key={value}
@@ -538,7 +571,9 @@ function CheckoutPage() {
                     onClick={() => setMethodId(method.id)}
                     className={cn(
                       "flex w-full flex-col items-start gap-1 border p-4 text-left transition-colors",
-                      selected ? "border-foreground bg-premium" : "border-border hover:border-driftwood",
+                      selected
+                        ? "border-foreground bg-premium"
+                        : "border-border hover:border-driftwood",
                     )}
                   >
                     <span className="flex w-full flex-wrap items-baseline justify-between gap-2">
@@ -573,8 +608,8 @@ function CheckoutPage() {
             {region === "international" ? (
               <div className="mt-5 border border-border bg-utility p-4 text-[0.8125rem] leading-relaxed text-muted-foreground">
                 Prices may be displayed in{" "}
-                {supportedCurrencies.map((currency) => currency.code).join(", ")}, and every order is
-                settled in Indian Rupees. Any customs duty is payable by the recipient.
+                {supportedCurrencies.map((currency) => currency.code).join(", ")}, and every order
+                is settled in Indian Rupees. Any customs duty is payable by the recipient.
               </div>
             ) : null}
           </section>
@@ -717,7 +752,9 @@ function CheckoutPage() {
                     className="mt-2 h-11"
                     value={business.legalName}
                     {...field("legalName")}
-                    onChange={(event) => setBusiness((b) => ({ ...b, legalName: event.target.value }))}
+                    onChange={(event) =>
+                      setBusiness((b) => ({ ...b, legalName: event.target.value }))
+                    }
                   />
                   {fieldError("legalName")}
                 </div>
@@ -728,7 +765,9 @@ function CheckoutPage() {
                     className="mt-2 h-11"
                     value={business.gstin}
                     {...field("gstin")}
-                    onChange={(event) => setBusiness((b) => ({ ...b, gstin: event.target.value.toUpperCase() }))}
+                    onChange={(event) =>
+                      setBusiness((b) => ({ ...b, gstin: event.target.value.toUpperCase() }))
+                    }
                   />
                   {fieldError("gstin")}
                 </div>
@@ -738,7 +777,9 @@ function CheckoutPage() {
                     id="co-placeOfSupply"
                     className="mt-2 h-11"
                     value={business.placeOfSupply}
-                    onChange={(event) => setBusiness((b) => ({ ...b, placeOfSupply: event.target.value }))}
+                    onChange={(event) =>
+                      setBusiness((b) => ({ ...b, placeOfSupply: event.target.value }))
+                    }
                   />
                 </div>
               </div>
@@ -756,11 +797,15 @@ function CheckoutPage() {
             </div>
             <div className="flex justify-between gap-4">
               <dt className="text-muted-foreground">{delivery.name}</dt>
-              <dd className="tabular-nums">{deliveryFee === 0 ? "Free" : formatMoney(inr(deliveryFee))}</dd>
+              <dd className="tabular-nums">
+                {deliveryFee === 0 ? "Free" : formatMoney(inr(deliveryFee))}
+              </dd>
             </div>
             <div className="flex justify-between gap-4">
               <dt className="text-muted-foreground">Personalisation</dt>
-              <dd className="tabular-nums">{extrasFee === 0 ? "Included" : formatMoney(inr(extrasFee))}</dd>
+              <dd className="tabular-nums">
+                {extrasFee === 0 ? "Included" : formatMoney(inr(extrasFee))}
+              </dd>
             </div>
             <div className="flex justify-between gap-4">
               <dt className="text-muted-foreground">Taxes</dt>

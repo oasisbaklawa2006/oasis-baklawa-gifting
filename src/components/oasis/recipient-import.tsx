@@ -72,8 +72,8 @@ export function RecipientImport({ onValidated }: { onValidated?: (result: Import
         <div className="min-w-[16rem] flex-1">
           <h3 className="font-display text-lg">Multi-recipient dispatch list</h3>
           <p className="mt-1 text-[0.875rem] text-muted-foreground">
-            Upload your recipient list as CSV. Every row is checked for a complete address, a valid PIN
-            code, contact details, quantity and duplicates before anything is sent to our team.
+            Upload your recipient list as CSV. Every row is checked for a complete address, a valid
+            PIN code, contact details, quantity and duplicates before anything is sent to our team.
           </p>
         </div>
         <div className="flex flex-wrap gap-3">
@@ -105,8 +105,8 @@ export function RecipientImport({ onValidated }: { onValidated?: (result: Import
         <div className="mt-6 border-t border-border pt-6">
           <p className="text-[0.875rem]">
             <span className="font-medium">{fileName}</span> — {result.totalRows} rows read,{" "}
-            {result.valid.length} ready, {result.rejected.length} needing correction, {result.totalQuantity}{" "}
-            boxes in total.
+            {result.valid.length} ready, {result.rejected.length} needing correction,{" "}
+            {result.totalQuantity} boxes in total.
           </p>
 
           {errors.length > 0 ? (
@@ -131,8 +131,8 @@ export function RecipientImport({ onValidated }: { onValidated?: (result: Import
           ) : (
             <p className="mt-4 flex items-center gap-2 text-[0.875rem]">
               <CheckCircle2 className="size-4 text-sage" aria-hidden="true" />
-              Every row passed validation. Attach this list to your enquiry below and our team will confirm
-              the schedule.
+              Every row passed validation. Attach this list to your enquiry below and our team will
+              confirm the schedule.
             </p>
           )}
 

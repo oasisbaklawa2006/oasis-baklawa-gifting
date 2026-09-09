@@ -3,7 +3,8 @@ import { Link } from "@tanstack/react-router";
 import { Heart, Menu, Search, ShoppingBag, User, ChevronDown } from "lucide-react";
 
 import { AnnouncementBar } from "./announcement-bar";
-import { primaryNav } from "@/data/site";
+import { primaryNav, serviceNav } from "@/data/site";
+import { logos } from "@/data/brand";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import {
   Accordion,
@@ -12,18 +13,21 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { cn } from "@/lib/utils";
-import { toRoute } from "@/lib/routes";
+import { toLink, toRoute } from "@/lib/routes";
 import { useShop } from "@/lib/store";
-
 
 function Wordmark() {
   return (
-    <Link
-      to="/"
-      className="font-display text-xl tracking-[0.02em] sm:text-[1.375rem]"
-      aria-label="Oasis Baklawa — home"
-    >
-      Oasis <span className="text-driftwood">Baklawa</span>
+    <Link to="/" className="block" aria-label="Oasis Baklawa — home">
+      <img
+        src={logos.horizontal.src}
+        alt={logos.horizontal.alt}
+        width={320}
+        height={80}
+        className="h-9 w-auto sm:h-10"
+        loading="eager"
+        decoding="async"
+      />
     </Link>
   );
 }
@@ -54,7 +58,10 @@ function UtilityIcons({ className }: { className?: string }) {
       >
         <Heart className="size-[1.125rem]" />
         {wishlist.length > 0 ? (
-          <span className="absolute right-1.5 top-1.5 size-1.5 rounded-full bg-gold" aria-hidden="true" />
+          <span
+            className="absolute right-1.5 top-1.5 size-1.5 rounded-full bg-gold"
+            aria-hidden="true"
+          />
         ) : null}
       </Link>
       <button
@@ -96,7 +103,7 @@ function MegaMenu({ item }: { item: (typeof primaryNav)[number] }) {
                   {column.items.map((link) => (
                     <li key={link.label}>
                       <Link
-                        to={toRoute(link.to)}
+                        {...toLink(link.to)}
                         className="link-underline text-[0.875rem] text-muted-foreground hover:text-foreground"
                       >
                         {link.label}
@@ -149,7 +156,7 @@ export function SiteHeader() {
                                 {column.items.map((link) => (
                                   <li key={link.label}>
                                     <Link
-                                      to={toRoute(link.to)}
+                                      {...toLink(link.to)}
                                       onClick={() => setOpen(false)}
                                       className="flex min-h-11 items-center text-[0.9375rem] text-muted-foreground"
                                     >
@@ -176,7 +183,7 @@ export function SiteHeader() {
                   ),
                 )}
               </Accordion>
-              <div className="py-6">
+              <div className="border-t border-border py-6">
                 <Link
                   to="/search"
                   onClick={() => setOpen(false)}
@@ -184,6 +191,19 @@ export function SiteHeader() {
                 >
                   <Search className="size-4" /> Search the range
                 </Link>
+                <ul className="mt-2">
+                  {serviceNav.map((link) => (
+                    <li key={link.label}>
+                      <Link
+                        to={toRoute(link.to)}
+                        onClick={() => setOpen(false)}
+                        className="flex min-h-11 items-center text-[0.875rem] text-muted-foreground"
+                      >
+                        {link.label}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
               </div>
             </nav>
           </SheetContent>

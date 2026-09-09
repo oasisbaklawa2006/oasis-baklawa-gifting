@@ -6,7 +6,7 @@ import { SectionHeading } from "@/components/oasis/section-heading";
 import { ProductCard } from "@/components/oasis/product-card";
 import { CategoryTile, CollectionCard } from "@/components/oasis/cards";
 import { TrustStrip } from "@/components/oasis/trust-strip";
-import { StoreCard, TestimonialCard } from "@/components/oasis/story-cards";
+import { StoreCard } from "@/components/oasis/story-cards";
 import { NewsletterModule } from "@/components/oasis/newsletter";
 import { ChannelStrip } from "@/components/oasis/channel-links";
 import { ArticleCard } from "@/components/oasis/article-card";
@@ -15,8 +15,7 @@ import { PartnershipModule } from "@/components/oasis/partnership-module";
 import { Button } from "@/components/ui/button";
 import { bestSellers, categoriesAll, collections, getProductsByCollection } from "@/data/catalog";
 import { occasionGroups } from "@/data/gifting";
-import { stores, testimonials } from "@/data/site";
-
+import { stores } from "@/data/site";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -98,7 +97,9 @@ function HomePage() {
               <li key={group.id} className="bg-background p-6">
                 <span className="gold-rule block" aria-hidden="true" />
                 <h3 className="mt-4 font-display text-xl">{group.title}</h3>
-                <p className="mt-2 text-[0.875rem] leading-relaxed text-muted-foreground">{group.intro}</p>
+                <p className="mt-2 text-[0.875rem] leading-relaxed text-muted-foreground">
+                  {group.intro}
+                </p>
               </li>
             ))}
           </ul>
@@ -140,7 +141,7 @@ function HomePage() {
         <SectionHeading
           eyebrow="Stores"
           title="Find us in person"
-          intro="Store details are placeholders in this build and will be confirmed before launch."
+          intro="Oasis counters across Delhi NCR, Amritsar and Srinagar."
           action={
             <Button asChild variant="outline">
               <Link to="/stores">All stores</Link>
@@ -148,24 +149,9 @@ function HomePage() {
           }
         />
         <div className="mt-12 grid gap-5 md:grid-cols-3">
-          {stores.map((store) => (
+          {stores.slice(0, 3).map((store) => (
             <StoreCard key={store.id} store={store} />
           ))}
-        </div>
-      </section>
-
-      <section className="border-t border-border bg-premium">
-        <div className="container-oasis section-y">
-          <SectionHeading
-            eyebrow="In their words"
-            title="Reviews, once collected"
-            intro="This section is reserved for verified customer feedback. The cards below are placeholders."
-          />
-          <div className="mt-12 grid gap-5 md:grid-cols-3">
-            {testimonials.map((testimonial) => (
-              <TestimonialCard key={testimonial.id} testimonial={testimonial} />
-            ))}
-          </div>
         </div>
       </section>
 
@@ -192,7 +178,6 @@ function HomePage() {
       <PartnershipModule />
 
       <NewsletterModule />
-
     </>
   );
 }

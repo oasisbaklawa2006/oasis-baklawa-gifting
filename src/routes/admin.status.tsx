@@ -48,12 +48,15 @@ function StatusPage() {
           <p className="eyebrow">Internal</p>
           <h1 className="mt-3 font-display text-4xl">Website integration status</h1>
           <p className="mt-3 max-w-2xl text-[0.875rem] text-muted-foreground">
-            Configuration and connector health for this deployment. No credentials or customer data are
-            shown here.
+            Configuration and connector health for this deployment. No credentials or customer data
+            are shown here.
           </p>
         </div>
         <Button variant="outline" onClick={() => void refetch()} disabled={isFetching}>
-          <RefreshCw className={`mr-2 size-4 ${isFetching ? "animate-spin" : ""}`} aria-hidden="true" />
+          <RefreshCw
+            className={`mr-2 size-4 ${isFetching ? "animate-spin" : ""}`}
+            aria-hidden="true"
+          />
           Refresh
         </Button>
       </div>
@@ -119,7 +122,11 @@ function StatusPage() {
 
           {appverse.consoleUrl ? (
             <p className="mt-10">
-              <a className="underline underline-offset-4" href={appverse.consoleUrl} rel="noreferrer noopener">
+              <a
+                className="underline underline-offset-4"
+                href={appverse.consoleUrl}
+                rel="noreferrer noopener"
+              >
                 Open Oasis Central console
               </a>
             </p>

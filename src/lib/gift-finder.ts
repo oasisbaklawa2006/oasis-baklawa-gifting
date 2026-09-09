@@ -11,12 +11,7 @@ import { products } from "@/data/catalog";
 import type { Product } from "@/data/types";
 
 export type OccasionKey =
-  | "festive"
-  | "wedding"
-  | "corporate"
-  | "baby-family"
-  | "personal"
-  | "premium";
+  "festive" | "wedding" | "corporate" | "baby-family" | "personal" | "premium";
 
 export type RecipientKey = "family" | "friend" | "colleague" | "client" | "host" | "couple";
 
@@ -63,7 +58,11 @@ export const PREFERENCES: { key: PreferenceKey; label: string; match: string[] }
   { key: "dates", label: "Arabic dates", match: ["date", "chocodate", "tamaar", "tomoor"] },
   { key: "chocolate", label: "Chocolates", match: ["chocolate", "praline", "ganache", "dragee"] },
   { key: "assorted", label: "An assortment", match: ["assort", "gift", "hamper", "selection"] },
-  { key: "nuts", label: "Nuts & dry fruit", match: ["nut", "pistachio", "cashew", "almond", "mix"] },
+  {
+    key: "nuts",
+    label: "Nuts & dry fruit",
+    match: ["nut", "pistachio", "cashew", "almond", "mix"],
+  },
 ];
 
 const OCCASION_WORDS: Record<OccasionKey, string[]> = {
@@ -141,7 +140,8 @@ export function eligibleProducts(brief: GiftBrief): Product[] {
     if (product.variants.length === 0) return false;
     if (brief.requiredClaims?.length) {
       const claims = (product.verifiedClaims ?? []).map((c) => c.toLowerCase());
-      if (!brief.requiredClaims.every((claim) => claims.includes(claim.toLowerCase()))) return false;
+      if (!brief.requiredClaims.every((claim) => claims.includes(claim.toLowerCase())))
+        return false;
     }
     return true;
   });
@@ -171,10 +171,22 @@ export function briefFromSearch(search: Record<string, unknown>): GiftBrief {
     return allowed.includes(value as T) ? (value as T) : undefined;
   };
   const brief: GiftBrief = {};
-  const occasion = pick("occasion", OCCASIONS.map((o) => o.key));
-  const recipient = pick("recipient", RECIPIENTS.map((r) => r.key));
-  const budget = pick("budget", BUDGETS.map((b) => b.key));
-  const preference = pick("preference", PREFERENCES.map((p) => p.key));
+  const occasion = pick(
+    "occasion",
+    OCCASIONS.map((o) => o.key),
+  );
+  const recipient = pick(
+    "recipient",
+    RECIPIENTS.map((r) => r.key),
+  );
+  const budget = pick(
+    "budget",
+    BUDGETS.map((b) => b.key),
+  );
+  const preference = pick(
+    "preference",
+    PREFERENCES.map((p) => p.key),
+  );
   if (occasion) brief.occasion = occasion;
   if (recipient) brief.recipient = recipient;
   if (budget) brief.budget = budget;

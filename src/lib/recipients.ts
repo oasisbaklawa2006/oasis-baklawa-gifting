@@ -163,7 +163,14 @@ export function validateRecipients(csvText: string, maxQuantityPerRow = 500): Im
   const seen = new Map<string, number>();
 
   if (rows.length === 0) {
-    return { valid, issues: [{ row: 0, field: "file", message: "The file is empty.", severity: "error" }], rejected, duplicates, totalRows: 0, totalQuantity: 0 };
+    return {
+      valid,
+      issues: [{ row: 0, field: "file", message: "The file is empty.", severity: "error" }],
+      rejected,
+      duplicates,
+      totalRows: 0,
+      totalQuantity: 0,
+    };
   }
 
   const header = (rows[0] ?? []).map((h) => h.trim().toLowerCase());
@@ -181,7 +188,14 @@ export function validateRecipients(csvText: string, maxQuantityPerRow = 500): Im
   }
 
   if (issues.some((i) => i.severity === "error")) {
-    return { valid, issues, rejected, duplicates, totalRows: Math.max(0, rows.length - 1), totalQuantity: 0 };
+    return {
+      valid,
+      issues,
+      rejected,
+      duplicates,
+      totalRows: Math.max(0, rows.length - 1),
+      totalQuantity: 0,
+    };
   }
 
   for (let r = 1; r < rows.length; r += 1) {
@@ -209,18 +223,30 @@ export function validateRecipients(csvText: string, maxQuantityPerRow = 500): Im
     if (!addressLine1) push("address_line_1", "Address line 1 is required.");
     if (!city) push("city", "City is required.");
     if (!pincode) push("pincode", "PIN code is required.");
-    else if (!PINCODE_RE.test(pincode)) push("pincode", "PIN code must be 6 digits and cannot start with 0.");
+    else if (!PINCODE_RE.test(pincode))
+      push("pincode", "PIN code must be 6 digits and cannot start with 0.");
 
     if (email && !EMAIL_RE.test(email)) push("email", "Email address is not valid.");
-    if (phone && !PHONE_RE.test(phone)) push("phone", "Phone number is not a valid Indian mobile number.");
-    if (!email && !phone) push("phone", "Add a phone number or an email so the courier can reach the recipient.", "warning");
+    if (phone && !PHONE_RE.test(phone))
+      push("phone", "Phone number is not a valid Indian mobile number.");
+    if (!email && !phone)
+      push(
+        "phone",
+        "Add a phone number or an email so the courier can reach the recipient.",
+        "warning",
+      );
 
     const quantity = Number.parseInt(quantityRaw || "1", 10);
-    if (!Number.isFinite(quantity) || quantity < 1) push("quantity", "Quantity must be a whole number of 1 or more.");
-    else if (quantity > maxQuantityPerRow) push("quantity", `Quantity above ${maxQuantityPerRow} per recipient needs a manual quote.`);
+    if (!Number.isFinite(quantity) || quantity < 1)
+      push("quantity", "Quantity must be a whole number of 1 or more.");
+    else if (quantity > maxQuantityPerRow)
+      push("quantity", `Quantity above ${maxQuantityPerRow} per recipient needs a manual quote.`);
 
     if (giftMessage.length > GIFT_MESSAGE_LIMIT) {
-      push("gift_message", `Gift message is ${giftMessage.length} characters; the limit is ${GIFT_MESSAGE_LIMIT}.`);
+      push(
+        "gift_message",
+        `Gift message is ${giftMessage.length} characters; the limit is ${GIFT_MESSAGE_LIMIT}.`,
+      );
     }
 
     const key = `${name.toLowerCase()}|${addressLine1.toLowerCase()}|${pincode}`;
@@ -228,7 +254,11 @@ export function validateRecipients(csvText: string, maxQuantityPerRow = 500): Im
       const first = seen.get(key);
       if (first !== undefined) {
         duplicates.push(rowNumber);
-        push("name", `Looks like a duplicate of row ${first}. Confirm both should be shipped.`, "warning");
+        push(
+          "name",
+          `Looks like a duplicate of row ${first}. Confirm both should be shipped.`,
+          "warning",
+        );
       } else {
         seen.set(key, rowNumber);
       }

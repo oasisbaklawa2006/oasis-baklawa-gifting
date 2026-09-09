@@ -20,10 +20,15 @@ export function ShareRow({ title, path, className }: ShareRowProps) {
   useEffect(() => setShareUrl(siteUrl(path)), [path]);
   const absoluteUrl = () => shareUrl;
 
-
   const targets = [
-    { label: "WhatsApp", build: (u: string) => `https://wa.me/?text=${encodeURIComponent(`${title} ${u}`)}` },
-    { label: "Facebook", build: (u: string) => `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(u)}` },
+    {
+      label: "WhatsApp",
+      build: (u: string) => `https://wa.me/?text=${encodeURIComponent(`${title} ${u}`)}`,
+    },
+    {
+      label: "Facebook",
+      build: (u: string) => `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(u)}`,
+    },
     {
       label: "X",
       build: (u: string) =>
@@ -36,7 +41,8 @@ export function ShareRow({ title, path, className }: ShareRowProps) {
     },
     {
       label: "Email",
-      build: (u: string) => `mailto:?subject=${encodeURIComponent(title)}&body=${encodeURIComponent(u)}`,
+      build: (u: string) =>
+        `mailto:?subject=${encodeURIComponent(title)}&body=${encodeURIComponent(u)}`,
     },
   ];
 

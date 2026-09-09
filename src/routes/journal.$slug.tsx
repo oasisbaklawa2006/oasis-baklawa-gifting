@@ -38,7 +38,10 @@ export const Route = createFileRoute("/journal/$slug")({
   head: ({ loaderData }) => {
     if (!loaderData) {
       return {
-        meta: [{ title: "Article unavailable — Oasis Baklawa" }, { name: "robots", content: "noindex" }],
+        meta: [
+          { title: "Article unavailable — Oasis Baklawa" },
+          { name: "robots", content: "noindex" },
+        ],
       };
     }
     const { article } = loaderData;
@@ -129,13 +132,18 @@ function InlineProductLinks({ slugs }: { slugs: string[] }) {
 }
 
 function ArticlePage() {
-  const { article, related, relatedCollections, relatedArticles } = Route.useLoaderData() as LoaderData;
+  const { article, related, relatedCollections, relatedArticles } =
+    Route.useLoaderData() as LoaderData;
 
   return (
     <div className="pb-20">
       <div className="container-oasis pt-8">
         <Breadcrumbs
-          items={[{ label: "Home", to: "/" }, { label: "Journal", to: "/journal" }, { label: article.title }]}
+          items={[
+            { label: "Home", to: "/" },
+            { label: "Journal", to: "/journal" },
+            { label: article.title },
+          ]}
         />
       </div>
 

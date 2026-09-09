@@ -10,7 +10,14 @@ type Props = {
   className?: string;
 };
 
-export function QuantityControl({ value, onChange, min = 1, max = 99, label = "Quantity", className }: Props) {
+export function QuantityControl({
+  value,
+  onChange,
+  min = 1,
+  max = 99,
+  label = "Quantity",
+  className,
+}: Props) {
   return (
     <div className={cn("inline-flex h-11 items-center rounded-sm border border-border", className)}>
       <button

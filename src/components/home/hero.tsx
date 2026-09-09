@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
 
 import { Button } from "@/components/ui/button";
-import heroImage from "@/assets/hero-baklawa.jpg";
+import { brandMedia } from "@/data/brand";
 
 export function Hero() {
   return (
@@ -16,8 +16,8 @@ export function Hero() {
             Layered by hand, finished with restraint
           </h1>
           <p className="mt-6 max-w-md text-base leading-relaxed text-muted-foreground">
-            Fine filo, clarified butter and generous pistachio. Made in small batches and boxed with the
-            care the occasion deserves.
+            Fine filo, clarified butter and generous pistachio. Made in small batches and boxed with
+            the care the occasion deserves.
           </p>
           <div className="mt-9 flex flex-col gap-3 sm:flex-row">
             <Button asChild size="lg">
@@ -34,7 +34,9 @@ export function Hero() {
             </div>
             <div>
               <dt className="eyebrow">Presented</dt>
-              <dd className="mt-2 text-[0.875rem] text-muted-foreground">Gift-ready across the range</dd>
+              <dd className="mt-2 text-[0.875rem] text-muted-foreground">
+                Gift-ready across the range
+              </dd>
             </div>
           </dl>
         </div>
@@ -43,8 +45,8 @@ export function Hero() {
           <div className="overflow-hidden rounded-sm bg-premium">
             <div className="aspect-[4/5] sm:aspect-[5/4] lg:aspect-[4/5]">
               <img
-                src={heroImage}
-                alt="A wooden tray of pistachio baklawa arranged in even rows on ivory linen"
+                src={brandMedia.hero.src}
+                alt={brandMedia.hero.alt}
                 width={1408}
                 height={1600}
                 fetchPriority="high"

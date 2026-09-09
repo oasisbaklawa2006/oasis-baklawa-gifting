@@ -33,14 +33,20 @@ export const Route = createFileRoute("/business")({
       { property: "og:title", content: "Corporate & B2B — Oasis Baklawa" },
       {
         property: "og:description",
-        content: "Wholesale supply, corporate gifting and custom formats. Request a catalogue or speak to sales.",
+        content:
+          "Wholesale supply, corporate gifting and custom formats. Request a catalogue or speak to sales.",
       },
     ],
   }),
   component: BusinessPage,
 });
 
-const audiences = ["Retailer", "Corporate gifting buyer", "Hotel / restaurant / caterer", "Distributor / export"];
+const audiences = [
+  "Retailer",
+  "Corporate gifting buyer",
+  "Hotel / restaurant / caterer",
+  "Distributor / export",
+];
 
 function EnquiryForm() {
   const [submitted, setSubmitted] = useState(false);
@@ -52,7 +58,11 @@ function EnquiryForm() {
   }
 
   return (
-    <form onSubmit={onSubmit} className="border border-border bg-background p-6 md:p-8" noValidate={false}>
+    <form
+      onSubmit={onSubmit}
+      className="border border-border bg-background p-6 md:p-8"
+      noValidate={false}
+    >
       <h3 className="font-display text-2xl">Business enquiry</h3>
       <p className="mt-2 text-[0.8125rem] text-muted-foreground">
         Not connected to a backend in this build. Fields are illustrative.
@@ -61,19 +71,44 @@ function EnquiryForm() {
       <div className="mt-7 grid gap-5 sm:grid-cols-2">
         <div className="grid gap-2">
           <Label htmlFor="b2b-name">Full name</Label>
-          <Input id="b2b-name" name="name" required autoComplete="name" className="h-11 rounded-sm" />
+          <Input
+            id="b2b-name"
+            name="name"
+            required
+            autoComplete="name"
+            className="h-11 rounded-sm"
+          />
         </div>
         <div className="grid gap-2">
           <Label htmlFor="b2b-company">Company</Label>
-          <Input id="b2b-company" name="company" required autoComplete="organization" className="h-11 rounded-sm" />
+          <Input
+            id="b2b-company"
+            name="company"
+            required
+            autoComplete="organization"
+            className="h-11 rounded-sm"
+          />
         </div>
         <div className="grid gap-2">
           <Label htmlFor="b2b-email">Work email</Label>
-          <Input id="b2b-email" name="email" type="email" required autoComplete="email" className="h-11 rounded-sm" />
+          <Input
+            id="b2b-email"
+            name="email"
+            type="email"
+            required
+            autoComplete="email"
+            className="h-11 rounded-sm"
+          />
         </div>
         <div className="grid gap-2">
           <Label htmlFor="b2b-phone">Phone</Label>
-          <Input id="b2b-phone" name="phone" type="tel" autoComplete="tel" className="h-11 rounded-sm" />
+          <Input
+            id="b2b-phone"
+            name="phone"
+            type="tel"
+            autoComplete="tel"
+            className="h-11 rounded-sm"
+          />
         </div>
         <div className="grid gap-2 sm:col-span-2">
           <Label htmlFor="b2b-type">Business type</Label>
@@ -131,8 +166,9 @@ function BusinessPage() {
             Supply and gifting, handled properly
           </h1>
           <p className="mt-6 text-base leading-relaxed text-muted-foreground">
-            We work with retailers, corporate gifting buyers, hospitality operators and distributors.
-            Tell us the requirement and we will confirm what is feasible before anything is promised.
+            We work with retailers, corporate gifting buyers, hospitality operators and
+            distributors. Tell us the requirement and we will confirm what is feasible before
+            anything is promised.
           </p>
           <div className="mt-9 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
             <Button size="lg" asChild>
@@ -177,8 +213,14 @@ function BusinessPage() {
               </p>
               <ul className="mt-6 space-y-3">
                 {capability.points.map((point) => (
-                  <li key={point} className="grid grid-cols-[auto_minmax(0,1fr)] gap-3 text-[0.875rem]">
-                    <span className="mt-2 size-1.5 shrink-0 rounded-full bg-gold" aria-hidden="true" />
+                  <li
+                    key={point}
+                    className="grid grid-cols-[auto_minmax(0,1fr)] gap-3 text-[0.875rem]"
+                  >
+                    <span
+                      className="mt-2 size-1.5 shrink-0 rounded-full bg-gold"
+                      aria-hidden="true"
+                    />
                     <span className="text-muted-foreground">{point}</span>
                   </li>
                 ))}
@@ -214,7 +256,9 @@ function BusinessPage() {
             <li key={step.step} className="bg-background p-6">
               <p className="font-display text-3xl text-sand">{step.step}</p>
               <h3 className="mt-3 font-display text-xl">{step.title}</h3>
-              <p className="mt-2 text-[0.8125rem] leading-relaxed text-muted-foreground">{step.detail}</p>
+              <p className="mt-2 text-[0.8125rem] leading-relaxed text-muted-foreground">
+                {step.detail}
+              </p>
             </li>
           ))}
         </ol>
@@ -235,7 +279,10 @@ function BusinessPage() {
                 "Feasibility confirmed before commitment",
                 "A single point of contact for your account",
               ].map((point) => (
-                <li key={point} className="grid grid-cols-[auto_minmax(0,1fr)] gap-3 text-[0.9375rem]">
+                <li
+                  key={point}
+                  className="grid grid-cols-[auto_minmax(0,1fr)] gap-3 text-[0.9375rem]"
+                >
                   <ArrowUpRight className="mt-1 size-4 shrink-0 text-gold" aria-hidden="true" />
                   <span className="text-muted-foreground">{point}</span>
                 </li>

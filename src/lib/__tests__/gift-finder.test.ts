@@ -1,6 +1,11 @@
 import { describe, expect, it } from "vitest";
 
-import { briefFromSearch, briefToSearch, eligibleProducts, recommendGifts } from "@/lib/gift-finder";
+import {
+  briefFromSearch,
+  briefToSearch,
+  eligibleProducts,
+  recommendGifts,
+} from "@/lib/gift-finder";
 
 describe("gift finder", () => {
   it("never recommends unapproved placeholder records", () => {

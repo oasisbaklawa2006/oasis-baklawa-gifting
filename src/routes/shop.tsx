@@ -19,7 +19,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
-import { categories, dietaryOptions, occasions, products } from "@/data/catalog";
+import { categoriesAll as categories, dietaryOptions, occasions, products } from "@/data/catalog";
 import type { Product } from "@/data/types";
 
 type ShopSearch = { category?: string; collection?: string };
@@ -153,7 +153,7 @@ function FilterPanel({
       <fieldset>
         <legend className="eyebrow">Dietary</legend>
         <p className="mt-2 text-[0.75rem] text-muted-foreground">
-          Placeholder attributes — to be confirmed with product specifications.
+          Confirmed against each product’s specification where published.
         </p>
         <ul className="mt-4 space-y-3">
           {dietaryOptions.map((option) => (
@@ -185,7 +185,11 @@ function FilterPanel({
         </div>
       </fieldset>
 
-      <Button variant="ghost" onClick={onReset} className="px-0 text-[0.8125rem] underline-offset-4 hover:underline">
+      <Button
+        variant="ghost"
+        onClick={onReset}
+        className="px-0 text-[0.8125rem] underline-offset-4 hover:underline"
+      >
         Reset filters
       </Button>
     </div>
@@ -264,8 +268,8 @@ function ShopPage() {
           Baklawa, Arabic sweets and gifting
         </h1>
         <p className="mt-5 max-w-xl text-[0.9375rem] leading-relaxed text-muted-foreground">
-          The full catalogue, from the daily baklawa tray to boxed selections. Product names, weights and
-          prices shown here are placeholder data for this build.
+          The full range, from the daily baklawa tray to Arabic dates, chocolates, fusion sweets,
+          nuts and boxed gifting.
         </p>
       </section>
 
@@ -300,7 +304,10 @@ function ShopPage() {
                   <SheetTrigger className="inline-flex h-10 items-center gap-2 rounded-sm border border-border px-3 text-[0.8125rem] lg:hidden">
                     <SlidersHorizontal className="size-4" /> Filters
                   </SheetTrigger>
-                  <SheetContent side="bottom" className="max-h-[85dvh] overflow-y-auto bg-background">
+                  <SheetContent
+                    side="bottom"
+                    className="max-h-[85dvh] overflow-y-auto bg-background"
+                  >
                     <SheetHeader className="text-left">
                       <SheetTitle className="font-display text-xl">Filters</SheetTitle>
                     </SheetHeader>
@@ -311,7 +318,10 @@ function ShopPage() {
                 </Sheet>
 
                 <Select value={sort} onValueChange={setSort}>
-                  <SelectTrigger className="h-10 w-[10.5rem] rounded-sm border-border" aria-label="Sort products">
+                  <SelectTrigger
+                    className="h-10 w-[10.5rem] rounded-sm border-border"
+                    aria-label="Sort products"
+                  >
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -346,7 +356,11 @@ function ShopPage() {
                     <p className="text-[0.75rem] uppercase tracking-[0.14em] text-driftwood">
                       Showing {Math.min(visible, results.length)} of {results.length}
                     </p>
-                    <Button variant="outline" size="lg" onClick={() => setVisible((v) => v + PAGE_SIZE)}>
+                    <Button
+                      variant="outline"
+                      size="lg"
+                      onClick={() => setVisible((v) => v + PAGE_SIZE)}
+                    >
                       Load more
                     </Button>
                   </div>
