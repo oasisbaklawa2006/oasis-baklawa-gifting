@@ -28,7 +28,7 @@ export const Route = createFileRoute("/feed/products.xml")({
               `    <item>
       <g:id>${escape(variant.id)}</g:id>
       <g:title>${escape(product.name)}</g:title>
-      <g:description>${escape(product.summary ?? product.name)}</g:description>
+      <g:description>${escape(product.shortDescription || product.name)}</g:description>
       <g:link>${escape(link)}</g:link>
       <g:price>${variant.price.amount} ${variant.price.currency}</g:price>
       <g:brand>Oasis Baklawa</g:brand>
