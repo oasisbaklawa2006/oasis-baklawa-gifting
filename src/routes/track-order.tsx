@@ -1,24 +1,19 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Check, Circle, Package, Truck } from "lucide-react";
+import { useServerFn } from "@tanstack/react-start";
+import { Package, Truck } from "lucide-react";
 
 import { Breadcrumbs } from "@/components/oasis/breadcrumbs";
+import { OrderResult, toLookupOutcome, type LookupOutcome } from "@/components/oasis/order-tracking";
 import { SectionHeading } from "@/components/oasis/section-heading";
-import { EmptyState } from "@/components/oasis/states";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { cn } from "@/lib/utils";
-import {
-  formatDeliveryDate,
-  lookupTracking,
-  sampleTrackingReference,
-  trackingStages,
-  type TrackingResult,
-} from "@/data/shipping";
+import { track } from "@/lib/analytics";
+import { lookupOrder } from "@/lib/commerce.functions";
 
 const DESCRIPTION =
-  "Track an Oasis Baklawa order: enter your OB- reference for dispatch status, courier stage and an estimated delivery date.";
+  "Track an Oasis Baklawa order: enter your order reference and the email or phone number used at checkout to see its current status.";
 
 export const Route = createFileRoute("/track-order")({
   head: () => ({
@@ -36,23 +31,46 @@ export const Route = createFileRoute("/track-order")({
 });
 
 function TrackOrderPage() {
+  const runLookup = useServerFn(lookupOrder);
   const [reference, setReference] = useState("");
-  const [result, setResult] = useState<TrackingResult | null>(null);
-  const [error, setError] = useState<string | null>(null);
-  const [searched, setSearched] = useState(false);
+  const [contact, setContact] = useState("");
+  const [fieldError, setFieldError] = useState<string | null>(null);
+  const [outcome, setOutcome] = useState<LookupOutcome>({ kind: "idle" });
+  const inFlight = useRef(false);
 
-  function submit(event: React.FormEvent) {
+  async function submit(event: React.FormEvent) {
     event.preventDefault();
-    setSearched(true);
-    const found = lookupTracking(reference);
-    if (!found) {
-      setResult(null);
-      setError("That reference doesn't look right. It begins with OB- followed by 4–10 characters.");
+    if (inFlight.current) return;
+
+    const ref = reference.trim().toUpperCase();
+    const who = contact.trim();
+    if (ref.length < 4) {
+      setFieldError("Enter the order reference from your confirmation email.");
       return;
     }
-    setError(null);
-    setResult(found);
+    if (who.length < 5) {
+      setFieldError("Enter the email address or phone number used on the order.");
+      return;
+    }
+
+    setFieldError(null);
+    inFlight.current = true;
+    setOutcome({ kind: "loading" });
+    try {
+      const result = await runLookup({ data: { reference: ref, contact: who } });
+      setOutcome(toLookupOutcome(result));
+      track({ name: "track_order", params: { found: result.status === "found" } });
+    } catch {
+      setOutcome({
+        kind: "error",
+        reason: "We couldn’t reach the order service just now. Please try again in a moment.",
+      });
+    } finally {
+      inFlight.current = false;
+    }
   }
+
+  const busy = outcome.kind === "loading";
 
   return (
     <div className="pb-20">
@@ -65,7 +83,7 @@ function TrackOrderPage() {
           as="h1"
           eyebrow="Order tracking"
           title="Where your order is"
-          intro="Enter the reference from your dispatch email. Tracking in this build is a demonstration — try the sample reference below."
+          intro="Enter your order reference along with the email address or phone number used at checkout. We only show details to the person who placed the order — prices are never shown, so a tracking link is safe to pass to a recipient."
           action={
             <Button asChild variant="outline">
               <Link to="/shipping">Shipping & delivery</Link>
@@ -76,194 +94,82 @@ function TrackOrderPage() {
 
       <section className="container-oasis mt-12">
         <form onSubmit={submit} className="border border-border bg-utility p-6 md:p-8" noValidate>
-          <div className="grid gap-3 sm:grid-cols-[minmax(0,320px)_auto]">
+          <div className="grid gap-4 sm:grid-cols-2">
             <div>
               <Label htmlFor="tracking-reference" className="text-[0.75rem] uppercase tracking-[0.14em] text-driftwood">
-                Order or tracking reference
+                Order reference
               </Label>
               <Input
                 id="tracking-reference"
                 name="reference"
-                placeholder={sampleTrackingReference}
+                autoComplete="off"
                 value={reference}
-                onChange={(e) => setReference(e.target.value.toUpperCase())}
-                aria-invalid={Boolean(error)}
-                aria-describedby={error ? "tracking-error" : "tracking-hint"}
+                onChange={(event) => setReference(event.target.value.toUpperCase())}
+                aria-invalid={Boolean(fieldError)}
+                aria-describedby={fieldError ? "tracking-error" : undefined}
                 className="mt-2 h-11"
               />
             </div>
-            <Button type="submit" className="h-11 self-end">
-              Track order
-            </Button>
+            <div>
+              <Label htmlFor="tracking-contact" className="text-[0.75rem] uppercase tracking-[0.14em] text-driftwood">
+                Email or phone used at checkout
+              </Label>
+              <Input
+                id="tracking-contact"
+                name="contact"
+                autoComplete="email"
+                value={contact}
+                onChange={(event) => setContact(event.target.value)}
+                aria-invalid={Boolean(fieldError)}
+                className="mt-2 h-11"
+              />
+            </div>
           </div>
-          <p id="tracking-hint" className="mt-3 text-[0.8125rem] text-muted-foreground">
-            Sample reference for this demo:{" "}
-            <button
-              type="button"
-              onClick={() => setReference(sampleTrackingReference)}
-              className="text-foreground underline decoration-gold/70 underline-offset-4"
-            >
-              {sampleTrackingReference}
-            </button>
-          </p>
-          {error ? (
+          <Button type="submit" className="mt-5 h-11" disabled={busy}>
+            {busy ? "Checking…" : "Track order"}
+          </Button>
+          {fieldError ? (
             <p id="tracking-error" role="alert" className="mt-3 text-[0.8125rem] text-truffle">
-              {error}
+              {fieldError}
             </p>
           ) : null}
         </form>
       </section>
 
-      <div aria-live="polite">
-        {result ? (
-          <>
-            <section className="container-oasis mt-12">
-              <div className="grid gap-6 border border-border bg-premium p-6 md:grid-cols-3 md:p-8">
-                <div>
-                  <p className="eyebrow">Reference</p>
-                  <p className="mt-2 font-display text-xl">{result.reference}</p>
-                  <p className="mt-1 text-[0.8125rem] text-muted-foreground">{result.carrier}</p>
-                </div>
-                <div>
-                  <p className="eyebrow">Current status</p>
-                  <p className="mt-2 font-display text-xl">{result.status}</p>
-                  <p className="mt-1 text-[0.8125rem] text-muted-foreground">
-                    {result.service.name} · {result.zone.name}
-                  </p>
-                </div>
-                <div>
-                  <p className="eyebrow">Estimated delivery</p>
-                  <p className="mt-2 font-display text-xl">{formatDeliveryDate(result.estimatedDelivery)}</p>
-                  <p className="mt-1 text-[0.8125rem] text-muted-foreground">Indicative, excludes Sundays</p>
-                </div>
-              </div>
-            </section>
+      <section className="container-oasis mt-12" aria-live="polite">
+        {outcome.kind === "idle" ? null : <OrderResult outcome={outcome} />}
+      </section>
 
-            <section className="container-oasis mt-10">
-              <ol className="grid gap-0">
-                {result.events.map((event, i) => {
-                  const isCurrent = i === result.currentStageIndex;
-                  const Icon = event.complete ? Check : Circle;
-                  return (
-                    <li key={event.stageId} className="grid grid-cols-[auto_1fr] gap-4">
-                      <div className="flex flex-col items-center">
-                        <span
-                          className={cn(
-                            "flex size-7 items-center justify-center rounded-full border",
-                            event.complete
-                              ? "border-olive bg-olive text-primary-foreground"
-                              : "border-border bg-background text-driftwood",
-                          )}
-                          aria-hidden="true"
-                        >
-                          <Icon className="size-3.5" />
-                        </span>
-                        {i < result.events.length - 1 ? (
-                          <span
-                            className={cn(
-                              "w-px flex-1",
-                              event.complete ? "bg-olive/50" : "bg-border",
-                            )}
-                            aria-hidden="true"
-                          />
-                        ) : null}
-                      </div>
-                      <div className={cn("pb-8", !event.complete && "opacity-60")}>
-                        <p className="font-display text-lg">
-                          {event.label}
-                          {isCurrent ? (
-                            <span className="ml-3 align-middle text-[0.6875rem] uppercase tracking-[0.16em] text-olive">
-                              Current
-                            </span>
-                          ) : null}
-                        </p>
-                        <p className="mt-1 text-[0.875rem] leading-relaxed text-muted-foreground">
-                          {event.description}
-                        </p>
-                        <p className="mt-2 text-[0.75rem] uppercase tracking-[0.14em] text-driftwood">
-                          {event.location}
-                          {event.complete
-                            ? ` · ${event.timestamp.toLocaleString("en-IN", {
-                                day: "numeric",
-                                month: "short",
-                                hour: "2-digit",
-                                minute: "2-digit",
-                              })}`
-                            : " · Pending"}
-                        </p>
-                      </div>
-                    </li>
-                  );
-                })}
-              </ol>
-            </section>
-
-            <section className="container-oasis mt-6">
-              <div className="grid gap-5 md:grid-cols-2">
-                <div className="flex gap-3 border border-border p-6">
-                  <Package className="mt-1 size-4 shrink-0 text-gold" aria-hidden="true" />
-                  <div>
-                    <h2 className="font-display text-lg">Something looks wrong?</h2>
-                    <p className="mt-1 text-[0.875rem] leading-relaxed text-muted-foreground">
-                      If a parcel is delayed or arrives damaged, contact us within 48 hours with your
-                      reference and a photo of the box.
-                    </p>
-                    <Button asChild variant="outline" className="mt-4">
-                      <Link to="/contact">Contact support</Link>
-                    </Button>
-                  </div>
-                </div>
-                <div className="flex gap-3 border border-border p-6">
-                  <Truck className="mt-1 size-4 shrink-0 text-gold" aria-hidden="true" />
-                  <div>
-                    <h2 className="font-display text-lg">Planning your next order?</h2>
-                    <p className="mt-1 text-[0.875rem] leading-relaxed text-muted-foreground">
-                      Check the delivery window for your PIN code before you order, including cut-off
-                      times and available service levels.
-                    </p>
-                    <Button asChild variant="outline" className="mt-4">
-                      <Link to="/shipping">Delivery estimator</Link>
-                    </Button>
-                  </div>
-                </div>
-              </div>
-            </section>
-          </>
-        ) : null}
-
-        {searched && !result && error ? (
-          <section className="container-oasis mt-12">
-            <EmptyState
-              title="No shipment found"
-              description={`References look like ${sampleTrackingReference}. Check your dispatch email, or contact us and we will look it up.`}
-              action={
-                <Button asChild>
-                  <Link to="/contact">Contact us</Link>
-                </Button>
-              }
-            />
-          </section>
-        ) : null}
-      </div>
-
-      {!result ? (
-        <section className="container-oasis section-y">
-          <SectionHeading eyebrow="What happens next" title="Every order moves through six stages" />
-          <ol className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {trackingStages.map((stage, i) => (
-              <li key={stage.id} className="border border-border p-6">
-                <p className="text-[0.75rem] uppercase tracking-[0.16em] text-driftwood">
-                  Stage {i + 1}
-                </p>
-                <h3 className="mt-2 font-display text-lg">{stage.label}</h3>
-                <p className="mt-2 text-[0.8125rem] leading-relaxed text-muted-foreground">
-                  {stage.description}
-                </p>
-              </li>
-            ))}
-          </ol>
-        </section>
-      ) : null}
+      <section className="container-oasis mt-12">
+        <div className="grid gap-5 md:grid-cols-2">
+          <div className="flex gap-3 border border-border p-6">
+            <Package className="mt-1 size-4 shrink-0 text-gold" aria-hidden="true" />
+            <div>
+              <h2 className="font-display text-lg">Something looks wrong?</h2>
+              <p className="mt-1 text-[0.875rem] leading-relaxed text-muted-foreground">
+                If a parcel is delayed or arrives damaged, contact us with your reference and a photo of
+                the box and we will put it right.
+              </p>
+              <Button asChild variant="outline" className="mt-4">
+                <Link to="/support">Get help with an order</Link>
+              </Button>
+            </div>
+          </div>
+          <div className="flex gap-3 border border-border p-6">
+            <Truck className="mt-1 size-4 shrink-0 text-gold" aria-hidden="true" />
+            <div>
+              <h2 className="font-display text-lg">Planning your next order?</h2>
+              <p className="mt-1 text-[0.875rem] leading-relaxed text-muted-foreground">
+                Check the delivery window for your PIN code before you order, including cut-off times
+                and available service levels.
+              </p>
+              <Button asChild variant="outline" className="mt-4">
+                <Link to="/shipping">Delivery estimator</Link>
+              </Button>
+            </div>
+          </div>
+        </div>
+      </section>
     </div>
   );
 }

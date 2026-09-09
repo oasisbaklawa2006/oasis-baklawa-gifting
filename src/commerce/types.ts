@@ -40,9 +40,10 @@ export type PricedCart = {
     lineTotal: Money;
   }[];
   subtotal: Money;
-  /** Delivery and personalisation are priced by the provider, never the browser. */
+  /** Delivery, personalisation and tax are priced by the provider, never the browser. */
   delivery?: Money;
   personalisation?: Money;
+  tax?: Money;
   total: Money;
   /** True when totals came from an authoritative source rather than a local snapshot. */
   authoritative: boolean;
@@ -52,6 +53,10 @@ export type OrderIntentInput = {
   lines: CartLineInput[];
   gift?: GiftInput;
   deliveryOptionId?: string;
+  /** Free-text delivery note from the customer. */
+  notes?: string | undefined;
+  /** Optional business-invoice details; GSTIN is format-checked only. */
+  business?: { legalName: string; gstin?: string | undefined; placeOfSupply?: string | undefined } | undefined;
   contact: { name: string; email: string; phone: string };
   shipping: { addressLine1: string; addressLine2?: string | undefined; city: string; state?: string | undefined; pincode: string; country: string };
   /** Client-generated key so a retried submit never creates a second order. */

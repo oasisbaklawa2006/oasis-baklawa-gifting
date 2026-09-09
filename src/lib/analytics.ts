@@ -40,7 +40,9 @@ export type AnalyticsEvent =
   | { name: "build_a_gift_step"; params: { step: string; capacity?: number } }
   | { name: "recipient_import"; params: { rows: number; valid: number; errors: number } }
   | { name: "delivery_check"; params: { pincode_prefix: string; eligible: boolean } }
-  | { name: "outbound_click"; params: { channel: string; placement: string } };
+  | { name: "outbound_click"; params: { channel: string; placement: string } }
+  | { name: "track_order"; params: { found: boolean } }
+  | { name: "gift_finder_step"; params: { step: string; value: string } };
 
 type WindowWithTags = Window & {
   dataLayer?: unknown[];
