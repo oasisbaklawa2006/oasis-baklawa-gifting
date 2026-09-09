@@ -1,11 +1,12 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { Check, Lock } from "lucide-react";
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 import { Breadcrumbs } from "@/components/oasis/breadcrumbs";
 import { EmptyState } from "@/components/oasis/states";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
@@ -21,7 +22,9 @@ import {
 } from "@/data/checkout";
 import { formatMoney } from "@/lib/format";
 import { track } from "@/lib/analytics";
-import { placeOrder } from "@/lib/commerce.functions";
+import { INDIAN_STATES, isValidGstin, loadAddresses, rememberOrderRef } from "@/lib/account";
+import { placeOrder, priceCart } from "@/lib/commerce.functions";
+import { paymentStatus } from "@/lib/payments.functions";
 import { cartSubtotal, resolveLines, useShop } from "@/lib/store";
 import { cn } from "@/lib/utils";
 
@@ -32,10 +35,10 @@ export const Route = createFileRoute("/checkout")({
       {
         name: "description",
         content:
-          "Choose delivery speed, personalise your gift and select an Indian or international payment method.",
+          "Choose delivery speed, personalise your gift and complete your Oasis Baklawa order securely.",
       },
       { property: "og:title", content: "Checkout — Oasis Baklawa" },
-      { property: "og:description", content: "Delivery, personalisation and payment options." },
+      { property: "og:description", content: "Delivery, personalisation and payment." },
       { name: "robots", content: "noindex" },
     ],
   }),
@@ -44,34 +47,57 @@ export const Route = createFileRoute("/checkout")({
 
 type SubmitState =
   | { kind: "idle" }
+  | { kind: "pricing" }
   | { kind: "submitting" }
-  | { kind: "created"; reference: string }
+  | { kind: "price-changed"; newTotal: number }
   | { kind: "error"; message: string };
 
+type FieldErrors = Record<string, string>;
+
+const FORM_ID = "checkout-form";
+
 function CheckoutPage() {
-  const { lines, clearCart: clear } = useShop();
+  const { lines, gift, clearCart: clear } = useShop();
+  const navigate = useNavigate();
   const resolved = resolveLines(lines);
   const subtotal = cartSubtotal(resolved);
   const submitOrder = useServerFn(placeOrder);
+  const repriceCart = useServerFn(priceCart);
+  const readPaymentStatus = useServerFn(paymentStatus);
 
   const [deliveryId, setDeliveryId] = useState(deliveryOptions[0]!.id);
   const [extras, setExtras] = useState<string[]>([]);
-  const [ribbon, setRibbon] = useState(ribbonColours[0]!.id);
+  const [ribbon, setRibbon] = useState(gift.ribbonId || ribbonColours[0]!.id);
   const [region, setRegion] = useState<PaymentRegion>("india");
   const [methodId, setMethodId] = useState(paymentMethods[0]!.id);
+  const [paymentLive, setPaymentLive] = useState<boolean | null>(null);
 
   const [contact, setContact] = useState({ name: "", phone: "", email: "" });
-  const [address, setAddress] = useState({ line1: "", city: "", pincode: "" });
-  const [giftMessage, setGiftMessage] = useState("");
+  const [address, setAddress] = useState({
+    line1: "",
+    line2: "",
+    city: "",
+    state: "",
+    pincode: "",
+  });
+  const [isGift, setIsGift] = useState(Boolean(gift.message));
+  const [recipient, setRecipient] = useState({ name: "", phone: "" });
+  const [giftMessage, setGiftMessage] = useState(gift.message ?? "");
+  const [concealInvoice, setConcealInvoice] = useState(gift.concealInvoice ?? false);
+  const [notes, setNotes] = useState("");
+  const [wantsInvoice, setWantsInvoice] = useState(false);
+  const [business, setBusiness] = useState({ legalName: "", gstin: "", placeOfSupply: "" });
+
+  const [errors, setErrors] = useState<FieldErrors>({});
   const [submit, setSubmit] = useState<SubmitState>({ kind: "idle" });
   // Stable per-attempt key: a retried submit can never create a second order.
   const idempotencyKey = useRef(
     typeof crypto !== "undefined" && "randomUUID" in crypto ? crypto.randomUUID() : `co-${Date.now()}`,
   );
+  const inFlight = useRef(false);
 
   const delivery = deliveryOptions.find((option) => option.id === deliveryId)!;
-  const deliveryFee =
-    delivery.freeAbove && subtotal.amount >= delivery.freeAbove ? 0 : delivery.fee;
+  const deliveryFee = delivery.freeAbove && subtotal.amount >= delivery.freeAbove ? 0 : delivery.fee;
 
   const extrasFee = useMemo(
     () =>
@@ -84,30 +110,125 @@ function CheckoutPage() {
   const total = subtotal.amount + deliveryFee + extrasFee;
   const methods = paymentMethods.filter((method) => method.region === region);
 
-  const detailsComplete =
-    contact.name.trim().length > 1 &&
-    /.+@.+\..+/.test(contact.email) &&
-    /^[6-9]\d{9}$/.test(contact.phone.replace(/\D/g, "")) &&
-    address.line1.trim().length > 4 &&
-    address.city.trim().length > 1 &&
-    /^[1-9]\d{5}$/.test(address.pincode.replace(/\D/g, ""));
+  // Prefill from an address saved on this device, and report checkout start.
+  useEffect(() => {
+    const saved = loadAddresses().find((entry) => entry.isDefault) ?? loadAddresses()[0];
+    if (saved) {
+      setContact((current) =>
+        current.name || current.email
+          ? current
+          : { name: saved.name, phone: saved.phone, email: saved.email ?? "" },
+      );
+      setAddress({
+        line1: saved.line1,
+        line2: saved.line2 ?? "",
+        city: saved.city,
+        state: saved.state,
+        pincode: saved.pincode,
+      });
+    }
+    void readPaymentStatus().then((status) => setPaymentLive(status.live)).catch(() => setPaymentLive(false));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    if (resolved.length === 0) return;
+    track({
+      name: "begin_checkout",
+      params: {
+        currency: subtotal.currency,
+        value: subtotal.amount,
+        items: resolved.map((line) => ({
+          item_id: line.variant.id,
+          item_name: line.product.name,
+          price: line.variant.price.amount,
+          quantity: line.line.quantity,
+        })),
+      },
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [resolved.length]);
+
+  function validate(): boolean {
+    const next: FieldErrors = {};
+    if (contact.name.trim().length < 2) next["name"] = "Enter the full name for the order.";
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]{2,}$/.test(contact.email.trim()))
+      next["email"] = "Enter a valid email address — your confirmation goes here.";
+    if (!/^[6-9]\d{9}$/.test(contact.phone.replace(/\D/g, "")))
+      next["phone"] = "Enter a 10-digit Indian mobile number.";
+    if (address.line1.trim().length < 5) next["line1"] = "Enter the flat, building and street.";
+    if (address.city.trim().length < 2) next["city"] = "Enter the city.";
+    if (address.state.trim().length < 2) next["state"] = "Select the state.";
+    if (!/^[1-9]\d{5}$/.test(address.pincode.replace(/\D/g, "")))
+      next["pincode"] = "Enter a valid 6-digit PIN code.";
+    if (isGift && recipient.name.trim().length < 2)
+      next["recipientName"] = "Enter the name of the person receiving the gift.";
+    if (wantsInvoice && business.legalName.trim().length < 2)
+      next["legalName"] = "Enter the registered business name.";
+    if (wantsInvoice && business.gstin.trim() && !isValidGstin(business.gstin))
+      next["gstin"] = "That doesn’t look like a 15-character GSTIN.";
+    setErrors(next);
+    if (Object.keys(next).length > 0) {
+      const firstKey = Object.keys(next)[0]!;
+      document.getElementById(`co-${firstKey}`)?.focus();
+      return false;
+    }
+    return true;
+  }
 
   const toggleExtra = (id: string) =>
     setExtras((current) =>
       current.includes(id) ? current.filter((value) => value !== id) : [...current, id],
     );
 
-  async function handlePlaceOrder() {
-    if (submit.kind === "submitting" || !detailsComplete) return;
-    setSubmit({ kind: "submitting" });
+  async function handleSubmit(event: React.FormEvent) {
+    event.preventDefault();
+    if (inFlight.current) return;
+    if (!validate()) return;
+
+    inFlight.current = true;
+    setSubmit({ kind: "pricing" });
+
+    const cartLines = lines.map((line) => ({
+      productId: line.productId,
+      variantId: line.variantId,
+      quantity: line.quantity,
+    }));
+
     try {
+      // The server prices the cart immediately before the order is created:
+      // the browser total is only ever a display of the approved snapshot.
+      const priced = await repriceCart({ data: { lines: cartLines, deliveryOptionId: deliveryId } });
+
+      if (priced.lines.length !== cartLines.length) {
+        setSubmit({
+          kind: "error",
+          message: "One of the items in your bag is no longer available. Please review your bag and try again.",
+        });
+        inFlight.current = false;
+        return;
+      }
+
+      if (submit.kind !== "price-changed" && Math.abs(priced.subtotal.amount - subtotal.amount) > 0.5) {
+        setSubmit({ kind: "price-changed", newTotal: priced.subtotal.amount });
+        inFlight.current = false;
+        return;
+      }
+
+      track({
+        name: "add_shipping_info",
+        params: { currency: subtotal.currency, value: total, shipping_tier: delivery.name },
+      });
+      track({
+        name: "add_payment_info",
+        params: { currency: subtotal.currency, value: total, payment_type: methodId },
+      });
+
+      setSubmit({ kind: "submitting" });
+
       const result = await submitOrder({
         data: {
-          lines: lines.map((line) => ({
-            productId: line.productId,
-            variantId: line.variantId,
-            quantity: line.quantity,
-          })),
+          lines: cartLines,
           contact: {
             name: contact.name.trim(),
             email: contact.email.trim(),
@@ -115,12 +236,32 @@ function CheckoutPage() {
           },
           shipping: {
             addressLine1: address.line1.trim(),
+            ...(address.line2.trim() ? { addressLine2: address.line2.trim() } : {}),
             city: address.city.trim(),
+            state: address.state.trim(),
             pincode: address.pincode.replace(/\D/g, ""),
             country: "IN",
           },
           deliveryOptionId: deliveryId,
-          ...(giftMessage.trim() ? { gift: { message: giftMessage.trim(), ribbonId: ribbon } } : {}),
+          ...(notes.trim() ? { notes: notes.trim() } : {}),
+          ...(wantsInvoice
+            ? {
+                business: {
+                  legalName: business.legalName.trim(),
+                  ...(business.gstin.trim() ? { gstin: business.gstin.trim().toUpperCase() } : {}),
+                  ...(business.placeOfSupply.trim() ? { placeOfSupply: business.placeOfSupply.trim() } : {}),
+                },
+              }
+            : {}),
+          ...(isGift
+            ? {
+                gift: {
+                  ...(giftMessage.trim() ? { message: giftMessage.trim() } : {}),
+                  ribbonId: ribbon,
+                  concealInvoice,
+                },
+              }
+            : {}),
           idempotencyKey: idempotencyKey.current,
         },
       });
@@ -140,39 +281,18 @@ function CheckoutPage() {
             })),
           },
         });
+        rememberOrderRef(result.orderReference, contact.email.trim());
         clear();
-        setSubmit({ kind: "created", reference: result.orderReference });
-      } else {
-        setSubmit({ kind: "error", message: result.reason });
+        void navigate({ to: "/order/$reference", params: { reference: result.orderReference } });
+        return;
       }
+
+      setSubmit({ kind: "error", message: result.reason });
     } catch {
       setSubmit({ kind: "error", message: "We couldn’t reach the order service. Please try again." });
+    } finally {
+      inFlight.current = false;
     }
-  }
-
-  if (submit.kind === "created") {
-    return (
-      <div className="container-oasis py-8 md:py-12">
-        <Breadcrumbs items={[{ label: "Home", to: "/" }, { label: "Order placed" }]} />
-        <div className="mx-auto mt-12 max-w-xl border border-border bg-premium p-8 text-center">
-          <p className="eyebrow">Order received</p>
-          <h1 className="mt-4 font-display text-3xl">Thank you — your order is with us</h1>
-          <p className="mt-4 text-[0.9375rem] leading-relaxed text-muted-foreground">
-            Your reference is{" "}
-            <span className="font-medium text-foreground tabular-nums">{submit.reference}</span>. Keep
-            it handy to follow your parcel.
-          </p>
-          <div className="mt-8 flex flex-wrap justify-center gap-3">
-            <Button asChild>
-              <Link to="/track-order">Track this order</Link>
-            </Button>
-            <Button variant="outline" asChild>
-              <Link to="/shop">Continue shopping</Link>
-            </Button>
-          </div>
-        </div>
-      </div>
-    );
   }
 
   if (resolved.length === 0) {
@@ -195,23 +315,38 @@ function CheckoutPage() {
     );
   }
 
+  const busy = submit.kind === "pricing" || submit.kind === "submitting";
+
+  const field = (key: string) => ({
+    "aria-invalid": Boolean(errors[key]),
+    "aria-describedby": errors[key] ? `co-${key}-error` : undefined,
+  });
+
+  const fieldError = (key: string) =>
+    errors[key] ? (
+      <p id={`co-${key}-error`} role="alert" className="mt-1 text-[0.8125rem] text-truffle">
+        {errors[key]}
+      </p>
+    ) : null;
+
   return (
     <div className="container-oasis py-8 md:py-12">
       <Breadcrumbs items={[{ label: "Home", to: "/" }, { label: "Bag", to: "/cart" }, { label: "Checkout" }]} />
       <h1 className="mt-6 text-3xl md:text-[2.5rem]">Checkout</h1>
       <p className="mt-3 max-w-2xl text-[0.9375rem] leading-relaxed text-muted-foreground">
-        This is a design build: no payment gateway is connected yet, so nothing is charged. Every
-        option below reflects how the live checkout will be structured.
+        No account needed — order as a guest. Your total is confirmed by our order system before
+        anything is collected.
       </p>
 
       <div className="mt-10 grid gap-12 lg:grid-cols-[minmax(0,1fr)_22rem] lg:gap-16">
-        <div className="space-y-12">
+        <form id={FORM_ID} onSubmit={handleSubmit} noValidate className="space-y-12">
           <section aria-labelledby="delivery-heading">
             <h2 id="delivery-heading" className="font-display text-xl">
               1. Delivery speed
             </h2>
             <p className="mt-2 text-[0.875rem] text-muted-foreground">
-              Faster windows carry a surcharge, shown before you pay.
+              Faster windows carry a surcharge, shown before you pay. Availability for your PIN code is
+              confirmed when your order is accepted.
             </p>
             <div className="mt-5 grid gap-3 sm:grid-cols-2">
               {deliveryOptions.map((option) => {
@@ -288,45 +423,82 @@ function CheckoutPage() {
               })}
             </div>
 
-            <div className="mt-6 grid gap-6 sm:grid-cols-2">
-              <div>
-                <Label htmlFor="gift-message">Gift message</Label>
-                <Textarea
-                  id="gift-message"
-                  rows={3}
-                  maxLength={250}
-                  placeholder="Up to 250 characters, written by hand on the card."
-                  className="mt-2"
-                  value={giftMessage}
-                  onChange={(e) => setGiftMessage(e.target.value)}
-                />
-              </div>
-              <fieldset>
-                <legend className="text-[0.875rem] font-medium">Ribbon colour</legend>
-                <div className="mt-3 flex flex-wrap gap-3">
-                  {ribbonColours.map((colour) => (
-                    <button
-                      key={colour.id}
-                      type="button"
-                      aria-pressed={ribbon === colour.id}
-                      aria-label={colour.name}
-                      onClick={() => setRibbon(colour.id)}
-                      className={cn(
-                        "flex items-center gap-2 border px-3 py-2 text-[0.8125rem] transition-colors",
-                        ribbon === colour.id ? "border-foreground" : "border-border hover:border-driftwood",
-                      )}
-                    >
-                      <span
-                        aria-hidden
-                        className="size-4 rounded-full border border-border"
-                        style={{ backgroundColor: colour.hex }}
-                      />
-                      {colour.name}
-                    </button>
-                  ))}
+            <label className="mt-6 flex items-start gap-3 text-[0.9375rem]">
+              <Checkbox checked={isGift} onCheckedChange={(checked) => setIsGift(checked === true)} />
+              This order is a gift for someone else
+            </label>
+
+            {isGift ? (
+              <div className="mt-5 grid gap-6 sm:grid-cols-2">
+                <div>
+                  <Label htmlFor="co-recipientName">Recipient’s name</Label>
+                  <Input
+                    id="co-recipientName"
+                    className="mt-2 h-11"
+                    value={recipient.name}
+                    {...field("recipientName")}
+                    onChange={(event) => setRecipient((r) => ({ ...r, name: event.target.value }))}
+                  />
+                  {fieldError("recipientName")}
                 </div>
-              </fieldset>
-            </div>
+                <div>
+                  <Label htmlFor="co-recipientPhone">Recipient’s phone (optional)</Label>
+                  <Input
+                    id="co-recipientPhone"
+                    className="mt-2 h-11"
+                    inputMode="tel"
+                    value={recipient.phone}
+                    onChange={(event) => setRecipient((r) => ({ ...r, phone: event.target.value }))}
+                  />
+                </div>
+                <div className="sm:col-span-2">
+                  <Label htmlFor="gift-message">Gift message</Label>
+                  <Textarea
+                    id="gift-message"
+                    rows={3}
+                    maxLength={250}
+                    className="mt-2"
+                    value={giftMessage}
+                    onChange={(event) => setGiftMessage(event.target.value)}
+                  />
+                  <p className="mt-1 text-[0.75rem] text-muted-foreground">
+                    {giftMessage.length}/250 characters, written by hand on the card.
+                  </p>
+                </div>
+                <label className="flex items-start gap-3 text-[0.9375rem] sm:col-span-2">
+                  <Checkbox
+                    checked={concealInvoice}
+                    onCheckedChange={(checked) => setConcealInvoice(checked === true)}
+                  />
+                  Hide all prices and the invoice inside the parcel
+                </label>
+                <fieldset className="sm:col-span-2">
+                  <legend className="text-[0.875rem] font-medium">Ribbon colour</legend>
+                  <div className="mt-3 flex flex-wrap gap-3">
+                    {ribbonColours.map((colour) => (
+                      <button
+                        key={colour.id}
+                        type="button"
+                        aria-pressed={ribbon === colour.id}
+                        aria-label={colour.name}
+                        onClick={() => setRibbon(colour.id)}
+                        className={cn(
+                          "flex min-h-11 items-center gap-2 border px-3 py-2 text-[0.8125rem] transition-colors",
+                          ribbon === colour.id ? "border-foreground" : "border-border hover:border-driftwood",
+                        )}
+                      >
+                        <span
+                          aria-hidden
+                          className="size-4 rounded-full border border-border"
+                          style={{ backgroundColor: colour.hex }}
+                        />
+                        {colour.name}
+                      </button>
+                    ))}
+                  </div>
+                </fieldset>
+              </div>
+            ) : null}
           </section>
 
           <section aria-labelledby="payment-heading">
@@ -346,7 +518,7 @@ function CheckoutPage() {
                     if (first) setMethodId(first.id);
                   }}
                   className={cn(
-                    "px-4 py-2 text-[0.8125rem] uppercase tracking-[0.12em] transition-colors",
+                    "min-h-11 px-4 py-2 text-[0.8125rem] uppercase tracking-[0.12em] transition-colors",
                     region === value ? "bg-foreground text-background" : "hover:bg-premium",
                   )}
                 >
@@ -391,12 +563,18 @@ function CheckoutPage() {
               })}
             </div>
 
+            {paymentLive === false ? (
+              <p className="mt-5 border border-border bg-utility p-4 text-[0.8125rem] leading-relaxed text-muted-foreground">
+                Card and UPI payment is temporarily unavailable online. You can still complete this
+                form — our team will confirm your order and arrange payment with you directly.
+              </p>
+            ) : null}
+
             {region === "international" ? (
               <div className="mt-5 border border-border bg-utility p-4 text-[0.8125rem] leading-relaxed text-muted-foreground">
-                Prices are shown in{" "}
-                {supportedCurrencies.map((currency) => currency.code).join(", ")} and settled by the
-                gateway at the rate applied on the day of payment. Export duties, where applicable,
-                are payable by the recipient.
+                Prices may be displayed in{" "}
+                {supportedCurrencies.map((currency) => currency.code).join(", ")}, and every order is
+                settled in Indian Rupees. Any customs duty is payable by the recipient.
               </div>
             ) : null}
           </section>
@@ -411,10 +589,12 @@ function CheckoutPage() {
                 <Input
                   id="co-name"
                   autoComplete="name"
-                  className="mt-2"
+                  className="mt-2 h-11"
                   value={contact.name}
-                  onChange={(e) => setContact((c) => ({ ...c, name: e.target.value }))}
+                  {...field("name")}
+                  onChange={(event) => setContact((c) => ({ ...c, name: event.target.value }))}
                 />
+                {fieldError("name")}
               </div>
               <div>
                 <Label htmlFor="co-phone">Phone</Label>
@@ -422,10 +602,12 @@ function CheckoutPage() {
                   id="co-phone"
                   type="tel"
                   autoComplete="tel"
-                  className="mt-2"
+                  className="mt-2 h-11"
                   value={contact.phone}
-                  onChange={(e) => setContact((c) => ({ ...c, phone: e.target.value }))}
+                  {...field("phone")}
+                  onChange={(event) => setContact((c) => ({ ...c, phone: event.target.value }))}
                 />
+                {fieldError("phone")}
               </div>
               <div className="sm:col-span-2">
                 <Label htmlFor="co-email">Email</Label>
@@ -433,20 +615,33 @@ function CheckoutPage() {
                   id="co-email"
                   type="email"
                   autoComplete="email"
-                  className="mt-2"
+                  className="mt-2 h-11"
                   value={contact.email}
-                  onChange={(e) => setContact((c) => ({ ...c, email: e.target.value }))}
+                  {...field("email")}
+                  onChange={(event) => setContact((c) => ({ ...c, email: event.target.value }))}
                 />
+                {fieldError("email")}
               </div>
               <div className="sm:col-span-2">
-                <Label htmlFor="co-address">Address</Label>
-                <Textarea
-                  id="co-address"
-                  rows={3}
-                  autoComplete="street-address"
-                  className="mt-2"
+                <Label htmlFor="co-line1">Flat, building and street</Label>
+                <Input
+                  id="co-line1"
+                  autoComplete="address-line1"
+                  className="mt-2 h-11"
                   value={address.line1}
-                  onChange={(e) => setAddress((a) => ({ ...a, line1: e.target.value }))}
+                  {...field("line1")}
+                  onChange={(event) => setAddress((a) => ({ ...a, line1: event.target.value }))}
+                />
+                {fieldError("line1")}
+              </div>
+              <div className="sm:col-span-2">
+                <Label htmlFor="co-line2">Area or landmark (optional)</Label>
+                <Input
+                  id="co-line2"
+                  autoComplete="address-line2"
+                  className="mt-2 h-11"
+                  value={address.line2}
+                  onChange={(event) => setAddress((a) => ({ ...a, line2: event.target.value }))}
                 />
               </div>
               <div>
@@ -454,25 +649,102 @@ function CheckoutPage() {
                 <Input
                   id="co-city"
                   autoComplete="address-level2"
-                  className="mt-2"
+                  className="mt-2 h-11"
                   value={address.city}
-                  onChange={(e) => setAddress((a) => ({ ...a, city: e.target.value }))}
+                  {...field("city")}
+                  onChange={(event) => setAddress((a) => ({ ...a, city: event.target.value }))}
                 />
+                {fieldError("city")}
               </div>
               <div>
-                <Label htmlFor="co-pin">PIN / ZIP code</Label>
+                <Label htmlFor="co-state">State</Label>
+                <select
+                  id="co-state"
+                  className="mt-2 h-11 w-full border border-input bg-transparent px-3 text-[0.9375rem]"
+                  value={address.state}
+                  {...field("state")}
+                  onChange={(event) => setAddress((a) => ({ ...a, state: event.target.value }))}
+                >
+                  <option value="">Select a state</option>
+                  {INDIAN_STATES.map((state) => (
+                    <option key={state} value={state}>
+                      {state}
+                    </option>
+                  ))}
+                </select>
+                {fieldError("state")}
+              </div>
+              <div>
+                <Label htmlFor="co-pincode">PIN code</Label>
                 <Input
-                  id="co-pin"
+                  id="co-pincode"
                   inputMode="numeric"
                   autoComplete="postal-code"
-                  className="mt-2"
+                  className="mt-2 h-11"
                   value={address.pincode}
-                  onChange={(e) => setAddress((a) => ({ ...a, pincode: e.target.value }))}
+                  {...field("pincode")}
+                  onChange={(event) => setAddress((a) => ({ ...a, pincode: event.target.value }))}
+                />
+                {fieldError("pincode")}
+              </div>
+              <div className="sm:col-span-2">
+                <Label htmlFor="co-notes">Delivery notes (optional)</Label>
+                <Textarea
+                  id="co-notes"
+                  rows={2}
+                  maxLength={500}
+                  className="mt-2"
+                  value={notes}
+                  onChange={(event) => setNotes(event.target.value)}
                 />
               </div>
             </div>
+
+            <label className="mt-6 flex items-start gap-3 text-[0.9375rem]">
+              <Checkbox
+                checked={wantsInvoice}
+                onCheckedChange={(checked) => setWantsInvoice(checked === true)}
+              />
+              I need a business invoice (GST)
+            </label>
+
+            {wantsInvoice ? (
+              <div className="mt-5 grid gap-5 sm:grid-cols-2">
+                <div className="sm:col-span-2">
+                  <Label htmlFor="co-legalName">Registered business name</Label>
+                  <Input
+                    id="co-legalName"
+                    className="mt-2 h-11"
+                    value={business.legalName}
+                    {...field("legalName")}
+                    onChange={(event) => setBusiness((b) => ({ ...b, legalName: event.target.value }))}
+                  />
+                  {fieldError("legalName")}
+                </div>
+                <div>
+                  <Label htmlFor="co-gstin">GSTIN (optional)</Label>
+                  <Input
+                    id="co-gstin"
+                    className="mt-2 h-11"
+                    value={business.gstin}
+                    {...field("gstin")}
+                    onChange={(event) => setBusiness((b) => ({ ...b, gstin: event.target.value.toUpperCase() }))}
+                  />
+                  {fieldError("gstin")}
+                </div>
+                <div>
+                  <Label htmlFor="co-placeOfSupply">Place of supply (optional)</Label>
+                  <Input
+                    id="co-placeOfSupply"
+                    className="mt-2 h-11"
+                    value={business.placeOfSupply}
+                    onChange={(event) => setBusiness((b) => ({ ...b, placeOfSupply: event.target.value }))}
+                  />
+                </div>
+              </div>
+            ) : null}
           </section>
-        </div>
+        </form>
 
         <aside className="h-fit border border-border bg-premium p-6 lg:sticky lg:top-28">
           <h2 className="font-display text-xl">Order summary</h2>
@@ -484,19 +756,15 @@ function CheckoutPage() {
             </div>
             <div className="flex justify-between gap-4">
               <dt className="text-muted-foreground">{delivery.name}</dt>
-              <dd className="tabular-nums">
-                {deliveryFee === 0 ? "Free" : formatMoney(inr(deliveryFee))}
-              </dd>
+              <dd className="tabular-nums">{deliveryFee === 0 ? "Free" : formatMoney(inr(deliveryFee))}</dd>
             </div>
             <div className="flex justify-between gap-4">
               <dt className="text-muted-foreground">Personalisation</dt>
-              <dd className="tabular-nums">
-                {extrasFee === 0 ? "Included" : formatMoney(inr(extrasFee))}
-              </dd>
+              <dd className="tabular-nums">{extrasFee === 0 ? "Included" : formatMoney(inr(extrasFee))}</dd>
             </div>
             <div className="flex justify-between gap-4">
               <dt className="text-muted-foreground">Taxes</dt>
-              <dd className="text-muted-foreground">Calculated by the gateway</dd>
+              <dd className="text-muted-foreground">Included where applicable</dd>
             </div>
           </dl>
           <Separator className="my-5 bg-border" />
@@ -504,29 +772,44 @@ function CheckoutPage() {
             <span className="eyebrow">Payable now</span>
             <span className="font-display text-xl tabular-nums">{formatMoney(inr(total))}</span>
           </div>
-          <Button
-            size="lg"
-            className="mt-6 w-full"
-            disabled={!detailsComplete || submit.kind === "submitting"}
-            onClick={handlePlaceOrder}
-          >
+          <Button size="lg" className="mt-6 w-full" type="submit" form={FORM_ID} disabled={busy}>
             <Lock className="size-4" aria-hidden />
-            {submit.kind === "submitting" ? "Placing your order…" : "Place order"}
+            {submit.kind === "pricing"
+              ? "Confirming your total…"
+              : submit.kind === "submitting"
+                ? "Placing your order…"
+                : submit.kind === "price-changed"
+                  ? "Confirm and place order"
+                  : "Place order"}
           </Button>
-          {submit.kind === "error" ? (
-            <p role="alert" className="mt-3 text-xs leading-relaxed text-destructive">
-              {submit.message}
-            </p>
-          ) : null}
+
+          <div aria-live="polite">
+            {submit.kind === "price-changed" ? (
+              <p role="alert" className="mt-3 text-xs leading-relaxed text-foreground">
+                The price of your bag has been updated to {formatMoney(inr(submit.newTotal))} before
+                delivery. Press the button again to confirm at the new price.
+              </p>
+            ) : null}
+            {submit.kind === "error" ? (
+              <p role="alert" className="mt-3 text-xs leading-relaxed text-destructive">
+                {submit.message}{" "}
+                <Link to="/support" className="link-underline">
+                  Get help
+                </Link>
+              </p>
+            ) : null}
+          </div>
+
           <p className="mt-3 text-xs leading-relaxed text-muted-foreground">
-            {detailsComplete
-              ? "Your order is confirmed with our team before any amount is collected."
-              : "Fill in your name, email, phone and delivery address to continue."}{" "}
-            See{" "}
+            Your total is confirmed by our order system before any amount is collected. See{" "}
             <Link to="/payment-options" className="link-underline">
               payment options
             </Link>{" "}
-            for what will be accepted.
+            and our{" "}
+            <Link to="/returns" className="link-underline">
+              returns policy
+            </Link>
+            .
           </p>
           <Button variant="outline" className="mt-4 w-full" asChild>
             <Link to="/cart">Back to bag</Link>
