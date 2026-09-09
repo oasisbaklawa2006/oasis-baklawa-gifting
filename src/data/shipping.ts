@@ -112,10 +112,14 @@ export const shippingZones: ShippingZone[] = [
 
 export const getServiceLevel = (id: ServiceLevelId) => serviceLevels.find((s) => s.id === id);
 
-/** Mock routing table lookup. Unknown prefixes fall back to the extended zone. */
+/**
+ * Routing table lookup. A structurally invalid PIN code returns null so the UI
+ * never shows a delivery promise for an address that cannot exist; valid but
+ * unlisted prefixes fall back to the extended network zone.
+ */
 export function findZoneByPincode(pincode: string): ShippingZone | null {
   const digits = pincode.replace(/\D/g, "");
-  if (digits.length !== 6) return null;
+  if (!/^[1-9][0-9]{5}$/.test(digits)) return null;
   const prefix = digits.slice(0, 2);
   const match = shippingZones.find((z) => z.pincodePrefixes.includes(prefix));
   return match ?? shippingZones[shippingZones.length - 1] ?? null;
