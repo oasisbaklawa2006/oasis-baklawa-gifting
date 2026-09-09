@@ -49,7 +49,7 @@ type SubmitState =
   | { kind: "error"; message: string };
 
 function CheckoutPage() {
-  const { lines, clear } = useShop();
+  const { lines, clearCart: clear } = useShop();
   const resolved = resolveLines(lines);
   const subtotal = cartSubtotal(resolved);
   const submitOrder = useServerFn(placeOrder);
@@ -137,6 +137,30 @@ function CheckoutPage() {
     }
   }
 
+  if (submit.kind === "created") {
+    return (
+      <div className="container-oasis py-8 md:py-12">
+        <Breadcrumbs items={[{ label: "Home", to: "/" }, { label: "Order placed" }]} />
+        <div className="mx-auto mt-12 max-w-xl border border-border bg-premium p-8 text-center">
+          <p className="eyebrow">Order received</p>
+          <h1 className="mt-4 font-display text-3xl">Thank you — your order is with us</h1>
+          <p className="mt-4 text-[0.9375rem] leading-relaxed text-muted-foreground">
+            Your reference is{" "}
+            <span className="font-medium text-foreground tabular-nums">{submit.reference}</span>. Keep
+            it handy to follow your parcel.
+          </p>
+          <div className="mt-8 flex flex-wrap justify-center gap-3">
+            <Button asChild>
+              <Link to="/track-order">Track this order</Link>
+            </Button>
+            <Button variant="outline" asChild>
+              <Link to="/shop">Continue shopping</Link>
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   if (resolved.length === 0) {
     return (
