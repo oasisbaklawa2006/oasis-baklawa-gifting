@@ -5,8 +5,7 @@ import { products } from "@/data/catalog";
 import { collections } from "@/data/catalog";
 import { articles } from "@/data/journal";
 
-// TODO: replace with your project URL once a project name or custom domain is set.
-const BASE_URL = "";
+import { siteUrl } from "@/lib/site-url";
 
 interface SitemapEntry {
   path: string;
