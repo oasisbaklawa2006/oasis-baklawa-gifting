@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
 import { Check, Lock } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 
 import { Breadcrumbs } from "@/components/oasis/breadcrumbs";
 import { EmptyState } from "@/components/oasis/states";
@@ -19,6 +20,8 @@ import {
   type PaymentRegion,
 } from "@/data/checkout";
 import { formatMoney } from "@/lib/format";
+import { track } from "@/lib/analytics";
+import { placeOrder } from "@/lib/commerce.functions";
 import { cartSubtotal, resolveLines, useShop } from "@/lib/store";
 import { cn } from "@/lib/utils";
 
