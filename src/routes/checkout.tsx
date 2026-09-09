@@ -126,7 +126,20 @@ function CheckoutPage() {
       });
 
       if (result.status === "created") {
-        track({ name: "purchase", params: { transaction_id: result.orderReference, value: result.total.amount, currency: result.total.currency } });
+        track({
+          name: "purchase",
+          params: {
+            transaction_id: result.orderReference,
+            value: result.total.amount,
+            currency: result.total.currency,
+            items: resolved.map((line) => ({
+              item_id: line.variant.id,
+              item_name: line.product.name,
+              price: line.variant.price.amount,
+              quantity: line.quantity,
+            })),
+          },
+        });
         clear();
         setSubmit({ kind: "created", reference: result.orderReference });
       } else {
