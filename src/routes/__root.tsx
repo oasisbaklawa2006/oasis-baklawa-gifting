@@ -4,6 +4,7 @@ import {
   Link,
   createRootRouteWithContext,
   useRouter,
+  useRouterState,
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
@@ -18,6 +19,8 @@ import { SiteFooter } from "@/components/layout/site-footer";
 import { Toaster } from "@/components/ui/sonner";
 import { Button } from "@/components/ui/button";
 import { siteUrl } from "@/lib/site-url";
+import { analyticsConfig } from "@/config/integrations";
+import { tagScripts, track } from "@/lib/analytics";
 
 function NotFoundComponent() {
   return (
@@ -83,6 +86,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "theme-color", content: "#FDFBF7" },
+      ...(analyticsConfig.searchConsoleVerification
+        ? [{ name: "google-site-verification", content: analyticsConfig.searchConsoleVerification }]
+        : []),
     ],
     links: [
       { rel: "stylesheet", href: appCss },
@@ -93,6 +100,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         href: "https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@300;400;500;600&family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&display=swap",
       },
       { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
+      { rel: "manifest", href: "/manifest.webmanifest" },
     ],
     scripts: [
       {
@@ -127,6 +135,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           ],
         }),
       },
+      // Analytics/tag loaders are added only for destinations that are configured.
+      ...tagScripts(),
     ],
   }),
 
@@ -152,6 +162,13 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+
+  useEffect(() => {
+    track({ name: "page_view", params: { page_path: pathname } });
+  }, [pathname]);
+
+
 
   return (
     <QueryClientProvider client={queryClient}>

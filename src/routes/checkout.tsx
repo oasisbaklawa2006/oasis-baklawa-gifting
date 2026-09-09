@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
 import { Check, Lock } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 
 import { Breadcrumbs } from "@/components/oasis/breadcrumbs";
 import { EmptyState } from "@/components/oasis/states";
@@ -19,6 +20,8 @@ import {
   type PaymentRegion,
 } from "@/data/checkout";
 import { formatMoney } from "@/lib/format";
+import { track } from "@/lib/analytics";
+import { placeOrder } from "@/lib/commerce.functions";
 import { cartSubtotal, resolveLines, useShop } from "@/lib/store";
 import { cn } from "@/lib/utils";
 
@@ -39,16 +42,32 @@ export const Route = createFileRoute("/checkout")({
   component: CheckoutPage,
 });
 
+type SubmitState =
+  | { kind: "idle" }
+  | { kind: "submitting" }
+  | { kind: "created"; reference: string }
+  | { kind: "error"; message: string };
+
 function CheckoutPage() {
-  const { lines } = useShop();
+  const { lines, clearCart: clear } = useShop();
   const resolved = resolveLines(lines);
   const subtotal = cartSubtotal(resolved);
+  const submitOrder = useServerFn(placeOrder);
 
   const [deliveryId, setDeliveryId] = useState(deliveryOptions[0]!.id);
   const [extras, setExtras] = useState<string[]>([]);
   const [ribbon, setRibbon] = useState(ribbonColours[0]!.id);
   const [region, setRegion] = useState<PaymentRegion>("india");
   const [methodId, setMethodId] = useState(paymentMethods[0]!.id);
+
+  const [contact, setContact] = useState({ name: "", phone: "", email: "" });
+  const [address, setAddress] = useState({ line1: "", city: "", pincode: "" });
+  const [giftMessage, setGiftMessage] = useState("");
+  const [submit, setSubmit] = useState<SubmitState>({ kind: "idle" });
+  // Stable per-attempt key: a retried submit can never create a second order.
+  const idempotencyKey = useRef(
+    typeof crypto !== "undefined" && "randomUUID" in crypto ? crypto.randomUUID() : `co-${Date.now()}`,
+  );
 
   const delivery = deliveryOptions.find((option) => option.id === deliveryId)!;
   const deliveryFee =
@@ -65,10 +84,96 @@ function CheckoutPage() {
   const total = subtotal.amount + deliveryFee + extrasFee;
   const methods = paymentMethods.filter((method) => method.region === region);
 
+  const detailsComplete =
+    contact.name.trim().length > 1 &&
+    /.+@.+\..+/.test(contact.email) &&
+    /^[6-9]\d{9}$/.test(contact.phone.replace(/\D/g, "")) &&
+    address.line1.trim().length > 4 &&
+    address.city.trim().length > 1 &&
+    /^[1-9]\d{5}$/.test(address.pincode.replace(/\D/g, ""));
+
   const toggleExtra = (id: string) =>
     setExtras((current) =>
       current.includes(id) ? current.filter((value) => value !== id) : [...current, id],
     );
+
+  async function handlePlaceOrder() {
+    if (submit.kind === "submitting" || !detailsComplete) return;
+    setSubmit({ kind: "submitting" });
+    try {
+      const result = await submitOrder({
+        data: {
+          lines: lines.map((line) => ({
+            productId: line.productId,
+            variantId: line.variantId,
+            quantity: line.quantity,
+          })),
+          contact: {
+            name: contact.name.trim(),
+            email: contact.email.trim(),
+            phone: contact.phone.replace(/\D/g, ""),
+          },
+          shipping: {
+            addressLine1: address.line1.trim(),
+            city: address.city.trim(),
+            pincode: address.pincode.replace(/\D/g, ""),
+            country: "IN",
+          },
+          deliveryOptionId: deliveryId,
+          ...(giftMessage.trim() ? { gift: { message: giftMessage.trim(), ribbonId: ribbon } } : {}),
+          idempotencyKey: idempotencyKey.current,
+        },
+      });
+
+      if (result.status === "created") {
+        track({
+          name: "purchase",
+          params: {
+            transaction_id: result.orderReference,
+            value: result.total.amount,
+            currency: result.total.currency,
+            items: resolved.map((line) => ({
+              item_id: line.variant.id,
+              item_name: line.product.name,
+              price: line.variant.price.amount,
+              quantity: line.line.quantity,
+            })),
+          },
+        });
+        clear();
+        setSubmit({ kind: "created", reference: result.orderReference });
+      } else {
+        setSubmit({ kind: "error", message: result.reason });
+      }
+    } catch {
+      setSubmit({ kind: "error", message: "We couldn’t reach the order service. Please try again." });
+    }
+  }
+
+  if (submit.kind === "created") {
+    return (
+      <div className="container-oasis py-8 md:py-12">
+        <Breadcrumbs items={[{ label: "Home", to: "/" }, { label: "Order placed" }]} />
+        <div className="mx-auto mt-12 max-w-xl border border-border bg-premium p-8 text-center">
+          <p className="eyebrow">Order received</p>
+          <h1 className="mt-4 font-display text-3xl">Thank you — your order is with us</h1>
+          <p className="mt-4 text-[0.9375rem] leading-relaxed text-muted-foreground">
+            Your reference is{" "}
+            <span className="font-medium text-foreground tabular-nums">{submit.reference}</span>. Keep
+            it handy to follow your parcel.
+          </p>
+          <div className="mt-8 flex flex-wrap justify-center gap-3">
+            <Button asChild>
+              <Link to="/track-order">Track this order</Link>
+            </Button>
+            <Button variant="outline" asChild>
+              <Link to="/shop">Continue shopping</Link>
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   if (resolved.length === 0) {
     return (
@@ -189,9 +294,11 @@ function CheckoutPage() {
                 <Textarea
                   id="gift-message"
                   rows={3}
-                  maxLength={200}
-                  placeholder="Up to 200 characters, written by hand on the card."
+                  maxLength={250}
+                  placeholder="Up to 250 characters, written by hand on the card."
                   className="mt-2"
+                  value={giftMessage}
+                  onChange={(e) => setGiftMessage(e.target.value)}
                 />
               </div>
               <fieldset>
@@ -301,27 +408,67 @@ function CheckoutPage() {
             <div className="mt-5 grid gap-5 sm:grid-cols-2">
               <div>
                 <Label htmlFor="co-name">Full name</Label>
-                <Input id="co-name" autoComplete="name" className="mt-2" />
+                <Input
+                  id="co-name"
+                  autoComplete="name"
+                  className="mt-2"
+                  value={contact.name}
+                  onChange={(e) => setContact((c) => ({ ...c, name: e.target.value }))}
+                />
               </div>
               <div>
                 <Label htmlFor="co-phone">Phone</Label>
-                <Input id="co-phone" type="tel" autoComplete="tel" className="mt-2" />
+                <Input
+                  id="co-phone"
+                  type="tel"
+                  autoComplete="tel"
+                  className="mt-2"
+                  value={contact.phone}
+                  onChange={(e) => setContact((c) => ({ ...c, phone: e.target.value }))}
+                />
               </div>
               <div className="sm:col-span-2">
                 <Label htmlFor="co-email">Email</Label>
-                <Input id="co-email" type="email" autoComplete="email" className="mt-2" />
+                <Input
+                  id="co-email"
+                  type="email"
+                  autoComplete="email"
+                  className="mt-2"
+                  value={contact.email}
+                  onChange={(e) => setContact((c) => ({ ...c, email: e.target.value }))}
+                />
               </div>
               <div className="sm:col-span-2">
                 <Label htmlFor="co-address">Address</Label>
-                <Textarea id="co-address" rows={3} autoComplete="street-address" className="mt-2" />
+                <Textarea
+                  id="co-address"
+                  rows={3}
+                  autoComplete="street-address"
+                  className="mt-2"
+                  value={address.line1}
+                  onChange={(e) => setAddress((a) => ({ ...a, line1: e.target.value }))}
+                />
               </div>
               <div>
                 <Label htmlFor="co-city">City</Label>
-                <Input id="co-city" autoComplete="address-level2" className="mt-2" />
+                <Input
+                  id="co-city"
+                  autoComplete="address-level2"
+                  className="mt-2"
+                  value={address.city}
+                  onChange={(e) => setAddress((a) => ({ ...a, city: e.target.value }))}
+                />
               </div>
               <div>
                 <Label htmlFor="co-pin">PIN / ZIP code</Label>
-                <Input id="co-pin" inputMode="numeric" autoComplete="postal-code" className="mt-2" />
+                <Input
+                  id="co-pin"
+                  inputMode="numeric"
+                  autoComplete="postal-code"
+                  className="mt-2"
+                  value={address.pincode}
+                  onChange={(e) => setAddress((a) => ({ ...a, pincode: e.target.value }))}
+                />
               </div>
             </div>
           </section>
@@ -357,11 +504,25 @@ function CheckoutPage() {
             <span className="eyebrow">Payable now</span>
             <span className="font-display text-xl tabular-nums">{formatMoney(inr(total))}</span>
           </div>
-          <Button size="lg" className="mt-6 w-full" disabled>
-            <Lock className="size-4" aria-hidden /> Pay securely
+          <Button
+            size="lg"
+            className="mt-6 w-full"
+            disabled={!detailsComplete || submit.kind === "submitting"}
+            onClick={handlePlaceOrder}
+          >
+            <Lock className="size-4" aria-hidden />
+            {submit.kind === "submitting" ? "Placing your order…" : "Place order"}
           </Button>
+          {submit.kind === "error" ? (
+            <p role="alert" className="mt-3 text-xs leading-relaxed text-destructive">
+              {submit.message}
+            </p>
+          ) : null}
           <p className="mt-3 text-xs leading-relaxed text-muted-foreground">
-            Payment is disabled until a gateway is connected. See{" "}
+            {detailsComplete
+              ? "Your order is confirmed with our team before any amount is collected."
+              : "Fill in your name, email, phone and delivery address to continue."}{" "}
+            See{" "}
             <Link to="/payment-options" className="link-underline">
               payment options
             </Link>{" "}

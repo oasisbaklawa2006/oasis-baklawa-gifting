@@ -1,8 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Check, Link2 } from "lucide-react";
 
 import { cn } from "@/lib/utils";
-import { siteUrl } from "@/lib/site-url";
+import { normalizePath, siteUrl } from "@/lib/site-url";
 
 type ShareRowProps = {
   title: string;
@@ -11,14 +11,15 @@ type ShareRowProps = {
   className?: string;
 };
 
-/** Fully qualified when a site origin is configured or a browser origin exists. */
-function absoluteUrl(path: string) {
-  return siteUrl(path);
-}
-
 /** Lightweight share row — plain links, no third-party scripts or trackers. */
 export function ShareRow({ title, path, className }: ShareRowProps) {
   const [copied, setCopied] = useState(false);
+  // Server render has no browser origin, so start with the configured/relative
+  // value and upgrade to the absolute URL after mount (no hydration mismatch).
+  const [shareUrl, setShareUrl] = useState(() => normalizePath(path));
+  useEffect(() => setShareUrl(siteUrl(path)), [path]);
+  const absoluteUrl = () => shareUrl;
+
 
   const targets = [
     { label: "WhatsApp", build: (u: string) => `https://wa.me/?text=${encodeURIComponent(`${title} ${u}`)}` },
@@ -41,7 +42,7 @@ export function ShareRow({ title, path, className }: ShareRowProps) {
 
   async function copyLink() {
     try {
-      await navigator.clipboard.writeText(absoluteUrl(path));
+      await navigator.clipboard.writeText(absoluteUrl());
       setCopied(true);
       window.setTimeout(() => setCopied(false), 2000);
     } catch {
@@ -55,7 +56,7 @@ export function ShareRow({ title, path, className }: ShareRowProps) {
       {targets.map((target) => (
         <a
           key={target.label}
-          href={target.build(absoluteUrl(path))}
+          href={target.build(absoluteUrl())}
           target="_blank"
           rel="noopener noreferrer nofollow"
           className="link-underline flex min-h-11 items-center text-[0.8125rem] text-muted-foreground hover:text-foreground"
