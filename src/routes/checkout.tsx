@@ -39,16 +39,32 @@ export const Route = createFileRoute("/checkout")({
   component: CheckoutPage,
 });
 
+type SubmitState =
+  | { kind: "idle" }
+  | { kind: "submitting" }
+  | { kind: "created"; reference: string }
+  | { kind: "error"; message: string };
+
 function CheckoutPage() {
-  const { lines } = useShop();
+  const { lines, clear } = useShop();
   const resolved = resolveLines(lines);
   const subtotal = cartSubtotal(resolved);
+  const submitOrder = useServerFn(placeOrder);
 
   const [deliveryId, setDeliveryId] = useState(deliveryOptions[0]!.id);
   const [extras, setExtras] = useState<string[]>([]);
   const [ribbon, setRibbon] = useState(ribbonColours[0]!.id);
   const [region, setRegion] = useState<PaymentRegion>("india");
   const [methodId, setMethodId] = useState(paymentMethods[0]!.id);
+
+  const [contact, setContact] = useState({ name: "", phone: "", email: "" });
+  const [address, setAddress] = useState({ line1: "", city: "", pincode: "" });
+  const [giftMessage, setGiftMessage] = useState("");
+  const [submit, setSubmit] = useState<SubmitState>({ kind: "idle" });
+  // Stable per-attempt key: a retried submit can never create a second order.
+  const idempotencyKey = useRef(
+    typeof crypto !== "undefined" && "randomUUID" in crypto ? crypto.randomUUID() : `co-${Date.now()}`,
+  );
 
   const delivery = deliveryOptions.find((option) => option.id === deliveryId)!;
   const deliveryFee =
@@ -65,10 +81,59 @@ function CheckoutPage() {
   const total = subtotal.amount + deliveryFee + extrasFee;
   const methods = paymentMethods.filter((method) => method.region === region);
 
+  const detailsComplete =
+    contact.name.trim().length > 1 &&
+    /.+@.+\..+/.test(contact.email) &&
+    /^[6-9]\d{9}$/.test(contact.phone.replace(/\D/g, "")) &&
+    address.line1.trim().length > 4 &&
+    address.city.trim().length > 1 &&
+    /^[1-9]\d{5}$/.test(address.pincode.replace(/\D/g, ""));
+
   const toggleExtra = (id: string) =>
     setExtras((current) =>
       current.includes(id) ? current.filter((value) => value !== id) : [...current, id],
     );
+
+  async function handlePlaceOrder() {
+    if (submit.kind === "submitting" || !detailsComplete) return;
+    setSubmit({ kind: "submitting" });
+    try {
+      const result = await submitOrder({
+        data: {
+          lines: lines.map((line) => ({
+            productId: line.productId,
+            variantId: line.variantId,
+            quantity: line.quantity,
+          })),
+          contact: {
+            name: contact.name.trim(),
+            email: contact.email.trim(),
+            phone: contact.phone.replace(/\D/g, ""),
+          },
+          shipping: {
+            addressLine1: address.line1.trim(),
+            city: address.city.trim(),
+            pincode: address.pincode.replace(/\D/g, ""),
+            country: "IN",
+          },
+          deliveryOptionId: deliveryId,
+          ...(giftMessage.trim() ? { gift: { message: giftMessage.trim(), ribbonId: ribbon } } : {}),
+          idempotencyKey: idempotencyKey.current,
+        },
+      });
+
+      if (result.status === "created") {
+        track({ name: "purchase", params: { transaction_id: result.orderReference, value: result.total.amount, currency: result.total.currency } });
+        clear();
+        setSubmit({ kind: "created", reference: result.orderReference });
+      } else {
+        setSubmit({ kind: "error", message: result.reason });
+      }
+    } catch {
+      setSubmit({ kind: "error", message: "We couldn’t reach the order service. Please try again." });
+    }
+  }
+
 
   if (resolved.length === 0) {
     return (
