@@ -25,17 +25,15 @@ export type LookupOutcome =
       courier?: string;
     };
 
-export function toLookupOutcome(
-  result: {
-    status: "unknown" | "found";
-    reason?: string;
-    orderReference?: string;
-    stage?: string;
-    placedAt?: string;
-    trackingUrl?: string;
-    courier?: string;
-  },
-): LookupOutcome {
+export function toLookupOutcome(result: {
+  status: "unknown" | "found";
+  reason?: string;
+  orderReference?: string;
+  stage?: string;
+  placedAt?: string;
+  trackingUrl?: string;
+  courier?: string;
+}): LookupOutcome {
   if (result.status === "found" && result.orderReference) {
     return {
       kind: "found",
@@ -71,7 +69,9 @@ export function OrderTimeline({ stage }: { stage: OrderStage }) {
       <div className="border border-border bg-premium p-6">
         <p className="eyebrow">Status</p>
         <p className="mt-2 font-display text-xl">{meta.label}</p>
-        <p className="mt-2 text-[0.875rem] leading-relaxed text-muted-foreground">{meta.description}</p>
+        <p className="mt-2 text-[0.875rem] leading-relaxed text-muted-foreground">
+          {meta.description}
+        </p>
       </div>
     );
   }
@@ -93,7 +93,10 @@ export function OrderTimeline({ stage }: { stage: OrderStage }) {
               {step.complete ? <Check className="size-3.5" /> : <Circle className="size-3.5" />}
             </span>
             {index < all.length - 1 ? (
-              <span className={cn("w-px flex-1", step.complete ? "bg-olive/50" : "bg-border")} aria-hidden="true" />
+              <span
+                className={cn("w-px flex-1", step.complete ? "bg-olive/50" : "bg-border")}
+                aria-hidden="true"
+              />
             ) : null}
           </div>
           <div className={cn("pb-8", !step.complete && "opacity-60")}>
@@ -131,7 +134,9 @@ export function OrderResult({ outcome }: { outcome: LookupOutcome }) {
         <p className="font-display text-lg">
           {outcome.kind === "error" ? "We couldn’t complete that check" : "No order found"}
         </p>
-        <p className="mt-2 text-[0.875rem] leading-relaxed text-muted-foreground">{outcome.reason}</p>
+        <p className="mt-2 text-[0.875rem] leading-relaxed text-muted-foreground">
+          {outcome.reason}
+        </p>
         <div className="mt-5 flex flex-wrap gap-3">
           <Button variant="outline" asChild>
             <Link to="/contact">Contact our team</Link>
@@ -154,7 +159,9 @@ export function OrderResult({ outcome }: { outcome: LookupOutcome }) {
         <div>
           <p className="eyebrow">Reference</p>
           <p className="mt-2 font-display text-xl tabular-nums">{outcome.orderReference}</p>
-          {placed ? <p className="mt-1 text-[0.8125rem] text-muted-foreground">Placed {placed}</p> : null}
+          {placed ? (
+            <p className="mt-1 text-[0.8125rem] text-muted-foreground">Placed {placed}</p>
+          ) : null}
         </div>
         <div>
           <p className="eyebrow">Status</p>
@@ -162,7 +169,9 @@ export function OrderResult({ outcome }: { outcome: LookupOutcome }) {
             {outcome.stage ? stageMeta(outcome.stage).label : "With our team"}
           </p>
           {outcome.courier ? (
-            <p className="mt-1 text-[0.8125rem] text-muted-foreground">Courier: {outcome.courier}</p>
+            <p className="mt-1 text-[0.8125rem] text-muted-foreground">
+              Courier: {outcome.courier}
+            </p>
           ) : null}
         </div>
         <div>

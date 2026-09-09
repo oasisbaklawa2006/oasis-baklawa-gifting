@@ -28,6 +28,7 @@ import { getProductBySlug, products } from "@/data/catalog";
 import type { Product } from "@/data/types";
 import { cn } from "@/lib/utils";
 import { canonicalUrl, siteUrl } from "@/lib/site-url";
+import { noImage } from "@/data/brand";
 
 export const Route = createFileRoute("/product/$slug")({
   loader: ({ params }): { product: Product } => {
@@ -37,7 +38,12 @@ export const Route = createFileRoute("/product/$slug")({
   },
   head: ({ loaderData }) => {
     if (!loaderData) {
-      return { meta: [{ title: "Product unavailable — Oasis Baklawa" }, { name: "robots", content: "noindex" }] };
+      return {
+        meta: [
+          { title: "Product unavailable — Oasis Baklawa" },
+          { name: "robots", content: "noindex" },
+        ],
+      };
     }
     const { product } = loaderData;
     const variant = product.variants[0];
@@ -116,8 +122,10 @@ function ProductPage() {
   const [conceal, setConceal] = useState(false);
 
   const variant = product.variants.find((v) => v.id === variantId) ?? product.variants[0];
-  const image = product.images[activeImage] ?? product.images[0];
-  const related = products.filter((p) => p.id !== product.id && p.categoryId === product.categoryId).slice(0, 4);
+  const image = product.images[activeImage] ?? product.images[0] ?? noImage;
+  const related = products
+    .filter((p) => p.id !== product.id && p.categoryId === product.categoryId)
+    .slice(0, 4);
 
   const { addToCart: addLine, setCartOpen, setGift } = useShop();
 
@@ -131,12 +139,15 @@ function ProductPage() {
     });
   };
 
-
   return (
     <>
       <div className="container-oasis pt-8">
         <Breadcrumbs
-          items={[{ label: "Home", to: "/" }, { label: "Shop", to: "/shop" }, { label: product.name }]}
+          items={[
+            { label: "Home", to: "/" },
+            { label: "Shop", to: "/shop" },
+            { label: product.name },
+          ]}
         />
       </div>
 
@@ -147,10 +158,12 @@ function ProductPage() {
             aria-label="Product view"
             className="mb-4 inline-flex rounded-sm border border-border p-1"
           >
-            {([
-              ["confectionery", "View Confectionery"],
-              ["packaging", "View Gift Packaging"],
-            ] as const).map(([key, label]) => (
+            {(
+              [
+                ["confectionery", "View Confectionery"],
+                ["packaging", "View Gift Packaging"],
+              ] as const
+            ).map(([key, label]) => (
               <button
                 key={key}
                 type="button"
@@ -161,7 +174,9 @@ function ProductPage() {
                 aria-pressed={perspective === key}
                 className={cn(
                   "h-11 rounded-sm px-4 text-[0.8125rem] transition-colors duration-200 ease-out",
-                  perspective === key ? "bg-espresso text-background" : "text-muted-foreground hover:text-foreground",
+                  perspective === key
+                    ? "bg-espresso text-background"
+                    : "text-muted-foreground hover:text-foreground",
                 )}
               >
                 {label}
@@ -262,7 +277,12 @@ function ProductPage() {
             <Button size="lg" className="min-w-40 flex-1 sm:flex-none" onClick={addToCart}>
               Add to cart
             </Button>
-            <Button size="lg" variant="outline" className="min-w-40 flex-1 sm:flex-none" onClick={addToCart}>
+            <Button
+              size="lg"
+              variant="outline"
+              className="min-w-40 flex-1 sm:flex-none"
+              onClick={addToCart}
+            >
               Buy now
             </Button>
             <WishlistButton productId={product.id} productName={product.name} />
@@ -270,7 +290,7 @@ function ProductPage() {
 
           <ul className="mt-9 grid gap-4 border-y border-border py-6 sm:grid-cols-3">
             {[
-              { icon: ShieldCheck, label: "Secure payments", detail: "Provider to be confirmed" },
+              { icon: ShieldCheck, label: "Secure payments", detail: "Encrypted checkout" },
               { icon: PackageCheck, label: "Careful packing", detail: "Rigid box with inner tray" },
               { icon: Truck, label: "Delivery", detail: "Estimate by PIN code below" },
             ].map(({ icon: Icon, label, detail }) => (
@@ -283,7 +303,6 @@ function ProductPage() {
               </li>
             ))}
           </ul>
-
 
           <div className="mt-8 rounded-sm border border-border bg-premium p-5">
             <p className="eyebrow">Send as a gift</p>
@@ -309,8 +328,14 @@ function ProductPage() {
               </p>
             </div>
             <label className="mt-4 flex items-start gap-3 text-[0.875rem]">
-              <Checkbox checked={conceal} onCheckedChange={(v) => setConceal(v === true)} className="mt-0.5" />
-              <span>This order is a gift — conceal prices and invoice slips from the shipping parcel.</span>
+              <Checkbox
+                checked={conceal}
+                onCheckedChange={(v) => setConceal(v === true)}
+                className="mt-0.5"
+              />
+              <span>
+                This order is a gift — conceal prices and invoice slips from the shipping parcel.
+              </span>
             </label>
           </div>
 
@@ -319,15 +344,18 @@ function ProductPage() {
             {product.verifiedClaims && product.verifiedClaims.length ? (
               <ul className="mt-3 flex flex-wrap gap-2">
                 {product.verifiedClaims.map((claim) => (
-                  <li key={claim} className="rounded-sm border border-gold/60 px-3 py-1 text-[0.75rem]">
+                  <li
+                    key={claim}
+                    className="rounded-sm border border-gold/60 px-3 py-1 text-[0.75rem]"
+                  >
                     {claim}
                   </li>
                 ))}
               </ul>
             ) : (
               <p className="mt-2 text-[0.8125rem] text-muted-foreground">
-                No dietary or certification claims are published for this product. Verified information will
-                appear here once supplied by Oasis Baklawa.
+                No dietary or certification claims are published for this product. Verified
+                information will appear here once supplied by Oasis Baklawa.
               </p>
             )}
           </div>
@@ -342,17 +370,22 @@ function ProductPage() {
               </AccordionContent>
             </AccordionItem>
             <AccordionItem value="ingredients" className="border-border">
-              <AccordionTrigger className="text-[0.9375rem]">Ingredients &amp; allergens</AccordionTrigger>
+              <AccordionTrigger className="text-[0.9375rem]">
+                Ingredients &amp; allergens
+              </AccordionTrigger>
               <AccordionContent className="text-[0.875rem] leading-relaxed text-muted-foreground">
                 <p>{product.ingredients.join(", ")}.</p>
                 <p className="mt-3">Allergens: {product.allergens.join(", ")}.</p>
                 <p className="mt-3 text-[0.75rem]">
-                  Placeholder information — final declarations to be supplied by Oasis Baklawa.
+                  Made in a kitchen that handles nuts, dairy and wheat. Refer to the pack for the
+                  full declaration.
                 </p>
               </AccordionContent>
             </AccordionItem>
             <AccordionItem value="storage" className="border-border">
-              <AccordionTrigger className="text-[0.9375rem]">Storage &amp; shelf life</AccordionTrigger>
+              <AccordionTrigger className="text-[0.9375rem]">
+                Storage &amp; shelf life
+              </AccordionTrigger>
               <AccordionContent className="text-[0.875rem] leading-relaxed text-muted-foreground">
                 <p>{product.storage}</p>
                 <p className="mt-3">{product.shelfLife}</p>
@@ -367,11 +400,17 @@ function ProductPage() {
                 </p>
                 <p className="mt-3">
                   See{" "}
-                  <Link to="/shipping" className="text-foreground underline decoration-gold/70 underline-offset-4">
+                  <Link
+                    to="/shipping"
+                    className="text-foreground underline decoration-gold/70 underline-offset-4"
+                  >
                     shipping zones and delivery times
                   </Link>{" "}
                   or{" "}
-                  <Link to="/track-order" className="text-foreground underline decoration-gold/70 underline-offset-4">
+                  <Link
+                    to="/track-order"
+                    className="text-foreground underline decoration-gold/70 underline-offset-4"
+                  >
                     track an existing order
                   </Link>
                   .
@@ -398,7 +437,6 @@ function ProductPage() {
             path={`/product/${product.slug}`}
             className="mt-8 border-t border-border pt-6"
           />
-
         </div>
       </section>
 

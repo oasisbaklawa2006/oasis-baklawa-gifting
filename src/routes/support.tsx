@@ -9,7 +9,11 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { track } from "@/lib/analytics";
-import { SUPPORT_REASONS, submitSupportRequest, type SupportReasonId } from "@/lib/support.functions";
+import {
+  SUPPORT_REASONS,
+  submitSupportRequest,
+  type SupportReasonId,
+} from "@/lib/support.functions";
 import { cn } from "@/lib/utils";
 
 const DESCRIPTION =
@@ -19,7 +23,8 @@ type SearchParams = { reference?: string };
 
 export const Route = createFileRoute("/support")({
   validateSearch: (search: Record<string, unknown>): SearchParams => {
-    const reference = typeof search["reference"] === "string" ? search["reference"].slice(0, 40) : "";
+    const reference =
+      typeof search["reference"] === "string" ? search["reference"].slice(0, 40) : "";
     return reference ? { reference } : {};
   },
   head: () => ({
@@ -46,17 +51,25 @@ function SupportPage() {
   const send = useServerFn(submitSupportRequest);
 
   const [reason, setReason] = useState<SupportReasonId>("delivery");
-  const [form, setForm] = useState({ name: "", contact: "", orderReference: reference, message: "" });
+  const [form, setForm] = useState({
+    name: "",
+    contact: "",
+    orderReference: reference,
+    message: "",
+  });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [state, setState] = useState<Submission>({ kind: "idle" });
   const key = useRef(
-    typeof crypto !== "undefined" && "randomUUID" in crypto ? crypto.randomUUID() : `sup-${Date.now()}`,
+    typeof crypto !== "undefined" && "randomUUID" in crypto
+      ? crypto.randomUUID()
+      : `sup-${Date.now()}`,
   );
 
   function validate() {
     const next: Record<string, string> = {};
     if (form.name.trim().length < 2) next["name"] = "Tell us your name.";
-    if (form.contact.trim().length < 5) next["contact"] = "Add an email address or phone number so we can reply.";
+    if (form.contact.trim().length < 5)
+      next["contact"] = "Add an email address or phone number so we can reply.";
     if (form.message.trim().length < 10) next["message"] = "Please describe what happened.";
     setErrors(next);
     return Object.keys(next).length === 0;
@@ -78,12 +91,14 @@ function SupportPage() {
         },
       });
       track({ name: "generate_lead", params: { lead_type: `support:${reason}` } });
-      if (result.status === "received") setState({ kind: "received", ticket: result.ticketReference });
+      if (result.status === "received")
+        setState({ kind: "received", ticket: result.ticketReference });
       else setState({ kind: "fallback", reason: result.reason });
     } catch {
       setState({
         kind: "fallback",
-        reason: "We couldn’t send that just now. Please use the contact details below and we will help you straight away.",
+        reason:
+          "We couldn’t send that just now. Please use the contact details below and we will help you straight away.",
       });
     }
   }
@@ -175,7 +190,9 @@ function SupportPage() {
                 id="s-ref"
                 className="mt-2 h-11"
                 value={form.orderReference}
-                onChange={(event) => setForm((f) => ({ ...f, orderReference: event.target.value.toUpperCase() }))}
+                onChange={(event) =>
+                  setForm((f) => ({ ...f, orderReference: event.target.value.toUpperCase() }))
+                }
               />
             </div>
             <div className="sm:col-span-2">
@@ -206,8 +223,8 @@ function SupportPage() {
             {state.kind === "received" ? (
               <p className="border border-border bg-premium p-4 text-[0.875rem]">
                 Thank you — your request is logged as{" "}
-                <span className="font-medium tabular-nums">{state.ticket}</span>. We reply within one
-                working day.
+                <span className="font-medium tabular-nums">{state.ticket}</span>. We reply within
+                one working day.
               </p>
             ) : null}
             {state.kind === "fallback" ? (
@@ -226,9 +243,9 @@ function SupportPage() {
           <div className="border border-border p-6">
             <h2 className="font-display text-lg">Cancellations & refunds</h2>
             <p className="mt-2 text-[0.875rem] leading-relaxed text-muted-foreground">
-              Because everything is prepared fresh to order, a cancellation can only be actioned before
-              your order is packed. Send a cancellation request here and our team will confirm what is
-              possible.
+              Because everything is prepared fresh to order, a cancellation can only be actioned
+              before your order is packed. Send a cancellation request here and our team will
+              confirm what is possible.
             </p>
             <Button variant="ghost" className="mt-3 px-0" asChild>
               <Link to="/returns">Returns & refunds policy</Link>

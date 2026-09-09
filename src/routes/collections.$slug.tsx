@@ -17,7 +17,10 @@ export const Route = createFileRoute("/collections/$slug")({
   head: ({ loaderData }) => {
     if (!loaderData) {
       return {
-        meta: [{ title: "Collection unavailable — Oasis Baklawa" }, { name: "robots", content: "noindex" }],
+        meta: [
+          { title: "Collection unavailable — Oasis Baklawa" },
+          { name: "robots", content: "noindex" },
+        ],
       };
     }
     const { collection } = loaderData;
@@ -52,7 +55,10 @@ function CollectionNotFound() {
 }
 
 function CollectionPage() {
-  const { collection, items } = Route.useLoaderData() as { collection: Collection; items: Product[] };
+  const { collection, items } = Route.useLoaderData() as {
+    collection: Collection;
+    items: Product[];
+  };
 
   return (
     <div className="pb-20">

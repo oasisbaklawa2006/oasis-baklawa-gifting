@@ -72,8 +72,9 @@ export type Store = {
   city: string;
   region: string;
   addressLines: string[];
-  hours: string;
-  phone: string;
+  postalCode?: string;
+  hours?: string;
+  phone?: string;
   services: string[];
   status: "open" | "opening-soon";
 };
@@ -103,13 +104,7 @@ export type CorporateCapability = {
 export type GiftingOccasion = {
   id: string;
   slug: string;
-  group:
-    | "corporate"
-    | "wedding"
-    | "festival"
-    | "baby-family"
-    | "personal"
-    | "premium";
+  group: "corporate" | "wedding" | "festival" | "baby-family" | "personal" | "premium";
   title: string;
   summary: string;
   examples: string[];

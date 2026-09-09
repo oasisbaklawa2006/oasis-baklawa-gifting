@@ -66,7 +66,7 @@ export interface PaymentAdapter {
     amount: Money;
     orderReference: string;
     idempotencyKey: string;
-    customer?: { name?: string; email?: string; phone?: string };
+    customer?: { name?: string | undefined; email?: string | undefined; phone?: string | undefined } | undefined;
   }): Promise<PaymentIntentResult>;
   /** Verify a browser-returned payment handshake. */
   verifyCallback(payload: Record<string, string>): Promise<VerificationResult>;

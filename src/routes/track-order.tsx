@@ -4,7 +4,11 @@ import { useServerFn } from "@tanstack/react-start";
 import { Package, Truck } from "lucide-react";
 
 import { Breadcrumbs } from "@/components/oasis/breadcrumbs";
-import { OrderResult, toLookupOutcome, type LookupOutcome } from "@/components/oasis/order-tracking";
+import {
+  OrderResult,
+  toLookupOutcome,
+  type LookupOutcome,
+} from "@/components/oasis/order-tracking";
 import { SectionHeading } from "@/components/oasis/section-heading";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -96,7 +100,10 @@ function TrackOrderPage() {
         <form onSubmit={submit} className="border border-border bg-utility p-6 md:p-8" noValidate>
           <div className="grid gap-4 sm:grid-cols-2">
             <div>
-              <Label htmlFor="tracking-reference" className="text-[0.75rem] uppercase tracking-[0.14em] text-driftwood">
+              <Label
+                htmlFor="tracking-reference"
+                className="text-[0.75rem] uppercase tracking-[0.14em] text-driftwood"
+              >
                 Order reference
               </Label>
               <Input
@@ -111,7 +118,10 @@ function TrackOrderPage() {
               />
             </div>
             <div>
-              <Label htmlFor="tracking-contact" className="text-[0.75rem] uppercase tracking-[0.14em] text-driftwood">
+              <Label
+                htmlFor="tracking-contact"
+                className="text-[0.75rem] uppercase tracking-[0.14em] text-driftwood"
+              >
                 Email or phone used at checkout
               </Label>
               <Input
@@ -147,8 +157,8 @@ function TrackOrderPage() {
             <div>
               <h2 className="font-display text-lg">Something looks wrong?</h2>
               <p className="mt-1 text-[0.875rem] leading-relaxed text-muted-foreground">
-                If a parcel is delayed or arrives damaged, contact us with your reference and a photo of
-                the box and we will put it right.
+                If a parcel is delayed or arrives damaged, contact us with your reference and a
+                photo of the box and we will put it right.
               </p>
               <Button asChild variant="outline" className="mt-4">
                 <Link to="/support">Get help with an order</Link>
@@ -160,8 +170,8 @@ function TrackOrderPage() {
             <div>
               <h2 className="font-display text-lg">Planning your next order?</h2>
               <p className="mt-1 text-[0.875rem] leading-relaxed text-muted-foreground">
-                Check the delivery window for your PIN code before you order, including cut-off times
-                and available service levels.
+                Check the delivery window for your PIN code before you order, including cut-off
+                times and available service levels.
               </p>
               <Button asChild variant="outline" className="mt-4">
                 <Link to="/shipping">Delivery estimator</Link>

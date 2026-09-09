@@ -12,6 +12,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { products } from "@/data/catalog";
 import { hamperBoxes, hamperExtras, inr, ribbonColours } from "@/data/checkout";
 import { formatMoney } from "@/lib/format";
+import { noImage } from "@/data/brand";
 import { useShop } from "@/lib/store";
 import { cn } from "@/lib/utils";
 
@@ -144,7 +145,9 @@ function BuildYourBoxPage() {
                     onClick={() => changeBox(option.id)}
                     className={cn(
                       "flex flex-col items-start gap-1 border p-5 text-left transition-colors",
-                      selected ? "border-foreground bg-premium" : "border-border hover:border-driftwood",
+                      selected
+                        ? "border-foreground bg-premium"
+                        : "border-border hover:border-driftwood",
                     )}
                   >
                     <span className="font-display text-lg">{option.name}</span>
@@ -178,7 +181,7 @@ function BuildYourBoxPage() {
                 return (
                   <li key={product.id} className="flex gap-4 bg-canvas p-4">
                     <img
-                      src={product.images[0]?.src}
+                      src={product.images[0]?.src ?? noImage.src}
                       alt={product.images[0]?.alt ?? ""}
                       width={160}
                       height={200}
@@ -201,7 +204,9 @@ function BuildYourBoxPage() {
                         >
                           <Minus className="size-3.5" aria-hidden />
                         </button>
-                        <span className="min-w-6 text-center text-[0.875rem] tabular-nums">{count}</span>
+                        <span className="min-w-6 text-center text-[0.875rem] tabular-nums">
+                          {count}
+                        </span>
                         <button
                           type="button"
                           onClick={() => adjust(product.id, 1)}
@@ -232,14 +237,18 @@ function BuildYourBoxPage() {
                     onClick={() => toggleExtra(extra.id)}
                     className={cn(
                       "flex w-full items-start gap-4 border p-4 text-left transition-colors",
-                      selected ? "border-foreground bg-premium" : "border-border hover:border-driftwood",
+                      selected
+                        ? "border-foreground bg-premium"
+                        : "border-border hover:border-driftwood",
                     )}
                   >
                     <span
                       aria-hidden
                       className={cn(
                         "mt-0.5 flex size-5 shrink-0 items-center justify-center border",
-                        selected ? "border-foreground bg-foreground text-background" : "border-border",
+                        selected
+                          ? "border-foreground bg-foreground text-background"
+                          : "border-border",
                       )}
                     >
                       {selected ? <Check className="size-3.5" /> : null}
@@ -272,7 +281,9 @@ function BuildYourBoxPage() {
                       onClick={() => setRibbon(colour.id)}
                       className={cn(
                         "flex items-center gap-2 border px-3 py-2 text-[0.8125rem] transition-colors",
-                        ribbon === colour.id ? "border-foreground" : "border-border hover:border-driftwood",
+                        ribbon === colour.id
+                          ? "border-foreground"
+                          : "border-border hover:border-driftwood",
                       )}
                     >
                       <span
@@ -296,7 +307,9 @@ function BuildYourBoxPage() {
                   placeholder="Written by hand on an ivory card."
                   className="mt-2"
                 />
-                <p className="mt-2 text-xs text-muted-foreground">{message.length}/200 characters</p>
+                <p className="mt-2 text-xs text-muted-foreground">
+                  {message.length}/200 characters
+                </p>
               </div>
             </div>
           </section>

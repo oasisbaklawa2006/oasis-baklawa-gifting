@@ -30,8 +30,7 @@ const schema = z.object({
 });
 
 export type SupportSubmitResult =
-  | { status: "received"; ticketReference: string }
-  | { status: "unavailable"; reason: string };
+  { status: "received"; ticketReference: string } | { status: "unavailable"; reason: string };
 
 export const submitSupportRequest = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => schema.parse(input))
@@ -40,7 +39,8 @@ export const submitSupportRequest = createServerFn({ method: "POST" })
     if (!baseUrl) {
       return {
         status: "unavailable",
-        reason: "We can’t log this request automatically right now — please reach us on the contact details below and we will pick it up straight away.",
+        reason:
+          "We can’t log this request automatically right now — please reach us on the contact details below and we will pick it up straight away.",
       };
     }
     try {
@@ -60,11 +60,20 @@ export const submitSupportRequest = createServerFn({ method: "POST" })
         }),
       });
       if (!response.ok) {
-        return { status: "unavailable", reason: "Our support system didn’t respond. Please use the contact details below." };
+        return {
+          status: "unavailable",
+          reason: "Our support system didn’t respond. Please use the contact details below.",
+        };
       }
       const payload = (await response.json()) as { ticketReference?: string };
-      return { status: "received", ticketReference: payload.ticketReference ?? data.idempotencyKey.slice(0, 8) };
+      return {
+        status: "received",
+        ticketReference: payload.ticketReference ?? data.idempotencyKey.slice(0, 8),
+      };
     } catch {
-      return { status: "unavailable", reason: "We couldn’t reach our support system. Please use the contact details below." };
+      return {
+        status: "unavailable",
+        reason: "We couldn’t reach our support system. Please use the contact details below.",
+      };
     }
   });

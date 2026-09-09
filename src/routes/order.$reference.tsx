@@ -4,7 +4,11 @@ import { useServerFn } from "@tanstack/react-start";
 import { Gift, LifeBuoy, Truck } from "lucide-react";
 
 import { Breadcrumbs } from "@/components/oasis/breadcrumbs";
-import { OrderResult, toLookupOutcome, type LookupOutcome } from "@/components/oasis/order-tracking";
+import {
+  OrderResult,
+  toLookupOutcome,
+  type LookupOutcome,
+} from "@/components/oasis/order-tracking";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -44,7 +48,10 @@ function OrderPage() {
       const result = await runLookup({ data: { reference, contact: who.trim() } });
       setOutcome(toLookupOutcome(result));
     } catch {
-      setOutcome({ kind: "error", reason: "We couldn’t reach the order service. Please try again." });
+      setOutcome({
+        kind: "error",
+        reason: "We couldn’t reach the order service. Please try again.",
+      });
     } finally {
       inFlight.current = false;
     }
@@ -69,8 +76,8 @@ function OrderPage() {
         <h1 className="mt-3 text-3xl md:text-[2.5rem]">Thank you — your order is with us</h1>
         <p className="mt-4 text-[0.9375rem] leading-relaxed text-muted-foreground">
           Your reference is{" "}
-          <span className="font-medium text-foreground tabular-nums">{reference}</span>. Keep it handy
-          for any question about this order.
+          <span className="font-medium text-foreground tabular-nums">{reference}</span>. Keep it
+          handy for any question about this order.
         </p>
       </header>
 
@@ -83,7 +90,10 @@ function OrderPage() {
               void check(contact);
             }}
           >
-            <Label htmlFor="order-contact" className="text-[0.75rem] uppercase tracking-[0.14em] text-driftwood">
+            <Label
+              htmlFor="order-contact"
+              className="text-[0.75rem] uppercase tracking-[0.14em] text-driftwood"
+            >
               Confirm the email or phone used on this order
             </Label>
             <Input

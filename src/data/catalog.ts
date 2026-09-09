@@ -4,11 +4,12 @@ import giftBox from "@/assets/product-giftbox.jpg";
 import craftFilo from "@/assets/craft-filo.jpg";
 
 import { extraCategories, extraSeeds, type ProductSeed } from "./catalog-extra";
+import { brandMedia, familyMedia, productMedia, topSellerSlugs } from "./brand";
 import type { Category, Collection, Money, Product } from "./types";
 
 /**
- * MOCK CATALOGUE — names, prices, weights and copy are placeholders for UI
- * work only. Replace with real Oasis Baklawa catalogue data before launch.
+ * Oasis catalogue. Product names, families and photography follow the published
+ * Oasis range; records still awaiting governed data carry `isMock`.
  */
 
 export const images = { heroBaklawa, assorted, giftBox, craftFilo };
@@ -18,31 +19,31 @@ const inr = (amount: number): Money => ({ amount, currency: "INR" });
 export const categories: Category[] = [
   {
     id: "cat-baklawa",
-    slug: "baklawa",
-    name: "Baklawa",
+    slug: "premium-baklawa",
+    name: "Premium Baklawa",
     description: "Layered filo, clarified butter and nuts — the house signature.",
-    image: { src: heroBaklawa, alt: "Tray of pistachio baklawa arranged in rows" },
+    image: familyMedia.baklawa,
   },
   {
     id: "cat-pistachio",
-    slug: "pistachio",
-    name: "Pistachio Specialities",
-    description: "Midya, bulbul and kataifi styles built around pistachio.",
-    image: { src: heroBaklawa, alt: "Close view of pistachio-topped pastries" },
+    slug: "kadayif-baklawa",
+    name: "Kadayif Baklawa",
+    description: "Fine shredded pastry, rolled and baked around nuts.",
+    image: familyMedia.kadayif,
   },
   {
     id: "cat-assortments",
-    slug: "assortments",
-    name: "Arabic Sweets Assortments",
-    description: "Curated selections for sharing and hosting.",
-    image: { src: assorted, alt: "Assorted Arabic sweets in a shallow ceramic dish" },
+    slug: "assortment-gifts",
+    name: "Assortment Gifts",
+    description: "Curated selections for sharing, hosting and gifting.",
+    image: brandMedia.giftBanner,
   },
   {
     id: "cat-gifting",
-    slug: "gift-boxes",
-    name: "Gift Boxes",
+    slug: "gift-hampers",
+    name: "Gift Hampers",
     description: "Considered packaging for occasions and corporate gifting.",
-    image: { src: giftBox, alt: "Sand-coloured gift box finished with a ribbon" },
+    image: productMedia["gift-hamper"]!,
   },
 ];
 
@@ -99,7 +100,7 @@ const seeds: ProductSeed[] = [
     storage: "Store in a cool, dry place away from direct sunlight. Keep the box closed.",
     shelfLife: "Best enjoyed within the period printed on the pack.",
     leadTime: "Dispatch timeline shown at checkout.",
-    occasions: ["Festive", "Hosting", "Thank you"],
+    occasions: ["Festive", "Casual"],
     dietary: ["Vegetarian", "Contains nuts"],
     badges: ["signature", "bestseller"],
     details: [
@@ -109,7 +110,13 @@ const seeds: ProductSeed[] = [
     ],
     variants: [
       { id: "v-250", label: "250 g", price: inr(650), availability: "in-stock" },
-      { id: "v-500", label: "500 g", price: inr(1200), compareAtPrice: inr(1300), availability: "in-stock" },
+      {
+        id: "v-500",
+        label: "500 g",
+        price: inr(1200),
+        compareAtPrice: inr(1300),
+        availability: "in-stock",
+      },
       { id: "v-1000", label: "1 kg", price: inr(2300), availability: "made-to-order" },
     ],
     image: { src: heroBaklawa, alt: "Signature pistachio baklawa arranged on a wooden tray" },
@@ -122,13 +129,14 @@ const seeds: ProductSeed[] = [
     categoryId: "cat-baklawa",
     collectionIds: ["col-signature"],
     shortDescription: "A mixed tray across the house baklawa shapes.",
-    description: "A selection across our baklawa shapes and nut fillings, cut to a consistent size for sharing.",
+    description:
+      "A selection across our baklawa shapes and nut fillings, cut to a consistent size for sharing.",
     ingredients: ["Wheat filo pastry", "Clarified butter", "Mixed nuts", "Sugar", "Water"],
     allergens: ["Wheat (gluten)", "Milk", "Tree nuts"],
     storage: "Cool, dry place. Reseal after opening.",
     shelfLife: "See pack for date.",
     leadTime: "Dispatch timeline shown at checkout.",
-    occasions: ["Hosting", "Everyday"],
+    occasions: ["Casual"],
     dietary: ["Vegetarian", "Contains nuts"],
     badges: ["bestseller"],
     details: [{ label: "Assortment", value: "Mixed shapes" }],
@@ -142,7 +150,7 @@ const seeds: ProductSeed[] = [
     id: "p-midya",
     slug: "midya-pistachio",
     name: "Midya Pistachio",
-    categoryCue: "Pistachio speciality",
+    categoryCue: "Kadayif Baklawa",
     categoryId: "cat-pistachio",
     collectionIds: ["col-signature"],
     shortDescription: "Boat-shaped pastry packed with pistachio.",
@@ -152,7 +160,7 @@ const seeds: ProductSeed[] = [
     storage: "Cool, dry place.",
     shelfLife: "See pack for date.",
     leadTime: "Dispatch timeline shown at checkout.",
-    occasions: ["Hosting"],
+    occasions: ["Casual"],
     dietary: ["Vegetarian", "Contains nuts"],
     badges: ["signature"],
     details: [{ label: "Shape", value: "Midya (boat)" }],
@@ -166,17 +174,18 @@ const seeds: ProductSeed[] = [
     id: "p-bulbul",
     slug: "bulbul-pistachio",
     name: "Bulbul Pistachio",
-    categoryCue: "Pistachio speciality",
+    categoryCue: "Kadayif Baklawa",
     categoryId: "cat-pistachio",
     collectionIds: ["col-signature"],
     shortDescription: "Rolled filo nests with a pistachio centre.",
-    description: "Thin filo rolled into a nest, baked to a crisp and finished with chopped pistachio.",
+    description:
+      "Thin filo rolled into a nest, baked to a crisp and finished with chopped pistachio.",
     ingredients: ["Wheat filo pastry", "Clarified butter", "Pistachio", "Sugar"],
     allergens: ["Wheat (gluten)", "Milk", "Pistachio (tree nuts)"],
     storage: "Cool, dry place.",
     shelfLife: "See pack for date.",
     leadTime: "Dispatch timeline shown at checkout.",
-    occasions: ["Hosting", "Festive"],
+    occasions: ["Casual", "Festive"],
     dietary: ["Vegetarian", "Contains nuts"],
     badges: [],
     details: [{ label: "Shape", value: "Rolled nest" }],
@@ -190,7 +199,7 @@ const seeds: ProductSeed[] = [
     id: "p-kataifi",
     slug: "kataifi-pistachio",
     name: "Kataifi Pistachio",
-    categoryCue: "Pistachio speciality",
+    categoryCue: "Kadayif Baklawa",
     categoryId: "cat-pistachio",
     collectionIds: ["col-seasonal"],
     shortDescription: "Shredded pastry, pistachio, light syrup.",
@@ -200,7 +209,7 @@ const seeds: ProductSeed[] = [
     storage: "Cool, dry place.",
     shelfLife: "See pack for date.",
     leadTime: "Dispatch timeline shown at checkout.",
-    occasions: ["Hosting"],
+    occasions: ["Casual"],
     dietary: ["Vegetarian", "Contains nuts"],
     badges: ["new"],
     details: [{ label: "Pastry", value: "Kataifi" }],
@@ -211,7 +220,7 @@ const seeds: ProductSeed[] = [
     id: "p-gift-box",
     slug: "baklawa-gift-box",
     name: "Baklawa Gift Box",
-    categoryCue: "Gift box",
+    categoryCue: "Gift Hampers",
     categoryId: "cat-gifting",
     collectionIds: ["col-gifting"],
     shortDescription: "A boxed baklawa selection with a ribbon finish.",
@@ -221,13 +230,19 @@ const seeds: ProductSeed[] = [
     storage: "Cool, dry place.",
     shelfLife: "See pack for date.",
     leadTime: "Dispatch timeline shown at checkout.",
-    occasions: ["Festive", "Thank you", "Corporate"],
+    occasions: ["Festive", "Casual", "Corporate"],
     dietary: ["Vegetarian", "Contains nuts"],
     badges: ["gifting"],
     details: [{ label: "Presentation", value: "Rigid box, ribbon" }],
     variants: [
       { id: "v-small", label: "Box of 12", price: inr(950), availability: "in-stock" },
-      { id: "v-large", label: "Box of 24", price: inr(1750), compareAtPrice: inr(1900), availability: "in-stock" },
+      {
+        id: "v-large",
+        label: "Box of 24",
+        price: inr(1750),
+        compareAtPrice: inr(1900),
+        availability: "in-stock",
+      },
     ],
     image: { src: giftBox, alt: "Baklawa gift box tied with a ribbon" },
   },
@@ -235,17 +250,18 @@ const seeds: ProductSeed[] = [
     id: "p-premium-assortment",
     slug: "premium-arabic-sweets-assortment",
     name: "Premium Arabic Sweets Assortment",
-    categoryCue: "Assortment",
+    categoryCue: "Assortment Gifts",
     categoryId: "cat-assortments",
     collectionIds: ["col-signature", "col-gifting"],
     shortDescription: "A wide selection across the sweets counter.",
-    description: "A broad assortment across baklawa and other Arabic sweets, arranged for presentation.",
+    description:
+      "A broad assortment across baklawa and other Arabic sweets, arranged for presentation.",
     ingredients: ["Wheat pastry", "Clarified butter", "Mixed nuts", "Sugar", "Semolina"],
     allergens: ["Wheat (gluten)", "Milk", "Tree nuts"],
     storage: "Cool, dry place.",
     shelfLife: "See pack for date.",
     leadTime: "Dispatch timeline shown at checkout.",
-    occasions: ["Festive", "Hosting", "Corporate"],
+    occasions: ["Festive", "Casual", "Corporate"],
     dietary: ["Vegetarian", "Contains nuts"],
     badges: ["bestseller"],
     details: [{ label: "Assortment", value: "Wide selection" }],
@@ -274,7 +290,9 @@ const seeds: ProductSeed[] = [
     dietary: ["Vegetarian", "Contains nuts"],
     badges: ["gifting"],
     details: [{ label: "Programme", value: "Volume orders on enquiry" }],
-    variants: [{ id: "v-std", label: "Standard box", price: inr(1400), availability: "made-to-order" }],
+    variants: [
+      { id: "v-std", label: "Standard box", price: inr(1400), availability: "made-to-order" },
+    ],
     image: { src: giftBox, alt: "Corporate gift box in sand-coloured board" },
   },
   {
@@ -291,7 +309,7 @@ const seeds: ProductSeed[] = [
     storage: "Cool, dry place.",
     shelfLife: "See pack for date.",
     leadTime: "Dispatch timeline shown at checkout.",
-    occasions: ["Everyday", "Hosting"],
+    occasions: ["Casual"],
     dietary: ["Vegetarian", "Contains nuts"],
     badges: [],
     details: [{ label: "Primary nut", value: "Walnut" }],
@@ -312,7 +330,7 @@ const seeds: ProductSeed[] = [
     storage: "Cool, dry place.",
     shelfLife: "See pack for date.",
     leadTime: "Dispatch timeline shown at checkout.",
-    occasions: ["Everyday"],
+    occasions: ["Casual"],
     dietary: ["Vegetarian", "Contains nuts"],
     badges: ["new"],
     details: [{ label: "Shape", value: "Finger roll" }],
@@ -323,11 +341,12 @@ const seeds: ProductSeed[] = [
     id: "p-festive-hamper",
     slug: "festive-hamper",
     name: "Festive Hamper",
-    categoryCue: "Gift box",
+    categoryCue: "Gift Hampers",
     categoryId: "cat-gifting",
     collectionIds: ["col-seasonal", "col-gifting"],
     shortDescription: "A seasonal hamper built around the house selection.",
-    description: "A seasonal hamper combining baklawa with an assortment, presented in a lidded box.",
+    description:
+      "A seasonal hamper combining baklawa with an assortment, presented in a lidded box.",
     ingredients: ["Wheat pastry", "Clarified butter", "Mixed nuts", "Sugar"],
     allergens: ["Wheat (gluten)", "Milk", "Tree nuts"],
     storage: "Cool, dry place.",
@@ -344,7 +363,7 @@ const seeds: ProductSeed[] = [
     id: "p-date-selection",
     slug: "stuffed-date-selection",
     name: "Stuffed Date Selection",
-    categoryCue: "Assortment",
+    categoryCue: "Assortment Gifts",
     categoryId: "cat-assortments",
     collectionIds: ["col-gifting"],
     shortDescription: "Dates filled with nuts, boxed for gifting.",
@@ -354,7 +373,7 @@ const seeds: ProductSeed[] = [
     storage: "Cool, dry place.",
     shelfLife: "See pack for date.",
     leadTime: "Dispatch timeline shown at checkout.",
-    occasions: ["Festive", "Thank you"],
+    occasions: ["Festive", "Casual"],
     dietary: ["Vegetarian", "Contains nuts", "No added gluten ingredients"],
     badges: [],
     details: [{ label: "Format", value: "Presentation tray" }],
@@ -365,17 +384,46 @@ const seeds: ProductSeed[] = [
 
 export const categoriesAll: Category[] = [...categories, ...extraCategories];
 
-export const products: Product[] = [...seeds, ...extraSeeds].map(({ image, ...rest }) => ({
-  ...rest,
-  images: [image, { src: craftFilo, alt: `${rest.name} — preparation in the kitchen` }, { src: assorted, alt: `${rest.name} — served` }],
-}));
+/**
+ * Family photography used when a product record has no photograph of its own.
+ * Only genuine Oasis imagery of that family is used; families without one show
+ * a restrained branded card instead of a stand-in photo.
+ */
+const familyFallback: Record<string, { src: string; alt: string }> = {
+  "cat-baklawa": familyMedia.baklawa,
+  "cat-pistachio": familyMedia.kadayif,
+  "cat-assortments": brandMedia.giftBanner,
+  "cat-gifting": productMedia["gift-hamper"]!,
+  "cat-dates": familyMedia.dates,
+  "cat-chocolates": familyMedia.chocolates,
+  "cat-luxury-gifting": brandMedia.giftBanner,
+};
+
+export const products: Product[] = [...seeds, ...extraSeeds].map(({ image: _image, ...rest }) => {
+  const primary = productMedia[rest.slug] ?? familyFallback[rest.categoryId];
+  return {
+    ...rest,
+    images: primary ? [primary, brandMedia.craft] : [],
+  };
+});
 
 export const getProductBySlug = (slug: string) => products.find((p) => p.slug === slug);
 
 export const getProductsByCollection = (collectionId: string) =>
   products.filter((p) => p.collectionIds.includes(collectionId));
 
-export const bestSellers = products.filter((p) => p.badges.includes("bestseller") || p.badges.includes("signature"));
+/** Top sellers as published by Oasis, in the published order. */
+export const bestSellers = topSellerSlugs
+  .map((slug) => products.find((p) => p.slug === slug))
+  .filter((p): p is Product => Boolean(p));
 
-export const occasions = ["Festive", "Hosting", "Thank you", "Corporate", "Everyday"];
+export const occasions = [
+  "Festive",
+  "Wedding",
+  "Mehendi",
+  "Baby Shower",
+  "Corporate",
+  "Casual",
+  "Premium",
+];
 export const dietaryOptions = ["Vegetarian", "Contains nuts", "No added gluten ingredients"];

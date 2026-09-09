@@ -27,7 +27,9 @@ export function DeliveryEstimator({ compact = false, className }: Props) {
   const [error, setError] = useState<string | null>(null);
 
   const zone = findZoneByPincode(pincode);
-  const available = zone ? serviceLevels.filter((s) => zone.services.includes(s.id)) : serviceLevels;
+  const available = zone
+    ? serviceLevels.filter((s) => zone.services.includes(s.id))
+    : serviceLevels;
 
   function check(event: React.FormEvent) {
     event.preventDefault();
@@ -73,7 +75,12 @@ export function DeliveryEstimator({ compact = false, className }: Props) {
       </div>
 
       <form onSubmit={check} className="mt-5" noValidate>
-        <div className={cn("grid gap-3", compact ? "sm:grid-cols-[1fr_auto]" : "sm:grid-cols-[220px_1fr_auto]")}>
+        <div
+          className={cn(
+            "grid gap-3",
+            compact ? "sm:grid-cols-[1fr_auto]" : "sm:grid-cols-[220px_1fr_auto]",
+          )}
+        >
           <div>
             <Label htmlFor={`pincode-${compact ? "compact" : "full"}`} className="sr-only">
               Delivery PIN code

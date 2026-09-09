@@ -66,9 +66,17 @@ const pillars = [
 
 const workflow = [
   { step: "01", title: "Brief", copy: "Volume, occasion, budget band and delivery window." },
-  { step: "02", title: "Selection", copy: "We propose formats and contents from the current range." },
+  {
+    step: "02",
+    title: "Selection",
+    copy: "We propose formats and contents from the current range.",
+  },
   { step: "03", title: "Approval", copy: "Samples and presentation signed off before production." },
-  { step: "04", title: "Dispatch", copy: "Consolidated or multi-address dispatch, tracked throughout." },
+  {
+    step: "04",
+    title: "Dispatch",
+    copy: "Consolidated or multi-address dispatch, tracked throughout.",
+  },
 ];
 
 function CorporatePage() {
@@ -90,9 +98,9 @@ function CorporatePage() {
             Gifting programmes and supply, handled properly
           </h1>
           <p className="mt-6 text-[0.9375rem] leading-relaxed text-muted-foreground">
-            Oasis Baklawa works with companies, retailers and hospitality partners on gifting and supply
-            across our baklawa, dates, chocolate and confection ranges. Volumes, formats and timelines are
-            agreed with our team before anything is produced.
+            Oasis Baklawa works with companies, retailers and hospitality partners on gifting and
+            supply across our baklawa, dates, chocolate and confection ranges. Volumes, formats and
+            timelines are agreed with our team before anything is produced.
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
             <Button asChild size="lg">
@@ -109,8 +117,8 @@ function CorporatePage() {
         <div className="rounded-sm border border-border bg-premium p-6">
           <p className="eyebrow">Existing business customer</p>
           <p className="mt-3 text-[0.875rem] leading-relaxed text-muted-foreground">
-            A business account area with order history, repeat ordering and GST invoicing is planned. Until
-            it opens, please reach us through the enquiry form.
+            A business account area with order history, repeat ordering and GST invoicing is
+            planned. Until it opens, please reach us through the enquiry form.
           </p>
           <Button variant="outline" className="mt-5 w-full" disabled>
             Account sign-in — coming soon
@@ -139,7 +147,9 @@ function CorporatePage() {
               <li key={w.step} className="border-t border-border pt-5">
                 <p className="font-display text-2xl text-driftwood">{w.step}</p>
                 <h3 className="mt-3 font-display text-lg">{w.title}</h3>
-                <p className="mt-2 text-[0.875rem] leading-relaxed text-muted-foreground">{w.copy}</p>
+                <p className="mt-2 text-[0.875rem] leading-relaxed text-muted-foreground">
+                  {w.copy}
+                </p>
               </li>
             ))}
           </ol>
@@ -155,8 +165,8 @@ function CorporatePage() {
           <div className="max-w-xl">
             <SectionHeading eyebrow="Enquiry" title="Tell us about your requirement" as="h2" />
             <p className="mt-6 text-[0.875rem] leading-relaxed text-muted-foreground">
-              Share the outline and our commercial team will respond with formats, indicative pricing and a
-              production timeline. Nothing is committed at this stage.
+              Share the outline and our commercial team will respond with formats, indicative
+              pricing and a production timeline. Nothing is committed at this stage.
             </p>
             <ul className="mt-8 grid gap-3 text-[0.875rem] text-muted-foreground">
               <li className="flex gap-3">
@@ -217,7 +227,12 @@ function CorporatePage() {
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <div className="grid gap-2">
                   <Label htmlFor="c-qty">Approximate quantity</Label>
-                  <Input id="c-qty" name="quantity" inputMode="numeric" placeholder="e.g. 250 boxes" />
+                  <Input
+                    id="c-qty"
+                    name="quantity"
+                    inputMode="numeric"
+                    placeholder="e.g. 250 boxes"
+                  />
                 </div>
                 <div className="grid gap-2">
                   <Label htmlFor="c-date">Required by</Label>
@@ -226,7 +241,12 @@ function CorporatePage() {
               </div>
               <div className="grid gap-2">
                 <Label htmlFor="c-brief">Brief</Label>
-                <Textarea id="c-brief" name="brief" rows={4} placeholder="Occasion, budget band, delivery cities." />
+                <Textarea
+                  id="c-brief"
+                  name="brief"
+                  rows={4}
+                  placeholder="Occasion, budget band, delivery cities."
+                />
               </div>
               <Button type="submit" size="lg" className="mt-2">
                 Submit enquiry

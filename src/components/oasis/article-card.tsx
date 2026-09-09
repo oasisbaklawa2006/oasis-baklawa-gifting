@@ -45,7 +45,9 @@ export function ArticleCard({
             {article.title}
           </Link>
         </h3>
-        <p className="mt-3 text-[0.875rem] leading-relaxed text-muted-foreground">{article.excerpt}</p>
+        <p className="mt-3 text-[0.875rem] leading-relaxed text-muted-foreground">
+          {article.excerpt}
+        </p>
         <p className="mt-4 text-[0.75rem] uppercase tracking-[0.14em] text-driftwood">
           {article.readingMinutes} min read
         </p>

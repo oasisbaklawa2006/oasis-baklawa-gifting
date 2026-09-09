@@ -10,7 +10,8 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default: "rounded-sm bg-primary text-primary-foreground hover:bg-olive-soft",
-        destructive: "rounded-sm bg-destructive text-destructive-foreground hover:bg-destructive/90",
+        destructive:
+          "rounded-sm bg-destructive text-destructive-foreground hover:bg-destructive/90",
         outline: "rounded-sm border border-border bg-transparent text-foreground hover:bg-premium",
         secondary: "rounded-sm bg-secondary text-secondary-foreground hover:bg-sand/60",
         ghost: "rounded-sm hover:bg-premium hover:text-accent-foreground",
@@ -33,7 +34,6 @@ const buttonVariants = cva(
     },
   },
 );
-
 
 export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>, VariantProps<typeof buttonVariants> {

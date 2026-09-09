@@ -81,7 +81,10 @@ export interface PaymentGateway {
 }
 
 export interface CourierAllocator {
-  allocate(input: { postalCode: string; intent: FulfilmentIntent }): Promise<{ courier: string; eta: string }>;
+  allocate(input: {
+    postalCode: string;
+    intent: FulfilmentIntent;
+  }): Promise<{ courier: string; eta: string }>;
 }
 
 export interface MarketplaceSync {

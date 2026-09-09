@@ -110,7 +110,10 @@ function SearchPage() {
           />
         ) : (
           <>
-            <p className="border-b border-border pb-3 text-[0.8125rem] text-muted-foreground" aria-live="polite">
+            <p
+              className="border-b border-border pb-3 text-[0.8125rem] text-muted-foreground"
+              aria-live="polite"
+            >
               {results.length} {results.length === 1 ? "result" : "results"} for “{query}”
             </p>
             <div className="mt-10 grid grid-cols-2 gap-x-5 gap-y-12 lg:grid-cols-3 xl:grid-cols-4">

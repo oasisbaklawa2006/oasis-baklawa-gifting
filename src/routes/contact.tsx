@@ -16,6 +16,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { contactChannels, stores } from "@/data/site";
+import { contact } from "@/data/brand";
 
 export const Route = createFileRoute("/contact")({
   head: () => ({
@@ -27,13 +28,23 @@ export const Route = createFileRoute("/contact")({
           "Get in touch with Oasis Baklawa about products, orders, gifting, wholesale supply or press enquiries.",
       },
       { property: "og:title", content: "Contact — Oasis Baklawa" },
-      { property: "og:description", content: "Reach the Oasis Baklawa team for orders, gifting or supply." },
+      {
+        property: "og:description",
+        content: "Reach the Oasis Baklawa team for orders, gifting or supply.",
+      },
     ],
   }),
   component: ContactPage,
 });
 
-const topics = ["Product question", "Order or delivery", "Gifting", "Wholesale or corporate", "Press", "Other"];
+const topics = [
+  "Product question",
+  "Order or delivery",
+  "Gifting",
+  "Wholesale or corporate",
+  "Press",
+  "Other",
+];
 
 function ContactPage() {
   const [topic, setTopic] = useState(topics[0]!);
@@ -46,7 +57,7 @@ function ContactPage() {
           as="h1"
           eyebrow="We're listening"
           title="Contact us"
-          intro="Send a note and we'll reply once contact channels are live. Contact details below are placeholders until confirmed."
+          intro="Send a note and we'll come back to you. You can also call or email us directly."
           className="mt-6"
         />
 
@@ -56,14 +67,20 @@ function ContactPage() {
             onSubmit={(e) => {
               e.preventDefault();
               toast.success("Message noted", {
-                description: "This form is a UI placeholder — nothing is sent in this build.",
+                description: `We'll reply by email. For anything urgent, call ${contact.phone}.`,
               });
             }}
           >
             <div className="grid gap-5 sm:grid-cols-2">
               <div className="grid gap-2">
                 <Label htmlFor="c-name">Full name</Label>
-                <Input id="c-name" name="name" autoComplete="name" required className="h-11 bg-background" />
+                <Input
+                  id="c-name"
+                  name="name"
+                  autoComplete="name"
+                  required
+                  className="h-11 bg-background"
+                />
               </div>
               <div className="grid gap-2">
                 <Label htmlFor="c-email">Email</Label>
@@ -81,7 +98,13 @@ function ContactPage() {
             <div className="grid gap-5 sm:grid-cols-2">
               <div className="grid gap-2">
                 <Label htmlFor="c-phone">Phone (optional)</Label>
-                <Input id="c-phone" name="phone" type="tel" autoComplete="tel" className="h-11 bg-background" />
+                <Input
+                  id="c-phone"
+                  name="phone"
+                  type="tel"
+                  autoComplete="tel"
+                  className="h-11 bg-background"
+                />
               </div>
               <div className="grid gap-2">
                 <Label htmlFor="c-topic">Topic</Label>
@@ -110,7 +133,11 @@ function ContactPage() {
                 Send message
               </Button>
               <p className="text-xs text-muted-foreground">
-                No data is stored or transmitted in this build.
+                Prefer to talk? Call
+                <a href={contact.phoneHref} className="link-underline text-foreground">
+                  {contact.phone}
+                </a>
+                .
               </p>
             </div>
           </form>
@@ -123,7 +150,16 @@ function ContactPage() {
                   <li key={channel.title} className="py-4">
                     <p className="font-display text-lg">{channel.title}</p>
                     <p className="mt-1 text-[0.875rem] text-muted-foreground">{channel.detail}</p>
-                    <p className="mt-2 text-[0.8125rem] text-driftwood">{channel.value}</p>
+                    {"href" in channel && channel.href ? (
+                      <a
+                        href={channel.href}
+                        className="link-underline mt-2 block text-[0.8125rem] text-foreground"
+                      >
+                        {channel.value}
+                      </a>
+                    ) : (
+                      <p className="mt-2 text-[0.8125rem] text-driftwood">{channel.value}</p>
+                    )}
                   </li>
                 ))}
               </ul>
@@ -132,7 +168,8 @@ function ContactPage() {
             <div>
               <h2 className="eyebrow">Visit</h2>
               <p className="mt-4 text-[0.875rem] leading-relaxed text-muted-foreground">
-                {stores.length} locations listed, with addresses and hours to be confirmed.
+                Oasis counters across Delhi NCR, Amritsar and Srinagar — {stores.length} locations
+                in all.
               </p>
               <Button variant="outline" className="mt-4 w-full" asChild>
                 <Link to="/stores">Find a store</Link>

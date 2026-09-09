@@ -131,7 +131,11 @@ export const paymentProviders: PaymentProvider[] = [
 
 export const supportedCurrencies: { code: Money["currency"]; label: string; note: string }[] = [
   { code: "INR", label: "Indian Rupee", note: "Default pricing currency for orders within India." },
-  { code: "AED", label: "UAE Dirham", note: "Displayed for Gulf customers; settled by the gateway." },
+  {
+    code: "AED",
+    label: "UAE Dirham",
+    note: "Displayed for Gulf customers; settled by the gateway.",
+  },
   { code: "USD", label: "US Dollar", note: "Displayed for other international customers." },
 ];
 
@@ -294,9 +298,24 @@ export const hamperBoxes: HamperBox[] = [
 ];
 
 export const hamperExtras: PersonalisationOption[] = [
-  { id: "dates", name: "Medjool date layer", description: "A layer of stuffed dates under the sweets.", fee: 320 },
-  { id: "coffee", name: "Arabic coffee sachets", description: "Cardamom coffee sachets for the table.", fee: 240 },
-  { id: "tin", name: "Keepsake tin", description: "A reusable tin instead of the standard liner.", fee: 300 },
+  {
+    id: "dates",
+    name: "Medjool date layer",
+    description: "A layer of stuffed dates under the sweets.",
+    fee: 320,
+  },
+  {
+    id: "coffee",
+    name: "Arabic coffee sachets",
+    description: "Cardamom coffee sachets for the table.",
+    fee: 240,
+  },
+  {
+    id: "tin",
+    name: "Keepsake tin",
+    description: "A reusable tin instead of the standard liner.",
+    fee: 300,
+  },
 ];
 
 export const inr = (amount: number): Money => ({ amount, currency: "INR" });

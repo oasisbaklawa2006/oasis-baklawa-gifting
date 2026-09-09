@@ -8,7 +8,9 @@ export function TrustStrip() {
           <div key={point.title} className="min-w-0">
             <span className="gold-rule block" aria-hidden="true" />
             <h3 className="mt-4 font-display text-lg">{point.title}</h3>
-            <p className="mt-2 text-[0.8125rem] leading-relaxed text-muted-foreground">{point.detail}</p>
+            <p className="mt-2 text-[0.8125rem] leading-relaxed text-muted-foreground">
+              {point.detail}
+            </p>
           </div>
         ))}
       </div>

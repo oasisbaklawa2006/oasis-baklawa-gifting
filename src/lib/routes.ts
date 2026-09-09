@@ -1,5 +1,4 @@
-
-/** Paths used by mock navigation data, narrowed to real router routes. */
+/** Paths used by navigation data, narrowed to real router routes. */
 const known = [
   "/",
   "/shop",
@@ -21,11 +20,30 @@ const known = [
   "/wishlist",
   "/build-a-gift",
   "/corporate",
+  "/gift-finder",
+  "/account",
+  "/support",
+  "/returns",
+  "/privacy",
+  "/terms",
 ] as const;
 
 type KnownPath = (typeof known)[number];
 
 export function toRoute(path: string): KnownPath {
-  return (known as readonly string[]).includes(path) ? (path as KnownPath) : "/";
+  const base = path.split("?")[0] ?? "/";
+  return (known as readonly string[]).includes(base) ? (base as KnownPath) : "/";
 }
 
+/**
+ * Splits a navigation href such as `/shop?category=chocolates` into a typed
+ * route and its search params, so navigation data can stay declarative.
+ */
+export function toLink(path: string): { to: KnownPath; search: Record<string, string> } {
+  const [base, query] = path.split("?");
+  const search: Record<string, string> = {};
+  if (query) {
+    for (const [key, value] of new URLSearchParams(query).entries()) search[key] = value;
+  }
+  return { to: toRoute(base ?? "/"), search };
+}

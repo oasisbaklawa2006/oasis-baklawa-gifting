@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { formatMoney } from "@/lib/format";
 import { cartSubtotal, resolveLines, useShop } from "@/lib/store";
+import { noImage } from "@/data/brand";
 
 export const Route = createFileRoute("/cart")({
   head: () => ({
@@ -53,14 +54,17 @@ function CartPage() {
           <div>
             <ul className="divide-y divide-border border-y border-border">
               {resolved.map(({ line, product, variant, lineTotal }) => (
-                <li key={`${line.productId}-${line.variantId}`} className="flex gap-4 py-6 sm:gap-6">
+                <li
+                  key={`${line.productId}-${line.variantId}`}
+                  className="flex gap-4 py-6 sm:gap-6"
+                >
                   <Link
                     to="/product/$slug"
                     params={{ slug: product.slug }}
                     className="w-24 shrink-0 overflow-hidden rounded-sm bg-premium sm:w-32"
                   >
                     <img
-                      src={product.images[0]?.src}
+                      src={product.images[0]?.src ?? noImage.src}
                       alt={product.images[0]?.alt ?? ""}
                       width={400}
                       height={500}
@@ -71,7 +75,11 @@ function CartPage() {
                   <div className="flex min-w-0 flex-1 flex-col">
                     <p className="eyebrow">{product.categoryCue}</p>
                     <h2 className="mt-1 font-display text-lg leading-snug">
-                      <Link to="/product/$slug" params={{ slug: product.slug }} className="link-underline">
+                      <Link
+                        to="/product/$slug"
+                        params={{ slug: product.slug }}
+                        className="link-underline"
+                      >
                         {product.name}
                       </Link>
                     </h2>

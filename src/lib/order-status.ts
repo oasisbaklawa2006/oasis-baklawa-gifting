@@ -224,7 +224,10 @@ const RAW_MAP: Record<string, OrderStage> = {
 /** Normalize any raw status string. Unknown values fail safe to `confirmed`? No — to `failed` is wrong too: use `processing` only for known words. */
 export function mapOrderStage(raw: string | null | undefined): OrderStage | null {
   if (!raw) return null;
-  const key = raw.trim().toLowerCase().replace(/[\s-]+/g, "_");
+  const key = raw
+    .trim()
+    .toLowerCase()
+    .replace(/[\s-]+/g, "_");
   return RAW_MAP[key] ?? null;
 }
 
@@ -233,7 +236,9 @@ export function stageMeta(stage: OrderStage): StageMeta {
 }
 
 /** Timeline steps with completion flags relative to the current stage. */
-export function timelineFor(stage: OrderStage): { meta: StageMeta; complete: boolean; current: boolean }[] {
+export function timelineFor(
+  stage: OrderStage,
+): { meta: StageMeta; complete: boolean; current: boolean }[] {
   const current = ORDER_STAGES[stage];
   return TIMELINE_STAGES.map((meta) => ({
     meta,

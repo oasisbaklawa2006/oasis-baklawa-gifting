@@ -13,7 +13,8 @@ export const Route = createFileRoute("/wishlist")({
       { title: "Saved Items — Oasis Baklawa" },
       {
         name: "description",
-        content: "The baklawa, assortments and gift boxes you have saved from the Oasis Baklawa range.",
+        content:
+          "The baklawa, assortments and gift boxes you have saved from the Oasis Baklawa range.",
       },
       { property: "og:title", content: "Saved Items — Oasis Baklawa" },
       { property: "og:description", content: "Your saved Oasis Baklawa selection." },

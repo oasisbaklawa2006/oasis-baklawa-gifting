@@ -64,7 +64,7 @@ function ShippingPage() {
           as="h1"
           eyebrow="Shipping & delivery"
           title="How your order reaches you"
-          intro="Small-batch preparation, insulated packing and tracked dispatch. Times below are indicative placeholders in this build and will be confirmed against live carrier data."
+          intro="Small-batch preparation, insulated packing and tracked dispatch. Times below are indicative and confirmed against the carrier at dispatch."
           action={
             <Button asChild variant="outline">
               <Link to="/track-order">Track an order</Link>
@@ -120,12 +120,20 @@ function ShippingPage() {
           />
           <div className="mt-10 overflow-x-auto">
             <table className="w-full min-w-[640px] border-collapse text-left text-[0.875rem]">
-              <caption className="sr-only">Delivery zones with transit times and available services</caption>
+              <caption className="sr-only">
+                Delivery zones with transit times and available services
+              </caption>
               <thead>
                 <tr className="border-b border-border text-[0.75rem] uppercase tracking-[0.14em] text-driftwood">
-                  <th scope="col" className="py-3 pr-4 font-normal">Zone</th>
-                  <th scope="col" className="py-3 pr-4 font-normal">Transit</th>
-                  <th scope="col" className="py-3 font-normal">Services</th>
+                  <th scope="col" className="py-3 pr-4 font-normal">
+                    Zone
+                  </th>
+                  <th scope="col" className="py-3 pr-4 font-normal">
+                    Transit
+                  </th>
+                  <th scope="col" className="py-3 font-normal">
+                    Services
+                  </th>
                 </tr>
               </thead>
               <tbody>
@@ -133,11 +141,15 @@ function ShippingPage() {
                   <tr key={zone.id} className="border-b border-border/70 align-top">
                     <th scope="row" className="py-4 pr-4 font-normal">
                       <span className="font-display text-base">{zone.name}</span>
-                      <span className="mt-1 block text-[0.8125rem] text-muted-foreground">{zone.blurb}</span>
+                      <span className="mt-1 block text-[0.8125rem] text-muted-foreground">
+                        {zone.blurb}
+                      </span>
                     </th>
                     <td className="py-4 pr-4 text-muted-foreground">
                       {zone.minDays === 0 ? "Same day" : `${zone.minDays}`}
-                      {zone.minDays === 0 ? ` – ${zone.maxDays} working day` : `–${zone.maxDays} working days`}
+                      {zone.minDays === 0
+                        ? ` – ${zone.maxDays} working day`
+                        : `–${zone.maxDays} working days`}
                     </td>
                     <td className="py-4 text-muted-foreground">
                       {zone.services
@@ -159,7 +171,9 @@ function ShippingPage() {
             <article key={note.title} className="border border-border p-6">
               <span className="gold-rule block" aria-hidden="true" />
               <h3 className="mt-4 font-display text-lg">{note.title}</h3>
-              <p className="mt-2 text-[0.8125rem] leading-relaxed text-muted-foreground">{note.body}</p>
+              <p className="mt-2 text-[0.8125rem] leading-relaxed text-muted-foreground">
+                {note.body}
+              </p>
             </article>
           ))}
         </div>
@@ -189,7 +203,9 @@ function ShippingPage() {
             <Accordion type="single" collapsible className="mt-8">
               {shippingFaqs.map((faq) => (
                 <AccordionItem key={faq.q} value={faq.q}>
-                  <AccordionTrigger className="text-left font-display text-base">{faq.q}</AccordionTrigger>
+                  <AccordionTrigger className="text-left font-display text-base">
+                    {faq.q}
+                  </AccordionTrigger>
                   <AccordionContent className="text-[0.875rem] leading-relaxed text-muted-foreground">
                     {faq.a}
                   </AccordionContent>
@@ -200,12 +216,12 @@ function ShippingPage() {
             <div className="mt-10 border border-border bg-utility p-6">
               <h3 className="font-display text-lg">Bulk or corporate consignments</h3>
               <p className="mt-2 text-[0.875rem] leading-relaxed text-muted-foreground">
-                Multi-box and multi-address dispatch is scheduled with the corporate team so packing,
-                freight and delivery windows are planned together.
+                Multi-box and multi-address dispatch is scheduled with the corporate team so
+                packing, freight and delivery windows are planned together.
               </p>
               <div className="mt-5 flex flex-wrap gap-3">
                 <Button asChild>
-                  <Link to="/business">Corporate & B2B</Link>
+                  <Link to="/corporate">Corporate gifting</Link>
                 </Button>
                 <Button asChild variant="outline">
                   <Link to="/contact">Contact us</Link>

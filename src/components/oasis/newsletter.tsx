@@ -30,7 +30,10 @@ export function NewsletterModule() {
         </div>
 
         <form onSubmit={onSubmit} className="w-full max-w-md md:justify-self-end">
-          <Label htmlFor="newsletter-email" className="text-[0.75rem] uppercase tracking-[0.14em] text-driftwood">
+          <Label
+            htmlFor="newsletter-email"
+            className="text-[0.75rem] uppercase tracking-[0.14em] text-driftwood"
+          >
             Email address
           </Label>
           <div className="mt-3 flex flex-col gap-3 sm:flex-row">

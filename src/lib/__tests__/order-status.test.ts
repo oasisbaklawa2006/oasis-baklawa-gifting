@@ -1,11 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import {
-  canRequestCancellation,
-  mapOrderStage,
-  stageMeta,
-  timelineFor,
-} from "@/lib/order-status";
+import { canRequestCancellation, mapOrderStage, stageMeta, timelineFor } from "@/lib/order-status";
 
 describe("order stage mapping", () => {
   it("maps provider vocabulary onto customer-safe stages", () => {

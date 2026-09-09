@@ -4,15 +4,10 @@ import { X } from "lucide-react";
 import { PriceDisplay } from "@/components/oasis/price-display";
 import { QuantityControl } from "@/components/oasis/quantity-control";
 import { Button } from "@/components/ui/button";
-import {
-  Sheet,
-  SheetContent,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle,
-} from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetFooter, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { formatMoney } from "@/lib/format";
 import { cartSubtotal, resolveLines, useShop } from "@/lib/store";
+import { noImage } from "@/data/brand";
 
 export function CartDrawer() {
   const { lines, cartOpen, setCartOpen, setQuantity, removeLine, gift } = useShop();
@@ -53,7 +48,7 @@ export function CartDrawer() {
                     className="w-20 shrink-0 overflow-hidden rounded-sm bg-premium"
                   >
                     <img
-                      src={product.images[0]?.src}
+                      src={product.images[0]?.src ?? noImage.src}
                       alt={product.images[0]?.alt ?? ""}
                       width={320}
                       height={400}
@@ -112,7 +107,11 @@ export function CartDrawer() {
                   <div className="flex items-baseline justify-between text-xs text-muted-foreground">
                     <span>Demo free-delivery progress</span>
                     <span className="tabular-nums">
-                      {Math.min(100, Math.round((subtotal.amount / DEMO_FREE_SHIPPING_THRESHOLD) * 100))}%
+                      {Math.min(
+                        100,
+                        Math.round((subtotal.amount / DEMO_FREE_SHIPPING_THRESHOLD) * 100),
+                      )}
+                      %
                     </span>
                   </div>
                   <div
@@ -121,7 +120,10 @@ export function CartDrawer() {
                     aria-label="Demo free-delivery progress"
                     aria-valuemin={0}
                     aria-valuemax={100}
-                    aria-valuenow={Math.min(100, Math.round((subtotal.amount / DEMO_FREE_SHIPPING_THRESHOLD) * 100))}
+                    aria-valuenow={Math.min(
+                      100,
+                      Math.round((subtotal.amount / DEMO_FREE_SHIPPING_THRESHOLD) * 100),
+                    )}
                   >
                     <div
                       className="h-full bg-gold transition-[width] duration-200 ease-out"
@@ -147,7 +149,8 @@ export function CartDrawer() {
                   <span className="font-medium tabular-nums">{formatMoney(subtotal)}</span>
                 </div>
                 <p className="text-xs text-muted-foreground">
-                  Taxes and delivery are not calculated in this build. Checkout is not connected yet.
+                  Taxes and delivery are not calculated in this build. Checkout is not connected
+                  yet.
                 </p>
                 <div className="grid gap-2">
                   <Button asChild size="lg" onClick={() => setCartOpen(false)}>

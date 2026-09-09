@@ -68,7 +68,6 @@ function ChannelColumn({
   );
 }
 
-
 /** "Also available on" — marketplaces, profiles and map listings. */
 export function ChannelStrip() {
   return (
@@ -100,7 +99,6 @@ export function ChannelStrip() {
             links={discoveryLinks}
             medium="listing"
           />
-
         </div>
       </div>
     </section>
@@ -154,7 +152,11 @@ export function MarketplaceRow({ className }: { className?: string }) {
       {live.map((link) => (
         <li key={link.id}>
           <a
-            href={withUtm(link.href, { source: link.id, medium: "marketplace", campaign: "footer" })}
+            href={withUtm(link.href, {
+              source: link.id,
+              medium: "marketplace",
+              campaign: "footer",
+            })}
             target="_blank"
             rel="noopener noreferrer"
             className="link-underline text-[0.8125rem] text-muted-foreground hover:text-foreground"

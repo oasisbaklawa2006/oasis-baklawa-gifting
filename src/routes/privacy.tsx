@@ -68,7 +68,9 @@ function PrivacyPage() {
         {SECTIONS.map((section) => (
           <article key={section.title}>
             <h2 className="font-display text-xl">{section.title}</h2>
-            <p className="mt-3 text-[0.9375rem] leading-relaxed text-muted-foreground">{section.body}</p>
+            <p className="mt-3 text-[0.9375rem] leading-relaxed text-muted-foreground">
+              {section.body}
+            </p>
           </article>
         ))}
         <Button variant="outline" asChild>

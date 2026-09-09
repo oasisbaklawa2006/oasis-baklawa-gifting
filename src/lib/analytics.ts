@@ -27,12 +27,21 @@ export type AnalyticsEvent =
   | { name: "select_item"; params: { item_list_name: string; items: AnalyticsItem[] } }
   | { name: "add_to_wishlist"; params: { items: AnalyticsItem[] } }
   | { name: "add_to_cart"; params: { currency: string; value: number; items: AnalyticsItem[] } }
-  | { name: "remove_from_cart"; params: { currency: string; value: number; items: AnalyticsItem[] } }
+  | {
+      name: "remove_from_cart";
+      params: { currency: string; value: number; items: AnalyticsItem[] };
+    }
   | { name: "view_cart"; params: { currency: string; value: number; items: AnalyticsItem[] } }
   | { name: "begin_checkout"; params: { currency: string; value: number; items: AnalyticsItem[] } }
-  | { name: "add_shipping_info"; params: { currency: string; value: number; shipping_tier: string } }
+  | {
+      name: "add_shipping_info";
+      params: { currency: string; value: number; shipping_tier: string };
+    }
   | { name: "add_payment_info"; params: { currency: string; value: number; payment_type: string } }
-  | { name: "purchase"; params: { transaction_id: string; currency: string; value: number; items: AnalyticsItem[] } }
+  | {
+      name: "purchase";
+      params: { transaction_id: string; currency: string; value: number; items: AnalyticsItem[] };
+    }
   | { name: "search"; params: { search_term: string; results: number } }
   | { name: "generate_lead"; params: { lead_type: string } }
   | { name: "sign_up_newsletter"; params: { placement: string } }
@@ -109,7 +118,10 @@ export function tagScripts(): { src?: string; children?: string; async?: boolean
   }
 
   if (ga4MeasurementId && !tagsOwnedByGtm) {
-    scripts.push({ src: `https://www.googletagmanager.com/gtag/js?id=${ga4MeasurementId}`, async: true });
+    scripts.push({
+      src: `https://www.googletagmanager.com/gtag/js?id=${ga4MeasurementId}`,
+      async: true,
+    });
     scripts.push({
       children: `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','${ga4MeasurementId}',{send_page_view:false});`,
     });

@@ -49,12 +49,20 @@ export function EditorialModule({
             {eyebrow}
           </p>
           <h2 className="mt-4 text-3xl leading-tight md:text-[2.5rem]">{title}</h2>
-          <p className="mt-5 max-w-xl text-[0.9375rem] leading-relaxed text-muted-foreground">{body}</p>
+          <p className="mt-5 max-w-xl text-[0.9375rem] leading-relaxed text-muted-foreground">
+            {body}
+          </p>
           {points ? (
             <ul className="mt-8 space-y-4 border-t border-border pt-8">
               {points.map((point) => (
-                <li key={point} className="grid grid-cols-[auto_minmax(0,1fr)] gap-3 text-[0.9375rem]">
-                  <span className="mt-2 size-1.5 shrink-0 rounded-full bg-gold" aria-hidden="true" />
+                <li
+                  key={point}
+                  className="grid grid-cols-[auto_minmax(0,1fr)] gap-3 text-[0.9375rem]"
+                >
+                  <span
+                    className="mt-2 size-1.5 shrink-0 rounded-full bg-gold"
+                    aria-hidden="true"
+                  />
                   <span className="text-muted-foreground">{point}</span>
                 </li>
               ))}

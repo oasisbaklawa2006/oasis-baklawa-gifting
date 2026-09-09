@@ -70,11 +70,39 @@ export const unconfiguredAccountAdapter: AccountAdapter = {
 /* ----------------------------- validation ----------------------------- */
 
 export const INDIAN_STATES = [
-  "Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar", "Chandigarh", "Chhattisgarh", "Delhi",
-  "Goa", "Gujarat", "Haryana", "Himachal Pradesh", "Jammu & Kashmir", "Jharkhand", "Karnataka",
-  "Kerala", "Ladakh", "Madhya Pradesh", "Maharashtra", "Manipur", "Meghalaya", "Mizoram",
-  "Nagaland", "Odisha", "Puducherry", "Punjab", "Rajasthan", "Sikkim", "Tamil Nadu", "Telangana",
-  "Tripura", "Uttar Pradesh", "Uttarakhand", "West Bengal",
+  "Andhra Pradesh",
+  "Arunachal Pradesh",
+  "Assam",
+  "Bihar",
+  "Chandigarh",
+  "Chhattisgarh",
+  "Delhi",
+  "Goa",
+  "Gujarat",
+  "Haryana",
+  "Himachal Pradesh",
+  "Jammu & Kashmir",
+  "Jharkhand",
+  "Karnataka",
+  "Kerala",
+  "Ladakh",
+  "Madhya Pradesh",
+  "Maharashtra",
+  "Manipur",
+  "Meghalaya",
+  "Mizoram",
+  "Nagaland",
+  "Odisha",
+  "Puducherry",
+  "Punjab",
+  "Rajasthan",
+  "Sikkim",
+  "Tamil Nadu",
+  "Telangana",
+  "Tripura",
+  "Uttar Pradesh",
+  "Uttarakhand",
+  "West Bengal",
 ] as const;
 
 export type AddressErrors = Partial<Record<keyof SavedAddress, string>>;
@@ -86,7 +114,8 @@ export function validateAddress(input: Partial<SavedAddress>): AddressErrors {
     errors.phone = "Enter a 10-digit Indian mobile number.";
   if (input.email && !/^[^@\s]+@[^@\s]+\.[^@\s]{2,}$/.test(input.email))
     errors.email = "Enter a valid email address.";
-  if (!input.line1 || input.line1.trim().length < 5) errors.line1 = "Enter the building and street.";
+  if (!input.line1 || input.line1.trim().length < 5)
+    errors.line1 = "Enter the building and street.";
   if (!input.city || input.city.trim().length < 2) errors.city = "Enter the city.";
   if (!input.state || input.state.trim().length < 2) errors.state = "Select the state.";
   if (!/^[1-9]\d{5}$/.test((input.pincode ?? "").replace(/\D/g, "")))
@@ -95,7 +124,9 @@ export function validateAddress(input: Partial<SavedAddress>): AddressErrors {
 }
 
 export function isValidGstin(value: string): boolean {
-  return /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/.test(value.trim().toUpperCase());
+  return /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/.test(
+    value.trim().toUpperCase(),
+  );
 }
 
 /* ------------------------------ local store ---------------------------- */
@@ -153,11 +184,18 @@ export function loadOrderRefs(): SavedOrderRef[] {
 
 export function rememberOrderRef(reference: string, contact: string): void {
   const existing = loadOrderRefs().filter((entry) => entry.reference !== reference);
-  write(ORDERS_KEY, [{ reference, contact, savedAt: new Date().toISOString() }, ...existing].slice(0, 20));
+  write(
+    ORDERS_KEY,
+    [{ reference, contact, savedAt: new Date().toISOString() }, ...existing].slice(0, 20),
+  );
 }
 
 export function loadConsents(): ConsentPreferences {
-  return read<ConsentPreferences>(CONSENT_KEY, { newsletter: false, offers: false, orderUpdates: true });
+  return read<ConsentPreferences>(CONSENT_KEY, {
+    newsletter: false,
+    offers: false,
+    orderUpdates: true,
+  });
 }
 
 export function saveConsents(value: ConsentPreferences): void {
