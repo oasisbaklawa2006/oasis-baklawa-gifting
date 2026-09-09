@@ -134,6 +134,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           ],
         }),
       },
+      // Analytics/tag loaders are added only for destinations that are configured.
+      ...tagScripts(),
     ],
   }),
 
