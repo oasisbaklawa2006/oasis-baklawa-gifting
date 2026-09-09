@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AboutRouteImport } from './routes/about'
+import { Route as AccountRouteImport } from './routes/account'
 import { Route as BuildAGiftRouteImport } from './routes/build-a-gift'
 import { Route as BuildYourBoxRouteImport } from './routes/build-your-box'
 import { Route as BusinessRouteImport } from './routes/business'
@@ -22,12 +23,15 @@ import { Route as FaqRouteImport } from './routes/faq'
 import { Route as GiftFinderRouteImport } from './routes/gift-finder'
 import { Route as GiftingRouteImport } from './routes/gifting'
 import { Route as PaymentOptionsRouteImport } from './routes/payment-options'
+import { Route as PrivacyRouteImport } from './routes/privacy'
+import { Route as ReturnsRouteImport } from './routes/returns'
 import { Route as SearchRouteImport } from './routes/search'
 import { Route as ShippingRouteImport } from './routes/shipping'
 import { Route as ShopRouteImport } from './routes/shop'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as StoresRouteImport } from './routes/stores'
 import { Route as SupportRouteImport } from './routes/support'
+import { Route as TermsRouteImport } from './routes/terms'
 import { Route as TrackOrderRouteImport } from './routes/track-order'
 import { Route as WishlistRouteImport } from './routes/wishlist'
 import { Route as AdminStatusRouteImport } from './routes/admin.status'
@@ -48,6 +52,11 @@ const IndexRoute = IndexRouteImport.update({
 const AboutRoute = AboutRouteImport.update({
   id: '/about',
   path: '/about',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AccountRoute = AccountRouteImport.update({
+  id: '/account',
+  path: '/account',
   getParentRoute: () => rootRouteImport,
 } as any)
 const BuildAGiftRoute = BuildAGiftRouteImport.update({
@@ -105,6 +114,16 @@ const PaymentOptionsRoute = PaymentOptionsRouteImport.update({
   path: '/payment-options',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PrivacyRoute = PrivacyRouteImport.update({
+  id: '/privacy',
+  path: '/privacy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ReturnsRoute = ReturnsRouteImport.update({
+  id: '/returns',
+  path: '/returns',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SearchRoute = SearchRouteImport.update({
   id: '/search',
   path: '/search',
@@ -133,6 +152,11 @@ const StoresRoute = StoresRouteImport.update({
 const SupportRoute = SupportRouteImport.update({
   id: '/support',
   path: '/support',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TermsRoute = TermsRouteImport.update({
+  id: '/terms',
+  path: '/terms',
   getParentRoute: () => rootRouteImport,
 } as any)
 const TrackOrderRoute = TrackOrderRouteImport.update({
@@ -195,6 +219,7 @@ const ApiPublicPaymentsWebhookRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/account': typeof AccountRoute
   '/build-a-gift': typeof BuildAGiftRoute
   '/build-your-box': typeof BuildYourBoxRoute
   '/business': typeof BusinessRoute
@@ -206,12 +231,15 @@ export interface FileRoutesByFullPath {
   '/gift-finder': typeof GiftFinderRoute
   '/gifting': typeof GiftingRoute
   '/payment-options': typeof PaymentOptionsRoute
+  '/privacy': typeof PrivacyRoute
+  '/returns': typeof ReturnsRoute
   '/search': typeof SearchRoute
   '/shipping': typeof ShippingRoute
   '/shop': typeof ShopRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/stores': typeof StoresRoute
   '/support': typeof SupportRoute
+  '/terms': typeof TermsRoute
   '/track-order': typeof TrackOrderRoute
   '/wishlist': typeof WishlistRoute
   '/admin/status': typeof AdminStatusRoute
@@ -227,6 +255,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/account': typeof AccountRoute
   '/build-a-gift': typeof BuildAGiftRoute
   '/build-your-box': typeof BuildYourBoxRoute
   '/business': typeof BusinessRoute
@@ -238,12 +267,15 @@ export interface FileRoutesByTo {
   '/gift-finder': typeof GiftFinderRoute
   '/gifting': typeof GiftingRoute
   '/payment-options': typeof PaymentOptionsRoute
+  '/privacy': typeof PrivacyRoute
+  '/returns': typeof ReturnsRoute
   '/search': typeof SearchRoute
   '/shipping': typeof ShippingRoute
   '/shop': typeof ShopRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/stores': typeof StoresRoute
   '/support': typeof SupportRoute
+  '/terms': typeof TermsRoute
   '/track-order': typeof TrackOrderRoute
   '/wishlist': typeof WishlistRoute
   '/admin/status': typeof AdminStatusRoute
@@ -260,6 +292,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/account': typeof AccountRoute
   '/build-a-gift': typeof BuildAGiftRoute
   '/build-your-box': typeof BuildYourBoxRoute
   '/business': typeof BusinessRoute
@@ -271,12 +304,15 @@ export interface FileRoutesById {
   '/gift-finder': typeof GiftFinderRoute
   '/gifting': typeof GiftingRoute
   '/payment-options': typeof PaymentOptionsRoute
+  '/privacy': typeof PrivacyRoute
+  '/returns': typeof ReturnsRoute
   '/search': typeof SearchRoute
   '/shipping': typeof ShippingRoute
   '/shop': typeof ShopRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/stores': typeof StoresRoute
   '/support': typeof SupportRoute
+  '/terms': typeof TermsRoute
   '/track-order': typeof TrackOrderRoute
   '/wishlist': typeof WishlistRoute
   '/admin/status': typeof AdminStatusRoute
@@ -294,6 +330,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/about'
+    | '/account'
     | '/build-a-gift'
     | '/build-your-box'
     | '/business'
@@ -305,12 +342,15 @@ export interface FileRouteTypes {
     | '/gift-finder'
     | '/gifting'
     | '/payment-options'
+    | '/privacy'
+    | '/returns'
     | '/search'
     | '/shipping'
     | '/shop'
     | '/sitemap.xml'
     | '/stores'
     | '/support'
+    | '/terms'
     | '/track-order'
     | '/wishlist'
     | '/admin/status'
@@ -326,6 +366,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/about'
+    | '/account'
     | '/build-a-gift'
     | '/build-your-box'
     | '/business'
@@ -337,12 +378,15 @@ export interface FileRouteTypes {
     | '/gift-finder'
     | '/gifting'
     | '/payment-options'
+    | '/privacy'
+    | '/returns'
     | '/search'
     | '/shipping'
     | '/shop'
     | '/sitemap.xml'
     | '/stores'
     | '/support'
+    | '/terms'
     | '/track-order'
     | '/wishlist'
     | '/admin/status'
@@ -358,6 +402,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/about'
+    | '/account'
     | '/build-a-gift'
     | '/build-your-box'
     | '/business'
@@ -369,12 +414,15 @@ export interface FileRouteTypes {
     | '/gift-finder'
     | '/gifting'
     | '/payment-options'
+    | '/privacy'
+    | '/returns'
     | '/search'
     | '/shipping'
     | '/shop'
     | '/sitemap.xml'
     | '/stores'
     | '/support'
+    | '/terms'
     | '/track-order'
     | '/wishlist'
     | '/admin/status'
@@ -391,6 +439,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
+  AccountRoute: typeof AccountRoute
   BuildAGiftRoute: typeof BuildAGiftRoute
   BuildYourBoxRoute: typeof BuildYourBoxRoute
   BusinessRoute: typeof BusinessRoute
@@ -402,12 +451,15 @@ export interface RootRouteChildren {
   GiftFinderRoute: typeof GiftFinderRoute
   GiftingRoute: typeof GiftingRoute
   PaymentOptionsRoute: typeof PaymentOptionsRoute
+  PrivacyRoute: typeof PrivacyRoute
+  ReturnsRoute: typeof ReturnsRoute
   SearchRoute: typeof SearchRoute
   ShippingRoute: typeof ShippingRoute
   ShopRoute: typeof ShopRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   StoresRoute: typeof StoresRoute
   SupportRoute: typeof SupportRoute
+  TermsRoute: typeof TermsRoute
   TrackOrderRoute: typeof TrackOrderRoute
   WishlistRoute: typeof WishlistRoute
   AdminStatusRoute: typeof AdminStatusRoute
@@ -435,6 +487,13 @@ declare module '@tanstack/react-router' {
       path: '/about'
       fullPath: '/about'
       preLoaderRoute: typeof AboutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/account': {
+      id: '/account'
+      path: '/account'
+      fullPath: '/account'
+      preLoaderRoute: typeof AccountRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/build-a-gift': {
@@ -514,6 +573,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PaymentOptionsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/privacy': {
+      id: '/privacy'
+      path: '/privacy'
+      fullPath: '/privacy'
+      preLoaderRoute: typeof PrivacyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/returns': {
+      id: '/returns'
+      path: '/returns'
+      fullPath: '/returns'
+      preLoaderRoute: typeof ReturnsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/search': {
       id: '/search'
       path: '/search'
@@ -554,6 +627,13 @@ declare module '@tanstack/react-router' {
       path: '/support'
       fullPath: '/support'
       preLoaderRoute: typeof SupportRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/terms': {
+      id: '/terms'
+      path: '/terms'
+      fullPath: '/terms'
+      preLoaderRoute: typeof TermsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/track-order': {
@@ -639,6 +719,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
+  AccountRoute: AccountRoute,
   BuildAGiftRoute: BuildAGiftRoute,
   BuildYourBoxRoute: BuildYourBoxRoute,
   BusinessRoute: BusinessRoute,
@@ -650,12 +731,15 @@ const rootRouteChildren: RootRouteChildren = {
   GiftFinderRoute: GiftFinderRoute,
   GiftingRoute: GiftingRoute,
   PaymentOptionsRoute: PaymentOptionsRoute,
+  PrivacyRoute: PrivacyRoute,
+  ReturnsRoute: ReturnsRoute,
   SearchRoute: SearchRoute,
   ShippingRoute: ShippingRoute,
   ShopRoute: ShopRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   StoresRoute: StoresRoute,
   SupportRoute: SupportRoute,
+  TermsRoute: TermsRoute,
   TrackOrderRoute: TrackOrderRoute,
   WishlistRoute: WishlistRoute,
   AdminStatusRoute: AdminStatusRoute,
