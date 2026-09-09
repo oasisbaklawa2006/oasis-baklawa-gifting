@@ -13,7 +13,8 @@ import { ArticleCard } from "@/components/oasis/article-card";
 import { articlesByDate } from "@/data/journal";
 import { PartnershipModule } from "@/components/oasis/partnership-module";
 import { Button } from "@/components/ui/button";
-import { bestSellers, categories, collections, getProductsByCollection } from "@/data/catalog";
+import { bestSellers, categoriesAll, collections, getProductsByCollection } from "@/data/catalog";
+import { occasionGroups } from "@/data/gifting";
 import { stores, testimonials } from "@/data/site";
 
 
@@ -47,7 +48,7 @@ function HomePage() {
         <SectionHeading
           eyebrow="Shop by category"
           title="Signature collections"
-          intro="Four ways into the range — from the daily baklawa tray to boxed gifting."
+          intro="Shop by world — baklawa, dates, chocolate, fusion sweets, nuts and gifting."
           action={
             <Button asChild variant="outline">
               <Link to="/shop">View all products</Link>
@@ -55,7 +56,7 @@ function HomePage() {
           }
         />
         <div className="mt-12 grid grid-cols-2 gap-x-5 gap-y-10 lg:grid-cols-4">
-          {categories.map((category) => (
+          {categoriesAll.slice(0, 8).map((category) => (
             <CategoryTile key={category.id} category={category} />
           ))}
         </div>
@@ -76,6 +77,35 @@ function HomePage() {
             {bestSellers.slice(0, 4).map((product) => (
               <ProductCard key={product.id} product={product} />
             ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="border-t border-border bg-premium">
+        <div className="container-oasis section-y">
+          <SectionHeading
+            eyebrow="Gift by occasion"
+            title="Who is it for?"
+            intro="Corporate, wedding, festival, family, personal and premium gifting — each with its own route into the range."
+            action={
+              <Button asChild variant="outline">
+                <Link to="/gifting">Gifting hub</Link>
+              </Button>
+            }
+          />
+          <ul className="mt-12 grid gap-px border border-border bg-border sm:grid-cols-2 lg:grid-cols-3">
+            {occasionGroups.map((group) => (
+              <li key={group.id} className="bg-background p-6">
+                <span className="gold-rule block" aria-hidden="true" />
+                <h3 className="mt-4 font-display text-xl">{group.title}</h3>
+                <p className="mt-2 text-[0.875rem] leading-relaxed text-muted-foreground">{group.intro}</p>
+              </li>
+            ))}
+          </ul>
+          <div className="mt-10">
+            <Button asChild size="lg">
+              <Link to="/build-a-gift">Build a gift</Link>
+            </Button>
           </div>
         </div>
       </section>
