@@ -28,6 +28,7 @@ import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as StoresRouteImport } from './routes/stores'
 import { Route as TrackOrderRouteImport } from './routes/track-order'
 import { Route as WishlistRouteImport } from './routes/wishlist'
+import { Route as AdminStatusRouteImport } from './routes/admin.status'
 import { Route as CollectionsIndexRouteImport } from './routes/collections.index'
 import { Route as CollectionsSlugRouteImport } from './routes/collections.$slug'
 import { Route as FeedProductsDotxmlRouteImport } from './routes/feed.products[.]xml'
@@ -131,6 +132,11 @@ const WishlistRoute = WishlistRouteImport.update({
   path: '/wishlist',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminStatusRoute = AdminStatusRouteImport.update({
+  id: '/admin/status',
+  path: '/admin/status',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const CollectionsIndexRoute = CollectionsIndexRouteImport.update({
   id: '/collections/',
   path: '/collections/',
@@ -188,6 +194,7 @@ export interface FileRoutesByFullPath {
   '/stores': typeof StoresRoute
   '/track-order': typeof TrackOrderRoute
   '/wishlist': typeof WishlistRoute
+  '/admin/status': typeof AdminStatusRoute
   '/collections/$slug': typeof CollectionsSlugRoute
   '/feed/products.xml': typeof FeedProductsDotxmlRoute
   '/journal/$slug': typeof JournalSlugRoute
@@ -216,6 +223,7 @@ export interface FileRoutesByTo {
   '/stores': typeof StoresRoute
   '/track-order': typeof TrackOrderRoute
   '/wishlist': typeof WishlistRoute
+  '/admin/status': typeof AdminStatusRoute
   '/collections/$slug': typeof CollectionsSlugRoute
   '/feed/products.xml': typeof FeedProductsDotxmlRoute
   '/journal/$slug': typeof JournalSlugRoute
@@ -245,6 +253,7 @@ export interface FileRoutesById {
   '/stores': typeof StoresRoute
   '/track-order': typeof TrackOrderRoute
   '/wishlist': typeof WishlistRoute
+  '/admin/status': typeof AdminStatusRoute
   '/collections/$slug': typeof CollectionsSlugRoute
   '/feed/products.xml': typeof FeedProductsDotxmlRoute
   '/journal/$slug': typeof JournalSlugRoute
@@ -275,6 +284,7 @@ export interface FileRouteTypes {
     | '/stores'
     | '/track-order'
     | '/wishlist'
+    | '/admin/status'
     | '/collections/$slug'
     | '/feed/products.xml'
     | '/journal/$slug'
@@ -303,6 +313,7 @@ export interface FileRouteTypes {
     | '/stores'
     | '/track-order'
     | '/wishlist'
+    | '/admin/status'
     | '/collections/$slug'
     | '/feed/products.xml'
     | '/journal/$slug'
@@ -331,6 +342,7 @@ export interface FileRouteTypes {
     | '/stores'
     | '/track-order'
     | '/wishlist'
+    | '/admin/status'
     | '/collections/$slug'
     | '/feed/products.xml'
     | '/journal/$slug'
@@ -360,6 +372,7 @@ export interface RootRouteChildren {
   StoresRoute: typeof StoresRoute
   TrackOrderRoute: typeof TrackOrderRoute
   WishlistRoute: typeof WishlistRoute
+  AdminStatusRoute: typeof AdminStatusRoute
   CollectionsSlugRoute: typeof CollectionsSlugRoute
   FeedProductsDotxmlRoute: typeof FeedProductsDotxmlRoute
   JournalSlugRoute: typeof JournalSlugRoute
@@ -504,6 +517,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof WishlistRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/status': {
+      id: '/admin/status'
+      path: '/admin/status'
+      fullPath: '/admin/status'
+      preLoaderRoute: typeof AdminStatusRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/collections/': {
       id: '/collections/'
       path: '/collections'
@@ -576,6 +596,7 @@ const rootRouteChildren: RootRouteChildren = {
   StoresRoute: StoresRoute,
   TrackOrderRoute: TrackOrderRoute,
   WishlistRoute: WishlistRoute,
+  AdminStatusRoute: AdminStatusRoute,
   CollectionsSlugRoute: CollectionsSlugRoute,
   FeedProductsDotxmlRoute: FeedProductsDotxmlRoute,
   JournalSlugRoute: JournalSlugRoute,

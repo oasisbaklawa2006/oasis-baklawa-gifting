@@ -18,6 +18,8 @@ import { SiteFooter } from "@/components/layout/site-footer";
 import { Toaster } from "@/components/ui/sonner";
 import { Button } from "@/components/ui/button";
 import { siteUrl } from "@/lib/site-url";
+import { analyticsConfig } from "@/config/integrations";
+import { tagScripts, track } from "@/lib/analytics";
 
 function NotFoundComponent() {
   return (
