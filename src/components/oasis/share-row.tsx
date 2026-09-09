@@ -42,7 +42,7 @@ export function ShareRow({ title, path, className }: ShareRowProps) {
 
   async function copyLink() {
     try {
-      await navigator.clipboard.writeText(absoluteUrl(path));
+      await navigator.clipboard.writeText(absoluteUrl());
       setCopied(true);
       window.setTimeout(() => setCopied(false), 2000);
     } catch {
@@ -56,7 +56,7 @@ export function ShareRow({ title, path, className }: ShareRowProps) {
       {targets.map((target) => (
         <a
           key={target.label}
-          href={target.build(absoluteUrl(path))}
+          href={target.build(absoluteUrl())}
           target="_blank"
           rel="noopener noreferrer nofollow"
           className="link-underline flex min-h-11 items-center text-[0.8125rem] text-muted-foreground hover:text-foreground"
