@@ -17,7 +17,7 @@ export const Route = createFileRoute("/about")({
       {
         name: "description",
         content:
-          "The Oasis Baklawa story: a contemporary Middle Eastern confectionery house built on traditional baklawa craft, selected ingredients and restrained presentation.",
+          "Oasis Baklawa: a family-owned Indian business that began with baklava from Dubai and now manufactures baklava, chocolates and confections in Kirti Nagar, New Delhi.",
       },
       { property: "og:title", content: "Our Story — Oasis Baklawa" },
       {
@@ -45,10 +45,26 @@ const philosophy = [
 ];
 
 const timeline = [
-  { year: "Milestone", title: "Founding", body: "Founding details to be supplied by Oasis Baklawa." },
-  { year: "Milestone", title: "First store", body: "Store opening details to be supplied." },
-  { year: "Milestone", title: "Range expansion", body: "Range milestones to be supplied." },
-  { year: "Today", title: "Three audiences", body: "Consumer retail, corporate gifting and business supply." },
+  {
+    year: "Origin",
+    title: "Baklava from Dubai",
+    body: "The business began by bringing baklava from a Dubai patisserie to customers in India.",
+  },
+  {
+    year: "Evolution",
+    title: "Manufacturing in Delhi",
+    body: "Production moved in-house at our facility in Kirti Nagar, New Delhi.",
+  },
+  {
+    year: "Range",
+    title: "Beyond baklava",
+    body: "The range widened into artisanal chocolates, confections and specialty gifts.",
+  },
+  {
+    year: "Today",
+    title: "Three audiences",
+    body: "Consumer retail, corporate gifting and business supply, under TCF Chocolates & Gifts Pvt. Ltd.",
+  },
 ];
 
 function AboutPage() {
@@ -68,9 +84,10 @@ function AboutPage() {
             A confectionery house, quietly built
           </h1>
           <p className="mt-6 text-base leading-relaxed text-muted-foreground">
-            Oasis Baklawa makes baklawa and Arabic sweets in the traditional way and presents them in a
-            contemporary one. This page is a placeholder narrative — company facts, dates and figures will
-            be supplied by Oasis Baklawa before launch.
+            Oasis Baklawa is a family-owned Indian business that began by bringing baklava from a Dubai
+            patisserie to the Indian market. What started as an import grew into local manufacturing and a
+            wider range of baklava, artisanal chocolates, confections and specialty gifts. The company
+            trades as TCF Chocolates &amp; Gifts Pvt. Ltd., and production is based in Kirti Nagar, New Delhi.
           </p>
         </div>
         <div className="overflow-hidden rounded-sm bg-premium">
