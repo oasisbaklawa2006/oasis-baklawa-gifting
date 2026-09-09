@@ -7,6 +7,7 @@ import { NewsletterModule } from "@/components/oasis/newsletter";
 import { Button } from "@/components/ui/button";
 import { collections, getProductsByCollection, images, products } from "@/data/catalog";
 import { giftingServices } from "@/data/site";
+import { giftingOccasions, occasionGroups } from "@/data/gifting";
 
 export const Route = createFileRoute("/gifting")({
   head: () => ({
