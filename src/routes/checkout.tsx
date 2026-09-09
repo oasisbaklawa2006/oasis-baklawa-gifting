@@ -281,9 +281,11 @@ function CheckoutPage() {
                 <Textarea
                   id="gift-message"
                   rows={3}
-                  maxLength={200}
-                  placeholder="Up to 200 characters, written by hand on the card."
+                  maxLength={250}
+                  placeholder="Up to 250 characters, written by hand on the card."
                   className="mt-2"
+                  value={giftMessage}
+                  onChange={(e) => setGiftMessage(e.target.value)}
                 />
               </div>
               <fieldset>
