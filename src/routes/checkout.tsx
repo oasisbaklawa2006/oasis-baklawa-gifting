@@ -489,11 +489,25 @@ function CheckoutPage() {
             <span className="eyebrow">Payable now</span>
             <span className="font-display text-xl tabular-nums">{formatMoney(inr(total))}</span>
           </div>
-          <Button size="lg" className="mt-6 w-full" disabled>
-            <Lock className="size-4" aria-hidden /> Pay securely
+          <Button
+            size="lg"
+            className="mt-6 w-full"
+            disabled={!detailsComplete || submit.kind === "submitting"}
+            onClick={handlePlaceOrder}
+          >
+            <Lock className="size-4" aria-hidden />
+            {submit.kind === "submitting" ? "Placing your order…" : "Place order"}
           </Button>
+          {submit.kind === "error" ? (
+            <p role="alert" className="mt-3 text-xs leading-relaxed text-destructive">
+              {submit.message}
+            </p>
+          ) : null}
           <p className="mt-3 text-xs leading-relaxed text-muted-foreground">
-            Payment is disabled until a gateway is connected. See{" "}
+            {detailsComplete
+              ? "Your order is confirmed with our team before any amount is collected."
+              : "Fill in your name, email, phone and delivery address to continue."}{" "}
+            See{" "}
             <Link to="/payment-options" className="link-underline">
               payment options
             </Link>{" "}
