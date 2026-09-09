@@ -22,9 +22,19 @@ export type CartLine = {
   quantity: number;
 };
 
+export type GiftState = {
+  message: string;
+  ribbonId: string;
+  sealId: string;
+  concealInvoice: boolean;
+};
+
+const emptyGift: GiftState = { message: "", ribbonId: "rib-none", sealId: "seal-none", concealInvoice: false };
+
 type ShopState = {
   lines: CartLine[];
   wishlist: string[];
+  gift: GiftState;
 };
 
 type ShopContextValue = ShopState & {
@@ -34,6 +44,7 @@ type ShopContextValue = ShopState & {
   removeLine: (productId: string, variantId: string) => void;
   clearCart: () => void;
   toggleWishlist: (productId: string) => void;
+  setGift: (patch: Partial<GiftState>) => void;
   isWishlisted: (productId: string) => boolean;
   cartCount: number;
   cartOpen: boolean;
@@ -45,22 +56,23 @@ const STORAGE_KEY = "oasis.shop.v1";
 const ShopContext = createContext<ShopContextValue | null>(null);
 
 function readStorage(): ShopState {
-  if (typeof window === "undefined") return { lines: [], wishlist: [] };
+  if (typeof window === "undefined") return { lines: [], wishlist: [], gift: emptyGift };
   try {
     const raw = window.localStorage.getItem(STORAGE_KEY);
-    if (!raw) return { lines: [], wishlist: [] };
+    if (!raw) return { lines: [], wishlist: [], gift: emptyGift };
     const parsed = JSON.parse(raw) as Partial<ShopState>;
     return {
       lines: Array.isArray(parsed.lines) ? parsed.lines : [],
       wishlist: Array.isArray(parsed.wishlist) ? parsed.wishlist : [],
+      gift: { ...emptyGift, ...(parsed.gift ?? {}) },
     };
   } catch {
-    return { lines: [], wishlist: [] };
+    return { lines: [], wishlist: [], gift: emptyGift };
   }
 }
 
 export function ShopProvider({ children }: { children: ReactNode }) {
-  const [state, setState] = useState<ShopState>({ lines: [], wishlist: [] });
+  const [state, setState] = useState<ShopState>({ lines: [], wishlist: [], gift: emptyGift });
   const [ready, setReady] = useState(false);
   const [cartOpen, setCartOpen] = useState(false);
 
@@ -125,6 +137,10 @@ export function ShopProvider({ children }: { children: ReactNode }) {
     }));
   }, []);
 
+  const setGift = useCallback((patch: Partial<GiftState>) => {
+    setState((prev) => ({ ...prev, gift: { ...prev.gift, ...patch } }));
+  }, []);
+
   const value = useMemo<ShopContextValue>(
     () => ({
       ...state,
@@ -134,12 +150,13 @@ export function ShopProvider({ children }: { children: ReactNode }) {
       removeLine,
       clearCart,
       toggleWishlist,
+      setGift,
       isWishlisted: (id: string) => state.wishlist.includes(id),
       cartCount: state.lines.reduce((sum, l) => sum + l.quantity, 0),
       cartOpen,
       setCartOpen,
     }),
-    [state, ready, addToCart, setQuantity, removeLine, clearCart, toggleWishlist, cartOpen],
+    [state, ready, addToCart, setQuantity, removeLine, clearCart, toggleWishlist, setGift, cartOpen],
   );
 
   return <ShopContext.Provider value={value}>{children}</ShopContext.Provider>;
