@@ -40,6 +40,10 @@ export type Product = {
   occasions: string[];
   dietary: string[];
   badges: ProductBadge[];
+  /** Only claims verified by Oasis are rendered as badges (Halal, dietary, etc.). */
+  verifiedClaims?: string[];
+  /** True while the record is placeholder data awaiting the governed catalogue. */
+  isMock?: boolean;
   variants: ProductVariant[];
   images: { src: string; alt: string }[];
   details: { label: string; value: string }[];
@@ -94,4 +98,35 @@ export type CorporateCapability = {
   title: string;
   summary: string;
   points: string[];
+};
+
+export type GiftingOccasion = {
+  id: string;
+  slug: string;
+  group:
+    | "corporate"
+    | "wedding"
+    | "festival"
+    | "baby-family"
+    | "personal"
+    | "premium";
+  title: string;
+  summary: string;
+  examples: string[];
+};
+
+export type GiftBoxFormat = {
+  id: string;
+  name: string;
+  format: "box" | "chest";
+  capacity: 9 | 16 | 25 | 36;
+  basePrice: Money;
+  description: string;
+};
+
+export type GiftFinish = {
+  id: string;
+  label: string;
+  /** Mock surcharge in major units. */
+  surcharge: number;
 };

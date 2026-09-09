@@ -34,7 +34,7 @@ export const primaryNav: NavigationItem[] = [
         title: "Shop all",
         items: [
           { label: "All products", to: "/shop" },
-          { label: "Build your own box", to: "/build-your-box" },
+          { label: "Build a gift", to: "/build-a-gift" },
           { label: "Shipping & delivery", to: "/shipping" },
           { label: "Track your order", to: "/track-order" },
           { label: "Collections", to: "/collections" },
@@ -67,9 +67,9 @@ export const primaryNav: NavigationItem[] = [
     ],
   },
   { label: "Gifting", to: "/gifting" },
-  { label: "Build a Box", to: "/build-your-box" },
+  { label: "Build a Gift", to: "/build-a-gift" },
   { label: "Journal", to: "/journal" },
-  { label: "Corporate & B2B", to: "/business" },
+  { label: "Corporate & B2B", to: "/corporate" },
   { label: "Our Story", to: "/about" },
   { label: "Stores", to: "/stores" },
 ];
@@ -183,7 +183,7 @@ export const footerColumns = [
       { label: "All products", to: "/shop" },
       { label: "Collections", to: "/collections" },
       { label: "Gifting", to: "/gifting" },
-      { label: "Build your own box", to: "/build-your-box" },
+      { label: "Build a gift", to: "/build-a-gift" },
       { label: "Saved items", to: "/wishlist" },
       { label: "Search", to: "/search" },
     ],
@@ -194,7 +194,7 @@ export const footerColumns = [
       { label: "Our story", to: "/about" },
       { label: "Journal", to: "/journal" },
       { label: "Stores", to: "/stores" },
-      { label: "Corporate & B2B", to: "/business" },
+      { label: "Corporate & B2B", to: "/corporate" },
     ],
   },
   {

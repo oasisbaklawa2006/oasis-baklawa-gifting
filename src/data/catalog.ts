@@ -3,6 +3,7 @@ import assorted from "@/assets/product-assorted.jpg";
 import giftBox from "@/assets/product-giftbox.jpg";
 import craftFilo from "@/assets/craft-filo.jpg";
 
+import { extraCategories, extraSeeds, type ProductSeed } from "./catalog-extra";
 import type { Category, Collection, Money, Product } from "./types";
 
 /**
@@ -79,8 +80,6 @@ export const collections: Collection[] = [
     image: { src: giftBox, alt: "Stacked corporate gift boxes" },
   },
 ];
-
-type ProductSeed = Omit<Product, "images"> & { image: { src: string; alt: string } };
 
 const seeds: ProductSeed[] = [
   {
@@ -364,7 +363,9 @@ const seeds: ProductSeed[] = [
   },
 ];
 
-export const products: Product[] = seeds.map(({ image, ...rest }) => ({
+export const categoriesAll: Category[] = [...categories, ...extraCategories];
+
+export const products: Product[] = [...seeds, ...extraSeeds].map(({ image, ...rest }) => ({
   ...rest,
   images: [image, { src: craftFilo, alt: `${rest.name} — preparation in the kitchen` }, { src: assorted, alt: `${rest.name} — served` }],
 }));

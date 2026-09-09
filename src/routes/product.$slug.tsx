@@ -15,6 +15,9 @@ import { DeliveryEstimator } from "@/components/oasis/delivery-estimator";
 import { ShareRow } from "@/components/oasis/share-row";
 import { BrandBadge } from "@/components/oasis/chips";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Textarea } from "@/components/ui/textarea";
+import { GIFT_MESSAGE_MAX } from "@/data/gifting";
 import {
   Accordion,
   AccordionContent,
@@ -107,16 +110,20 @@ function ProductPage() {
   const [variantId, setVariantId] = useState(product.variants[0]?.id ?? "");
   const [quantity, setQuantity] = useState(1);
   const [activeImage, setActiveImage] = useState(0);
+  const [perspective, setPerspective] = useState<"confectionery" | "packaging">("confectionery");
+  const [giftMessage, setGiftMessage] = useState("");
+  const [conceal, setConceal] = useState(false);
 
   const variant = product.variants.find((v) => v.id === variantId) ?? product.variants[0];
   const image = product.images[activeImage] ?? product.images[0];
   const related = products.filter((p) => p.id !== product.id && p.categoryId === product.categoryId).slice(0, 4);
 
-  const { addToCart: addLine, setCartOpen } = useShop();
+  const { addToCart: addLine, setCartOpen, setGift } = useShop();
 
   const addToCart = () => {
     if (!variant) return;
     addLine(product.id, variant.id, quantity);
+    if (giftMessage || conceal) setGift({ message: giftMessage, concealInvoice: conceal });
     setCartOpen(true);
     toast.success(`${product.name} added`, {
       description: `${variant.label} × ${quantity}`,
@@ -134,6 +141,32 @@ function ProductPage() {
 
       <section className="container-oasis grid gap-10 pb-16 pt-8 lg:grid-cols-2 lg:gap-16">
         <div>
+          <div
+            role="group"
+            aria-label="Product view"
+            className="mb-4 inline-flex rounded-sm border border-border p-1"
+          >
+            {([
+              ["confectionery", "View Confectionery"],
+              ["packaging", "View Gift Packaging"],
+            ] as const).map(([key, label]) => (
+              <button
+                key={key}
+                type="button"
+                onClick={() => {
+                  setPerspective(key);
+                  setActiveImage(key === "packaging" ? Math.min(2, product.images.length - 1) : 0);
+                }}
+                aria-pressed={perspective === key}
+                className={cn(
+                  "h-11 rounded-sm px-4 text-[0.8125rem] transition-colors duration-200 ease-out",
+                  perspective === key ? "bg-espresso text-background" : "text-muted-foreground hover:text-foreground",
+                )}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
           <div className="overflow-hidden rounded-sm bg-premium">
             <div className="aspect-[4/5]">
               <img
@@ -249,6 +282,54 @@ function ProductPage() {
               </li>
             ))}
           </ul>
+
+
+          <div className="mt-8 rounded-sm border border-border bg-premium p-5">
+            <p className="eyebrow">Send as a gift</p>
+            <label htmlFor="pdp-gift-message" className="mt-4 block text-[0.875rem] font-medium">
+              Gift card message
+            </label>
+            <Textarea
+              id="pdp-gift-message"
+              rows={3}
+              maxLength={GIFT_MESSAGE_MAX}
+              value={giftMessage}
+              onChange={(e) => setGiftMessage(e.target.value)}
+              className="mt-2 bg-background"
+              placeholder="Written by hand onto the gift card."
+            />
+            <p className="mt-1 text-xs tabular-nums text-muted-foreground">
+              {giftMessage.length} / {GIFT_MESSAGE_MAX}
+            </p>
+            <div className="mt-4 rounded-sm border border-border bg-card p-5">
+              <p className="eyebrow">Card preview</p>
+              <p className="mt-2 whitespace-pre-wrap font-display text-base leading-relaxed">
+                {giftMessage || "Your message will appear here."}
+              </p>
+            </div>
+            <label className="mt-4 flex items-start gap-3 text-[0.875rem]">
+              <Checkbox checked={conceal} onCheckedChange={(v) => setConceal(v === true)} className="mt-0.5" />
+              <span>This order is a gift — conceal prices and invoice slips from the shipping parcel.</span>
+            </label>
+          </div>
+
+          <div className="mt-8">
+            <p className="eyebrow">Dietary &amp; compliance</p>
+            {product.verifiedClaims && product.verifiedClaims.length ? (
+              <ul className="mt-3 flex flex-wrap gap-2">
+                {product.verifiedClaims.map((claim) => (
+                  <li key={claim} className="rounded-sm border border-gold/60 px-3 py-1 text-[0.75rem]">
+                    {claim}
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="mt-2 text-[0.8125rem] text-muted-foreground">
+                No dietary or certification claims are published for this product. Verified information will
+                appear here once supplied by Oasis Baklawa.
+              </p>
+            )}
+          </div>
 
           <DeliveryEstimator compact className="mt-6" />
 

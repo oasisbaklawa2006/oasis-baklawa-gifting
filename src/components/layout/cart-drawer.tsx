@@ -15,7 +15,9 @@ import { formatMoney } from "@/lib/format";
 import { cartSubtotal, resolveLines, useShop } from "@/lib/store";
 
 export function CartDrawer() {
-  const { lines, cartOpen, setCartOpen, setQuantity, removeLine } = useShop();
+  const { lines, cartOpen, setCartOpen, setQuantity, removeLine, gift } = useShop();
+  /** Demo threshold only — not a live shipping policy. */
+  const DEMO_FREE_SHIPPING_THRESHOLD = 2500;
   const resolved = resolveLines(lines);
   const subtotal = cartSubtotal(resolved);
 
@@ -90,6 +92,56 @@ export function CartDrawer() {
 
             <SheetFooter className="border-t border-border bg-utility px-5 py-5">
               <div className="w-full space-y-4">
+                {gift.message || gift.concealInvoice ? (
+                  <div className="rounded-sm border border-border bg-background p-4 text-left">
+                    <p className="eyebrow">Gifting</p>
+                    {gift.message ? (
+                      <p className="mt-2 line-clamp-3 font-display text-[0.9375rem] leading-relaxed">
+                        &ldquo;{gift.message}&rdquo;
+                      </p>
+                    ) : null}
+                    {gift.concealInvoice ? (
+                      <p className="mt-2 text-xs text-muted-foreground">
+                        Prices and invoice slips will be concealed in the parcel.
+                      </p>
+                    ) : null}
+                  </div>
+                ) : null}
+
+                <div>
+                  <div className="flex items-baseline justify-between text-xs text-muted-foreground">
+                    <span>Demo free-delivery progress</span>
+                    <span className="tabular-nums">
+                      {Math.min(100, Math.round((subtotal.amount / DEMO_FREE_SHIPPING_THRESHOLD) * 100))}%
+                    </span>
+                  </div>
+                  <div
+                    className="mt-2 h-1 w-full overflow-hidden rounded-full bg-border"
+                    role="progressbar"
+                    aria-label="Demo free-delivery progress"
+                    aria-valuemin={0}
+                    aria-valuemax={100}
+                    aria-valuenow={Math.min(100, Math.round((subtotal.amount / DEMO_FREE_SHIPPING_THRESHOLD) * 100))}
+                  >
+                    <div
+                      className="h-full bg-gold transition-[width] duration-200 ease-out"
+                      style={{
+                        width: `${Math.min(100, (subtotal.amount / DEMO_FREE_SHIPPING_THRESHOLD) * 100)}%`,
+                      }}
+                    />
+                  </div>
+                  <p className="mt-1 text-xs text-muted-foreground">
+                    Demonstration threshold, configurable later. No delivery offer is in force.
+                  </p>
+                </div>
+
+                <div className="rounded-sm border border-dashed border-border p-4 text-left">
+                  <p className="eyebrow">Add to your gift</p>
+                  <p className="mt-2 text-xs text-muted-foreground">
+                    Curated add-ons (cards, ribbons, small confections) will appear here.
+                  </p>
+                </div>
+
                 <div className="flex items-baseline justify-between">
                   <span className="eyebrow">Subtotal</span>
                   <span className="font-medium tabular-nums">{formatMoney(subtotal)}</span>

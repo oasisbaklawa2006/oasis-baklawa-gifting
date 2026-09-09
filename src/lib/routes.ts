@@ -19,6 +19,8 @@ const known = [
   "/payment-options",
   "/build-your-box",
   "/wishlist",
+  "/build-a-gift",
+  "/corporate",
 ] as const;
 
 type KnownPath = (typeof known)[number];

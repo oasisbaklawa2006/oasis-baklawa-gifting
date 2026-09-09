@@ -7,6 +7,7 @@ import { NewsletterModule } from "@/components/oasis/newsletter";
 import { Button } from "@/components/ui/button";
 import { collections, getProductsByCollection, images, products } from "@/data/catalog";
 import { giftingServices } from "@/data/site";
+import { giftingOccasions, occasionGroups } from "@/data/gifting";
 
 export const Route = createFileRoute("/gifting")({
   head: () => ({
@@ -57,7 +58,10 @@ function GiftingPage() {
                 </Link>
               </Button>
               <Button asChild size="lg" variant="outline">
-                <Link to="/business">Corporate gifting</Link>
+                <Link to="/build-a-gift">Build a gift</Link>
+              </Button>
+              <Button asChild size="lg" variant="ghost">
+                <Link to="/corporate">Corporate gifting</Link>
               </Button>
             </div>
           </div>
@@ -69,6 +73,37 @@ function GiftingPage() {
             decoding="async"
             className="aspect-[4/3] size-full object-cover md:aspect-auto"
           />
+        </div>
+      </section>
+
+      <section className="container-oasis mt-16 md:mt-24">
+        <SectionHeading
+          eyebrow="Gift by occasion"
+          title="Six ways we gift"
+          intro="Each route into the range is organised around who is receiving and why."
+        />
+        <div className="mt-12 grid gap-x-8 gap-y-12 md:grid-cols-2 lg:grid-cols-3">
+          {occasionGroups.map((group) => (
+            <section key={group.id} className="border-t border-border pt-6">
+              <h3 className="font-display text-2xl">{group.title}</h3>
+              <p className="mt-2 text-[0.875rem] leading-relaxed text-muted-foreground">{group.intro}</p>
+              <ul className="mt-5 grid gap-4">
+                {giftingOccasions
+                  .filter((o) => o.group === group.id)
+                  .map((occasion) => (
+                    <li key={occasion.id}>
+                      <p className="text-[0.9375rem] font-medium">{occasion.title}</p>
+                      <p className="mt-1 text-[0.8125rem] leading-relaxed text-muted-foreground">
+                        {occasion.summary}
+                      </p>
+                      <p className="mt-1.5 text-[0.75rem] text-driftwood">
+                        Suggested: {occasion.examples.join(" · ")}
+                      </p>
+                    </li>
+                  ))}
+              </ul>
+            </section>
+          ))}
         </div>
       </section>
 
@@ -90,6 +125,7 @@ function GiftingPage() {
           ))}
         </ul>
       </section>
+
 
       <section className="container-oasis mt-16 md:mt-24">
         <SectionHeading
