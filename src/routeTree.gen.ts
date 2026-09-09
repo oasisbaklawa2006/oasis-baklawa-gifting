@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AboutRouteImport } from './routes/about'
+import { Route as BuildAGiftRouteImport } from './routes/build-a-gift'
 import { Route as BuildYourBoxRouteImport } from './routes/build-your-box'
 import { Route as BusinessRouteImport } from './routes/business'
 import { Route as CartRouteImport } from './routes/cart'
@@ -40,6 +41,11 @@ const IndexRoute = IndexRouteImport.update({
 const AboutRoute = AboutRouteImport.update({
   id: '/about',
   path: '/about',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BuildAGiftRoute = BuildAGiftRouteImport.update({
+  id: '/build-a-gift',
+  path: '/build-a-gift',
   getParentRoute: () => rootRouteImport,
 } as any)
 const BuildYourBoxRoute = BuildYourBoxRouteImport.update({
@@ -146,6 +152,7 @@ const ProductSlugRoute = ProductSlugRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/build-a-gift': typeof BuildAGiftRoute
   '/build-your-box': typeof BuildYourBoxRoute
   '/business': typeof BusinessRoute
   '/cart': typeof CartRoute
@@ -170,6 +177,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/build-a-gift': typeof BuildAGiftRoute
   '/build-your-box': typeof BuildYourBoxRoute
   '/business': typeof BusinessRoute
   '/cart': typeof CartRoute
@@ -195,6 +203,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/build-a-gift': typeof BuildAGiftRoute
   '/build-your-box': typeof BuildYourBoxRoute
   '/business': typeof BusinessRoute
   '/cart': typeof CartRoute
@@ -221,6 +230,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/about'
+    | '/build-a-gift'
     | '/build-your-box'
     | '/business'
     | '/cart'
@@ -245,6 +255,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/about'
+    | '/build-a-gift'
     | '/build-your-box'
     | '/business'
     | '/cart'
@@ -269,6 +280,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/about'
+    | '/build-a-gift'
     | '/build-your-box'
     | '/business'
     | '/cart'
@@ -294,6 +306,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
+  BuildAGiftRoute: typeof BuildAGiftRoute
   BuildYourBoxRoute: typeof BuildYourBoxRoute
   BusinessRoute: typeof BusinessRoute
   CartRoute: typeof CartRoute
@@ -330,6 +343,13 @@ declare module '@tanstack/react-router' {
       path: '/about'
       fullPath: '/about'
       preLoaderRoute: typeof AboutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/build-a-gift': {
+      id: '/build-a-gift'
+      path: '/build-a-gift'
+      fullPath: '/build-a-gift'
+      preLoaderRoute: typeof BuildAGiftRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/build-your-box': {
@@ -478,6 +498,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
+  BuildAGiftRoute: BuildAGiftRoute,
   BuildYourBoxRoute: BuildYourBoxRoute,
   BusinessRoute: BusinessRoute,
   CartRoute: CartRoute,
