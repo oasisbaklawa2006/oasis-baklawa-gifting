@@ -77,7 +77,7 @@ function SupportPage() {
           idempotencyKey: key.current,
         },
       });
-      track({ name: "generate_lead", params: { channel: "support", reason } });
+      track({ name: "generate_lead", params: { lead_type: `support:${reason}` } });
       if (result.status === "received") setState({ kind: "received", ticket: result.ticketReference });
       else setState({ kind: "fallback", reason: result.reason });
     } catch {
