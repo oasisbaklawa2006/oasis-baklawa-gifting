@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Building2, Download, FileSpreadsheet, Globe2, Handshake, Store, Users } from "lucide-react";
+import { Building2, Globe2, Handshake, Store, Users } from "lucide-react";
 import { toast } from "sonner";
 
 import { Breadcrumbs } from "@/components/oasis/breadcrumbs";
