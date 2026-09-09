@@ -26,6 +26,14 @@ const orderSchema = z.object({
     })
     .optional(),
   deliveryOptionId: z.string().optional(),
+  notes: z.string().max(500).optional(),
+  business: z
+    .object({
+      legalName: z.string().max(120),
+      gstin: z.string().max(20).optional(),
+      placeOfSupply: z.string().max(60).optional(),
+    })
+    .optional(),
   contact: z.object({
     name: z.string().min(1),
     email: z.string().email(),
@@ -59,11 +67,13 @@ export const placeOrder = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => orderSchema.parse(input))
   .handler(async ({ data }) => {
     try {
-      const { gift, deliveryOptionId, ...rest } = data;
+      const { gift, deliveryOptionId, notes, business, ...rest } = data;
       return await commerce.createOrderIntent({
         ...rest,
         ...(gift ? { gift } : {}),
         ...(deliveryOptionId ? { deliveryOptionId } : {}),
+        ...(notes ? { notes } : {}),
+        ...(business ? { business } : {}),
       });
     } catch (error) {
       console.error("placeOrder failed", error);
