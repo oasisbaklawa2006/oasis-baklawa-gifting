@@ -1,0 +1,18 @@
+{
+  "name": "Oasis Baklawa",
+  "short_name": "Oasis",
+  "description": "Baklawa, Arabic sweets and considered gifting from Oasis Baklawa.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#FDFBF7",
+  "theme_color": "#1A120B",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "48x48",
+      "type": "image/x-icon"
+    }
+  ]
+}
