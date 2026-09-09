@@ -143,19 +143,8 @@ function CorporatePage() {
             ))}
           </ol>
 
-          <div className="mt-14 grid gap-6 rounded-sm border border-border bg-background p-6 md:grid-cols-[auto_minmax(0,1fr)_auto] md:items-center">
-            <FileSpreadsheet className="size-6 text-gold" aria-hidden="true" />
-            <div>
-              <h3 className="font-display text-lg">Multi-recipient dispatch list</h3>
-              <p className="mt-1 text-[0.875rem] text-muted-foreground">
-                Bulk CSV or XLSX recipient import is designed but not yet connected. For now, send your list
-                with the enquiry and our team will handle it.
-              </p>
-            </div>
-            <Button variant="outline" disabled className="md:justify-self-end">
-              <Download className="mr-2 size-4" aria-hidden="true" />
-              Import list — preview
-            </Button>
+          <div className="mt-14">
+            <RecipientImport />
           </div>
         </div>
       </section>
