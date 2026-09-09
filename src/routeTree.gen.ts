@@ -19,6 +19,7 @@ import { Route as CheckoutRouteImport } from './routes/checkout'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as CorporateRouteImport } from './routes/corporate'
 import { Route as FaqRouteImport } from './routes/faq'
+import { Route as GiftFinderRouteImport } from './routes/gift-finder'
 import { Route as GiftingRouteImport } from './routes/gifting'
 import { Route as PaymentOptionsRouteImport } from './routes/payment-options'
 import { Route as SearchRouteImport } from './routes/search'
@@ -26,6 +27,7 @@ import { Route as ShippingRouteImport } from './routes/shipping'
 import { Route as ShopRouteImport } from './routes/shop'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as StoresRouteImport } from './routes/stores'
+import { Route as SupportRouteImport } from './routes/support'
 import { Route as TrackOrderRouteImport } from './routes/track-order'
 import { Route as WishlistRouteImport } from './routes/wishlist'
 import { Route as AdminStatusRouteImport } from './routes/admin.status'
@@ -34,6 +36,7 @@ import { Route as CollectionsSlugRouteImport } from './routes/collections.$slug'
 import { Route as FeedProductsDotxmlRouteImport } from './routes/feed.products[.]xml'
 import { Route as JournalIndexRouteImport } from './routes/journal.index'
 import { Route as JournalSlugRouteImport } from './routes/journal.$slug'
+import { Route as OrderReferenceRouteImport } from './routes/order.$reference'
 import { Route as ProductSlugRouteImport } from './routes/product.$slug'
 import { Route as ApiPublicPaymentsWebhookRouteImport } from './routes/api/public/payments.webhook'
 
@@ -87,6 +90,11 @@ const FaqRoute = FaqRouteImport.update({
   path: '/faq',
   getParentRoute: () => rootRouteImport,
 } as any)
+const GiftFinderRoute = GiftFinderRouteImport.update({
+  id: '/gift-finder',
+  path: '/gift-finder',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const GiftingRoute = GiftingRouteImport.update({
   id: '/gifting',
   path: '/gifting',
@@ -120,6 +128,11 @@ const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
 const StoresRoute = StoresRouteImport.update({
   id: '/stores',
   path: '/stores',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SupportRoute = SupportRouteImport.update({
+  id: '/support',
+  path: '/support',
   getParentRoute: () => rootRouteImport,
 } as any)
 const TrackOrderRoute = TrackOrderRouteImport.update({
@@ -162,6 +175,11 @@ const JournalSlugRoute = JournalSlugRouteImport.update({
   path: '/journal/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const OrderReferenceRoute = OrderReferenceRouteImport.update({
+  id: '/order/$reference',
+  path: '/order/$reference',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ProductSlugRoute = ProductSlugRouteImport.update({
   id: '/product/$slug',
   path: '/product/$slug',
@@ -185,6 +203,7 @@ export interface FileRoutesByFullPath {
   '/contact': typeof ContactRoute
   '/corporate': typeof CorporateRoute
   '/faq': typeof FaqRoute
+  '/gift-finder': typeof GiftFinderRoute
   '/gifting': typeof GiftingRoute
   '/payment-options': typeof PaymentOptionsRoute
   '/search': typeof SearchRoute
@@ -192,12 +211,14 @@ export interface FileRoutesByFullPath {
   '/shop': typeof ShopRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/stores': typeof StoresRoute
+  '/support': typeof SupportRoute
   '/track-order': typeof TrackOrderRoute
   '/wishlist': typeof WishlistRoute
   '/admin/status': typeof AdminStatusRoute
   '/collections/$slug': typeof CollectionsSlugRoute
   '/feed/products.xml': typeof FeedProductsDotxmlRoute
   '/journal/$slug': typeof JournalSlugRoute
+  '/order/$reference': typeof OrderReferenceRoute
   '/product/$slug': typeof ProductSlugRoute
   '/collections/': typeof CollectionsIndexRoute
   '/journal/': typeof JournalIndexRoute
@@ -214,6 +235,7 @@ export interface FileRoutesByTo {
   '/contact': typeof ContactRoute
   '/corporate': typeof CorporateRoute
   '/faq': typeof FaqRoute
+  '/gift-finder': typeof GiftFinderRoute
   '/gifting': typeof GiftingRoute
   '/payment-options': typeof PaymentOptionsRoute
   '/search': typeof SearchRoute
@@ -221,12 +243,14 @@ export interface FileRoutesByTo {
   '/shop': typeof ShopRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/stores': typeof StoresRoute
+  '/support': typeof SupportRoute
   '/track-order': typeof TrackOrderRoute
   '/wishlist': typeof WishlistRoute
   '/admin/status': typeof AdminStatusRoute
   '/collections/$slug': typeof CollectionsSlugRoute
   '/feed/products.xml': typeof FeedProductsDotxmlRoute
   '/journal/$slug': typeof JournalSlugRoute
+  '/order/$reference': typeof OrderReferenceRoute
   '/product/$slug': typeof ProductSlugRoute
   '/collections': typeof CollectionsIndexRoute
   '/journal': typeof JournalIndexRoute
@@ -244,6 +268,7 @@ export interface FileRoutesById {
   '/contact': typeof ContactRoute
   '/corporate': typeof CorporateRoute
   '/faq': typeof FaqRoute
+  '/gift-finder': typeof GiftFinderRoute
   '/gifting': typeof GiftingRoute
   '/payment-options': typeof PaymentOptionsRoute
   '/search': typeof SearchRoute
@@ -251,12 +276,14 @@ export interface FileRoutesById {
   '/shop': typeof ShopRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/stores': typeof StoresRoute
+  '/support': typeof SupportRoute
   '/track-order': typeof TrackOrderRoute
   '/wishlist': typeof WishlistRoute
   '/admin/status': typeof AdminStatusRoute
   '/collections/$slug': typeof CollectionsSlugRoute
   '/feed/products.xml': typeof FeedProductsDotxmlRoute
   '/journal/$slug': typeof JournalSlugRoute
+  '/order/$reference': typeof OrderReferenceRoute
   '/product/$slug': typeof ProductSlugRoute
   '/collections/': typeof CollectionsIndexRoute
   '/journal/': typeof JournalIndexRoute
@@ -275,6 +302,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/corporate'
     | '/faq'
+    | '/gift-finder'
     | '/gifting'
     | '/payment-options'
     | '/search'
@@ -282,12 +310,14 @@ export interface FileRouteTypes {
     | '/shop'
     | '/sitemap.xml'
     | '/stores'
+    | '/support'
     | '/track-order'
     | '/wishlist'
     | '/admin/status'
     | '/collections/$slug'
     | '/feed/products.xml'
     | '/journal/$slug'
+    | '/order/$reference'
     | '/product/$slug'
     | '/collections/'
     | '/journal/'
@@ -304,6 +334,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/corporate'
     | '/faq'
+    | '/gift-finder'
     | '/gifting'
     | '/payment-options'
     | '/search'
@@ -311,12 +342,14 @@ export interface FileRouteTypes {
     | '/shop'
     | '/sitemap.xml'
     | '/stores'
+    | '/support'
     | '/track-order'
     | '/wishlist'
     | '/admin/status'
     | '/collections/$slug'
     | '/feed/products.xml'
     | '/journal/$slug'
+    | '/order/$reference'
     | '/product/$slug'
     | '/collections'
     | '/journal'
@@ -333,6 +366,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/corporate'
     | '/faq'
+    | '/gift-finder'
     | '/gifting'
     | '/payment-options'
     | '/search'
@@ -340,12 +374,14 @@ export interface FileRouteTypes {
     | '/shop'
     | '/sitemap.xml'
     | '/stores'
+    | '/support'
     | '/track-order'
     | '/wishlist'
     | '/admin/status'
     | '/collections/$slug'
     | '/feed/products.xml'
     | '/journal/$slug'
+    | '/order/$reference'
     | '/product/$slug'
     | '/collections/'
     | '/journal/'
@@ -363,6 +399,7 @@ export interface RootRouteChildren {
   ContactRoute: typeof ContactRoute
   CorporateRoute: typeof CorporateRoute
   FaqRoute: typeof FaqRoute
+  GiftFinderRoute: typeof GiftFinderRoute
   GiftingRoute: typeof GiftingRoute
   PaymentOptionsRoute: typeof PaymentOptionsRoute
   SearchRoute: typeof SearchRoute
@@ -370,12 +407,14 @@ export interface RootRouteChildren {
   ShopRoute: typeof ShopRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   StoresRoute: typeof StoresRoute
+  SupportRoute: typeof SupportRoute
   TrackOrderRoute: typeof TrackOrderRoute
   WishlistRoute: typeof WishlistRoute
   AdminStatusRoute: typeof AdminStatusRoute
   CollectionsSlugRoute: typeof CollectionsSlugRoute
   FeedProductsDotxmlRoute: typeof FeedProductsDotxmlRoute
   JournalSlugRoute: typeof JournalSlugRoute
+  OrderReferenceRoute: typeof OrderReferenceRoute
   ProductSlugRoute: typeof ProductSlugRoute
   CollectionsIndexRoute: typeof CollectionsIndexRoute
   JournalIndexRoute: typeof JournalIndexRoute
@@ -454,6 +493,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof FaqRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/gift-finder': {
+      id: '/gift-finder'
+      path: '/gift-finder'
+      fullPath: '/gift-finder'
+      preLoaderRoute: typeof GiftFinderRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/gifting': {
       id: '/gifting'
       path: '/gifting'
@@ -501,6 +547,13 @@ declare module '@tanstack/react-router' {
       path: '/stores'
       fullPath: '/stores'
       preLoaderRoute: typeof StoresRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/support': {
+      id: '/support'
+      path: '/support'
+      fullPath: '/support'
+      preLoaderRoute: typeof SupportRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/track-order': {
@@ -559,6 +612,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof JournalSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/order/$reference': {
+      id: '/order/$reference'
+      path: '/order/$reference'
+      fullPath: '/order/$reference'
+      preLoaderRoute: typeof OrderReferenceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/product/$slug': {
       id: '/product/$slug'
       path: '/product/$slug'
@@ -587,6 +647,7 @@ const rootRouteChildren: RootRouteChildren = {
   ContactRoute: ContactRoute,
   CorporateRoute: CorporateRoute,
   FaqRoute: FaqRoute,
+  GiftFinderRoute: GiftFinderRoute,
   GiftingRoute: GiftingRoute,
   PaymentOptionsRoute: PaymentOptionsRoute,
   SearchRoute: SearchRoute,
@@ -594,12 +655,14 @@ const rootRouteChildren: RootRouteChildren = {
   ShopRoute: ShopRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   StoresRoute: StoresRoute,
+  SupportRoute: SupportRoute,
   TrackOrderRoute: TrackOrderRoute,
   WishlistRoute: WishlistRoute,
   AdminStatusRoute: AdminStatusRoute,
   CollectionsSlugRoute: CollectionsSlugRoute,
   FeedProductsDotxmlRoute: FeedProductsDotxmlRoute,
   JournalSlugRoute: JournalSlugRoute,
+  OrderReferenceRoute: OrderReferenceRoute,
   ProductSlugRoute: ProductSlugRoute,
   CollectionsIndexRoute: CollectionsIndexRoute,
   JournalIndexRoute: JournalIndexRoute,
