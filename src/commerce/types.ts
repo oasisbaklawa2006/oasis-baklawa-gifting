@@ -25,10 +25,10 @@ export type CartLineInput = {
 };
 
 export type GiftInput = {
-  message?: string;
-  ribbonId?: string;
-  sealId?: string;
-  concealInvoice?: boolean;
+  message?: string | undefined;
+  ribbonId?: string | undefined;
+  sealId?: string | undefined;
+  concealInvoice?: boolean | undefined;
 };
 
 export type PricedCart = {
@@ -53,7 +53,7 @@ export type OrderIntentInput = {
   gift?: GiftInput;
   deliveryOptionId?: string;
   contact: { name: string; email: string; phone: string };
-  shipping: { addressLine1: string; addressLine2?: string; city: string; state?: string; pincode: string; country: string };
+  shipping: { addressLine1: string; addressLine2?: string | undefined; city: string; state?: string | undefined; pincode: string; country: string };
   /** Client-generated key so a retried submit never creates a second order. */
   idempotencyKey: string;
 };
