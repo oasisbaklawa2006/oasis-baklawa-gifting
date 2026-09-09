@@ -27,6 +27,7 @@ import {
 import { getProductBySlug, products } from "@/data/catalog";
 import type { Product } from "@/data/types";
 import { cn } from "@/lib/utils";
+import { canonicalUrl, siteUrl } from "@/lib/site-url";
 
 export const Route = createFileRoute("/product/$slug")({
   loader: ({ params }): { product: Product } => {
@@ -47,9 +48,9 @@ export const Route = createFileRoute("/product/$slug")({
         { property: "og:title", content: `${product.name} — Oasis Baklawa` },
         { property: "og:description", content: product.shortDescription },
         { property: "og:type", content: "product" },
-        { property: "og:url", content: `/product/${product.slug}` },
+        { property: "og:url", content: siteUrl(`/product/${product.slug}`) },
       ],
-      links: [{ rel: "canonical", href: `/product/${product.slug}` }],
+      links: [{ rel: "canonical", href: canonicalUrl(`/product/${product.slug}`) }],
       scripts: [
         {
           type: "application/ld+json",
@@ -81,13 +82,13 @@ export const Route = createFileRoute("/product/$slug")({
             "@context": "https://schema.org",
             "@type": "BreadcrumbList",
             itemListElement: [
-              { "@type": "ListItem", position: 1, name: "Home", item: "/" },
-              { "@type": "ListItem", position: 2, name: "Shop", item: "/shop" },
+              { "@type": "ListItem", position: 1, name: "Home", item: siteUrl("/") },
+              { "@type": "ListItem", position: 2, name: "Shop", item: siteUrl("/shop") },
               {
                 "@type": "ListItem",
                 position: 3,
                 name: product.name,
-                item: `/product/${product.slug}`,
+                item: siteUrl(`/product/${product.slug}`),
               },
             ],
           }),
