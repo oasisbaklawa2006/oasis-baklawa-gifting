@@ -59,7 +59,12 @@ export const placeOrder = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => orderSchema.parse(input))
   .handler(async ({ data }) => {
     try {
-      return await commerce.createOrderIntent(data);
+      const { gift, deliveryOptionId, ...rest } = data;
+      return await commerce.createOrderIntent({
+        ...rest,
+        ...(gift ? { gift } : {}),
+        ...(deliveryOptionId ? { deliveryOptionId } : {}),
+      });
     } catch (error) {
       console.error("placeOrder failed", error);
       return { status: "unavailable" as const, reason: "The order service is temporarily unavailable." };
