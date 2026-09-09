@@ -136,7 +136,7 @@ function CheckoutPage() {
               item_id: line.variant.id,
               item_name: line.product.name,
               price: line.variant.price.amount,
-              quantity: line.quantity,
+              quantity: line.line.quantity,
             })),
           },
         });
