@@ -107,18 +107,19 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
               url: siteUrl("/"),
               description:
                 "Middle Eastern confectionery house producing baklawa and Arabic sweets in small batches, with gifting, corporate and wholesale supply.",
-              // TODO(oasis): add url, logo, sameAs profile URLs and contactPoint once live.
+              // TODO(oasis): add logo, sameAs profile URLs and contactPoint once live.
             },
             {
               "@type": "WebSite",
               "@id": "#website",
               name: "Oasis Baklawa",
+              url: siteUrl("/"),
               publisher: { "@id": "#organization" },
               potentialAction: {
                 "@type": "SearchAction",
                 target: {
                   "@type": "EntryPoint",
-                  urlTemplate: "/search?q={search_term_string}",
+                  urlTemplate: `${siteUrl("/search")}?q={search_term_string}`,
                 },
                 "query-input": "required name=search_term_string",
               },
