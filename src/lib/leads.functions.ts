@@ -1,10 +1,11 @@
 /**
  * ONE TYPED LEAD / SUBSCRIPTION SERVICE
  *
- * Every capture surface (newsletter, contact, corporate, wedding, rewards)
- * calls this. The record is persisted first, then forwarded to Appverse/Central
- * and Klaviyo when those credentials exist. The UI is told exactly what
- * happened — a queued record is reported as queued, never as "sent".
+ * Every capture surface (newsletter, contact, corporate, wedding, rewards,
+ * partnership) calls this. The record is persisted durably first, then
+ * forwarded to Appverse/Central and Klaviyo when those credentials exist. The
+ * UI is told exactly what happened — a queued record is reported as queued,
+ * never as "sent", and a failed write is never reported as success.
  */
 
 import { createServerFn } from "@tanstack/react-start";
@@ -39,7 +40,8 @@ export type LeadInput = z.infer<typeof schema>;
 
 export type LeadResult =
   | { status: "saved"; deduped: boolean; syncState: "pending_sync" | "synced" | "failed" }
-  | { status: "invalid"; reason: string };
+  | { status: "invalid"; reason: string }
+  | { status: "unavailable"; reason: string };
 
 export const submitLead = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => schema.parse(input))
@@ -48,11 +50,9 @@ export const submitLead = createServerFn({ method: "POST" })
       return { status: "invalid", reason: "An email address or phone number is required." };
     }
 
-    const { dedupeKey, listLeads, markSync, saveLead } = await import("./leads.server");
-    const key = dedupeKey(data.kind, data.email, data.phone);
-    const deduped = listLeads().some((record) => record.key === key);
+    const { markSync, saveLead } = await import("./leads.server");
 
-    const record = saveLead({
+    const outcome = await saveLead({
       kind: data.kind,
       ...(data.email ? { email: data.email.trim().toLowerCase() } : {}),
       ...(data.phone ? { phone: data.phone } : {}),
@@ -64,7 +64,19 @@ export const submitLead = createServerFn({ method: "POST" })
       source: data.source,
     });
 
+    // Nothing stored means nothing promised.
+    if (!outcome.ok) {
+      console.error("Lead persistence failed", outcome.reason);
+      return {
+        status: "unavailable",
+        reason:
+          "We couldn’t save your details just now. Please try again shortly, or email info@oasisbaklawa.com.",
+      };
+    }
+
+    const record = outcome.record;
     let syncState: "pending_sync" | "synced" | "failed" = "pending_sync";
+    let syncDetail: string | undefined;
 
     // 1) Appverse / Central is the operational authority for leads.
     const baseUrl = (
@@ -76,6 +88,7 @@ export const submitLead = createServerFn({ method: "POST" })
       try {
         const response = await fetch(`${baseUrl}/v1/leads`, {
           method: "POST",
+          // Stable per-record key: a retried handoff is never a second lead.
           headers: { "content-type": "application/json", "idempotency-key": record.id },
           body: JSON.stringify({
             kind: record.kind,
@@ -90,8 +103,10 @@ export const submitLead = createServerFn({ method: "POST" })
           }),
         });
         syncState = response.ok ? "synced" : "failed";
-      } catch {
+        if (!response.ok) syncDetail = `Central responded ${response.status}`;
+      } catch (error) {
         syncState = "failed";
+        syncDetail = (error as Error).message;
       }
     }
 
@@ -103,7 +118,7 @@ export const submitLead = createServerFn({ method: "POST" })
           ...(data.properties ?? {}),
           oasis_source: data.source,
           oasis_lead_kind: data.kind,
-          oasis_consent_at: record.consent.timestamp,
+          ...(record.consent.timestamp ? { oasis_consent_at: record.consent.timestamp } : {}),
           ...(record.attribution["first_utm_source"]
             ? { oasis_first_source: record.attribution["first_utm_source"] }
             : {}),
@@ -122,8 +137,8 @@ export const submitLead = createServerFn({ method: "POST" })
       }
     }
 
-    markSync(record.key, syncState);
-    return { status: "saved", deduped, syncState };
+    await markSync(record.key, syncState, syncDetail);
+    return { status: "saved", deduped: outcome.deduped, syncState };
   });
 
 /** Pending-sync counters for the private status surface. */
