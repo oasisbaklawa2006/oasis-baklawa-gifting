@@ -8,9 +8,12 @@
  *
  * No customer-facing success is ever shown unless a record was persisted here.
  *
- * NOTE: this is the website's own durable queue boundary. It is intentionally
- * a single module so that swapping the backing store for a managed database
- * touches this file only — never the UI or the server functions.
+ * DURABILITY WARNING — READ BEFORE PRODUCTION
+ * The backing store is process memory (see `src/adapters/lead-store.ts`). It is
+ * NOT durable: every restart, deploy or idle shutdown loses queued records.
+ * The private admin surface reports this as `durability: "ephemeral"`. Swapping
+ * in Appverse or a managed database touches this module only — never the UI or
+ * the server functions.
  */
 
 export type LeadKind =
