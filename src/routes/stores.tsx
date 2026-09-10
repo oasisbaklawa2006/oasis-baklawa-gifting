@@ -7,7 +7,10 @@ import { StoreCard } from "@/components/oasis/story-cards";
 import { EmptyState } from "@/components/oasis/states";
 import { NewsletterModule } from "@/components/oasis/newsletter";
 import { stores } from "@/data/site";
-import { contact } from "@/data/brand";
+import { brand, contact } from "@/data/brand";
+import { siteUrl } from "@/lib/site-url";
+import { track } from "@/lib/analytics";
+import { useEffect } from "react";
 
 export const Route = createFileRoute("/stores")({
   head: () => ({
@@ -21,6 +24,32 @@ export const Route = createFileRoute("/stores")({
       { property: "og:title", content: "Stores — Oasis Baklawa" },
       { property: "og:description", content: "Oasis Baklawa store locations and services." },
     ],
+    links: [{ rel: "canonical", href: "/stores" }],
+    scripts: [
+      {
+        type: "application/ld+json",
+        // Verified, published locations only — no invented opening hours.
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@graph": stores.map((store) => ({
+            "@type": "Store",
+            "@id": `${siteUrl("/stores")}#${store.id}`,
+            name: `${brand.name} — ${store.name}`,
+            parentOrganization: { "@type": "Organization", name: brand.name },
+            address: {
+              "@type": "PostalAddress",
+              streetAddress: store.addressLines.join(", "),
+              addressLocality: store.city,
+              addressRegion: store.region,
+              addressCountry: "IN",
+              ...(store.postalCode ? { postalCode: store.postalCode } : {}),
+            },
+            ...(store.phone ? { telephone: store.phone } : {}),
+            ...(store.hours ? { openingHours: store.hours } : {}),
+          })),
+        }),
+      },
+    ],
   }),
   component: StoresPage,
 });
@@ -29,6 +58,10 @@ function StoresPage() {
   const [city, setCity] = useState<string | null>(null);
   const cities = useMemo(() => Array.from(new Set(stores.map((s) => s.city))), []);
   const results = city ? stores.filter((s) => s.city === city) : stores;
+
+  useEffect(() => {
+    track({ name: "store_view", params: { locations: results.length, city: city ?? "all" } });
+  }, [city, results.length]);
 
   return (
     <>
