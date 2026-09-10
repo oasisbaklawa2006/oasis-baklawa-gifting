@@ -9,78 +9,134 @@ export const announcements = [
   "Corporate & wholesale enquiries welcome",
 ];
 
+/**
+ * Eight top-level departments. Mega-menu links are filter deep links into the
+ * shared catalogue engine — they never create collections that do not exist.
+ */
 export const primaryNav: NavigationItem[] = [
   {
-    label: "Shop",
-    to: "/shop",
+    label: "Luxury Gifts",
+    to: "/luxury-gifts",
     columns: [
       {
-        title: "Baklawa",
+        title: "By occasion",
         items: [
-          { label: "All products", to: "/shop" },
-          { label: "Premium Baklawa", to: "/shop?category=premium-baklawa" },
-          { label: "Kadayif Baklawa", to: "/shop?category=kadayif-baklawa" },
-          { label: "Best Sellers", to: "/collections" },
-          { label: "What’s New", to: "/collections" },
+          { label: "Festive Gifting", to: "/luxury-gifts?occasion=Festive" },
+          { label: "Wedding Gifting", to: "/wedding-gifting" },
+          { label: "Mehendi Gifting", to: "/luxury-gifts?occasion=Mehendi" },
+          { label: "Casual & Everyday", to: "/luxury-gifts?occasion=Casual" },
+          { label: "Corporate Gifting", to: "/corporate" },
         ],
       },
       {
-        title: "Dates & chocolates",
+        title: "By gift type",
         items: [
-          { label: "Arabic Dates", to: "/shop?category=arabic-dates" },
-          { label: "Chocolates", to: "/shop?category=chocolates" },
-          { label: "Fusion Sweets", to: "/shop?category=fusion-sweets" },
-          { label: "Turkish Delight", to: "/shop?category=turkish-delight" },
+          { label: "Premium Gifting", to: "/luxury-gifts?giftType=premium-gifting" },
+          { label: "Assortment Gifts", to: "/luxury-gifts?giftType=assortment-gifts" },
+          { label: "Gift Hampers", to: "/luxury-gifts?giftType=gift-hampers" },
+          { label: "Baklawa Gift Boxes", to: "/baklawa?giftType=baklawa-gift-boxes" },
+          { label: "Chocolate Gifts", to: "/gourmet-food?giftType=chocolate-gifts" },
+        ],
+      },
+      {
+        title: "By recipient & tools",
+        items: [
+          { label: "Family & Friends", to: "/luxury-gifts?recipient=family-friends" },
+          { label: "Host / Thank You", to: "/luxury-gifts?recipient=host-thank-you" },
+          { label: "Clients & Employees", to: "/luxury-gifts?recipient=clients-employees" },
+          { label: "Gift Finder", to: "/gift-finder" },
+          { label: "Build Your Own Box", to: "/build-your-box" },
+        ],
+      },
+    ],
+  },
+  {
+    label: "Baklawa",
+    to: "/baklawa",
+    columns: [
+      {
+        title: "Shop baklawa",
+        items: [
+          { label: "Shop All Baklawa", to: "/baklawa" },
+          { label: "Premium Baklawa", to: "/baklawa?category=premium-baklawa" },
+          { label: "Kadayif Baklawa", to: "/baklawa?category=kadayif-baklawa" },
+        ],
+      },
+      {
+        title: "Selections",
+        items: [
+          { label: "Baklawa Gift Boxes", to: "/baklawa?giftType=baklawa-gift-boxes" },
+          { label: "Pistachio", to: "/baklawa?ingredient=Pistachio" },
+          { label: "Walnut & Cashew", to: "/baklawa?ingredient=Walnut" },
+        ],
+      },
+      {
+        title: "The craft",
+        items: [
+          { label: "The art of baklawa", to: "/world-of-oasis" },
+          { label: "Our production", to: "/business" },
+          { label: "Journal", to: "/journal" },
+        ],
+      },
+    ],
+  },
+  {
+    label: "Gourmet Food",
+    to: "/gourmet-food",
+    columns: [
+      {
+        title: "Dates",
+        items: [
+          { label: "Arabic Dates", to: "/gourmet-food?category=arabic-dates" },
+          { label: "Dates & Chocodates Gifts", to: "/gourmet-food?giftType=dates-gifts" },
+          { label: "Dates in the range", to: "/gourmet-food?ingredient=Dates" },
+        ],
+      },
+      {
+        title: "Chocolates",
+        items: [
+          { label: "All Chocolates", to: "/gourmet-food?category=chocolates" },
+          { label: "Chocolate Gifts", to: "/gourmet-food?giftType=chocolate-gifts" },
+          { label: "Chocolate in the range", to: "/gourmet-food?ingredient=Chocolate" },
         ],
       },
       {
         title: "More delicacies",
         items: [
-          { label: "Nuts & Mixes", to: "/shop?category=nuts-and-mixes" },
-          { label: "Assortment Gifts", to: "/shop?category=assortment-gifts" },
-          { label: "Gift Hampers", to: "/shop?category=gift-hampers" },
-          { label: "Luxury Gifting", to: "/shop?category=luxury-gifting" },
+          { label: "Fusion Sweets", to: "/gourmet-food?category=fusion-sweets" },
+          { label: "Turkish Delight", to: "/gourmet-food?category=turkish-delight" },
+          { label: "Dry Fruit & Nuts", to: "/gourmet-food?category=nuts-and-mixes" },
+          { label: "What’s New", to: "/gourmet-food?collection=col-seasonal" },
         ],
       },
     ],
   },
+  { label: "Build Your Own Box", to: "/build-your-box" },
+  { label: "Corporate Gifting", to: "/corporate" },
+  { label: "Wedding Gifting", to: "/wedding-gifting" },
   {
-    label: "Gifting",
-    to: "/gifting",
+    label: "World of Oasis",
+    to: "/world-of-oasis",
     columns: [
       {
-        title: "By occasion",
+        title: "The house",
         items: [
-          { label: "Premium Gifting", to: "/gifting" },
-          { label: "Festive Gifting", to: "/gifting" },
-          { label: "Casual Gifting", to: "/gifting" },
-          { label: "Baby Shower Gifting", to: "/gifting" },
+          { label: "Our Story", to: "/about" },
+          { label: "Our Production", to: "/business" },
+          { label: "World of Oasis", to: "/world-of-oasis" },
         ],
       },
       {
-        title: "Celebrations",
+        title: "Visit & read",
         items: [
-          { label: "Wedding Gifting", to: "/gifting" },
-          { label: "Mehendi Gifting", to: "/gifting" },
-          { label: "Corporate Gifting", to: "/corporate" },
-          { label: "Dessert Catering", to: "/corporate" },
-        ],
-      },
-      {
-        title: "Tools",
-        items: [
-          { label: "Build a Gift", to: "/build-a-gift" },
-          { label: "Gift Finder", to: "/gift-finder" },
-          { label: "Gifting overview", to: "/gifting" },
+          { label: "Stores", to: "/stores" },
+          { label: "Journal", to: "/journal" },
+          { label: "Contact Us", to: "/contact" },
         ],
       },
     ],
   },
-  { label: "Our Story", to: "/about" },
-  { label: "Our Production", to: "/business" },
-  { label: "Stores", to: "/stores" },
-  { label: "Journal", to: "/journal" },
-  { label: "Contact", to: "/contact" },
+  { label: "Oasis Rewards", to: "/rewards" },
 ];
 
 /** Short service links shown at the foot of the mobile menu. */

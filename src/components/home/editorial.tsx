@@ -23,7 +23,18 @@ export function EditorialModule({
   image: string;
   imageAlt: string;
   reverse?: boolean;
-  cta?: { label: string; to: "/shop" | "/about" | "/business" | "/stores" };
+  cta?: {
+    label: string;
+    to:
+      | "/shop"
+      | "/about"
+      | "/business"
+      | "/stores"
+      | "/baklawa"
+      | "/luxury-gifts"
+      | "/gourmet-food"
+      | "/world-of-oasis";
+  };
 }) {
   return (
     <section className="container-oasis section-y">

@@ -2,6 +2,12 @@
 const known = [
   "/",
   "/shop",
+  "/luxury-gifts",
+  "/baklawa",
+  "/gourmet-food",
+  "/wedding-gifting",
+  "/world-of-oasis",
+  "/rewards",
   "/collections",
   "/journal",
   "/shipping",

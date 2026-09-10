@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as AccountRouteImport } from './routes/account'
+import { Route as BaklawaRouteImport } from './routes/baklawa'
 import { Route as BuildAGiftRouteImport } from './routes/build-a-gift'
 import { Route as BuildYourBoxRouteImport } from './routes/build-your-box'
 import { Route as BusinessRouteImport } from './routes/business'
@@ -22,9 +23,12 @@ import { Route as CorporateRouteImport } from './routes/corporate'
 import { Route as FaqRouteImport } from './routes/faq'
 import { Route as GiftFinderRouteImport } from './routes/gift-finder'
 import { Route as GiftingRouteImport } from './routes/gifting'
+import { Route as GourmetFoodRouteImport } from './routes/gourmet-food'
+import { Route as LuxuryGiftsRouteImport } from './routes/luxury-gifts'
 import { Route as PaymentOptionsRouteImport } from './routes/payment-options'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as ReturnsRouteImport } from './routes/returns'
+import { Route as RewardsRouteImport } from './routes/rewards'
 import { Route as SearchRouteImport } from './routes/search'
 import { Route as ShippingRouteImport } from './routes/shipping'
 import { Route as ShopRouteImport } from './routes/shop'
@@ -33,7 +37,9 @@ import { Route as StoresRouteImport } from './routes/stores'
 import { Route as SupportRouteImport } from './routes/support'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as TrackOrderRouteImport } from './routes/track-order'
+import { Route as WeddingGiftingRouteImport } from './routes/wedding-gifting'
 import { Route as WishlistRouteImport } from './routes/wishlist'
+import { Route as WorldOfOasisRouteImport } from './routes/world-of-oasis'
 import { Route as AdminStatusRouteImport } from './routes/admin.status'
 import { Route as CollectionsIndexRouteImport } from './routes/collections.index'
 import { Route as CollectionsSlugRouteImport } from './routes/collections.$slug'
@@ -57,6 +63,11 @@ const AboutRoute = AboutRouteImport.update({
 const AccountRoute = AccountRouteImport.update({
   id: '/account',
   path: '/account',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BaklawaRoute = BaklawaRouteImport.update({
+  id: '/baklawa',
+  path: '/baklawa',
   getParentRoute: () => rootRouteImport,
 } as any)
 const BuildAGiftRoute = BuildAGiftRouteImport.update({
@@ -109,6 +120,16 @@ const GiftingRoute = GiftingRouteImport.update({
   path: '/gifting',
   getParentRoute: () => rootRouteImport,
 } as any)
+const GourmetFoodRoute = GourmetFoodRouteImport.update({
+  id: '/gourmet-food',
+  path: '/gourmet-food',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LuxuryGiftsRoute = LuxuryGiftsRouteImport.update({
+  id: '/luxury-gifts',
+  path: '/luxury-gifts',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PaymentOptionsRoute = PaymentOptionsRouteImport.update({
   id: '/payment-options',
   path: '/payment-options',
@@ -122,6 +143,11 @@ const PrivacyRoute = PrivacyRouteImport.update({
 const ReturnsRoute = ReturnsRouteImport.update({
   id: '/returns',
   path: '/returns',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RewardsRoute = RewardsRouteImport.update({
+  id: '/rewards',
+  path: '/rewards',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SearchRoute = SearchRouteImport.update({
@@ -164,9 +190,19 @@ const TrackOrderRoute = TrackOrderRouteImport.update({
   path: '/track-order',
   getParentRoute: () => rootRouteImport,
 } as any)
+const WeddingGiftingRoute = WeddingGiftingRouteImport.update({
+  id: '/wedding-gifting',
+  path: '/wedding-gifting',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const WishlistRoute = WishlistRouteImport.update({
   id: '/wishlist',
   path: '/wishlist',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const WorldOfOasisRoute = WorldOfOasisRouteImport.update({
+  id: '/world-of-oasis',
+  path: '/world-of-oasis',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminStatusRoute = AdminStatusRouteImport.update({
@@ -220,6 +256,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/account': typeof AccountRoute
+  '/baklawa': typeof BaklawaRoute
   '/build-a-gift': typeof BuildAGiftRoute
   '/build-your-box': typeof BuildYourBoxRoute
   '/business': typeof BusinessRoute
@@ -230,9 +267,12 @@ export interface FileRoutesByFullPath {
   '/faq': typeof FaqRoute
   '/gift-finder': typeof GiftFinderRoute
   '/gifting': typeof GiftingRoute
+  '/gourmet-food': typeof GourmetFoodRoute
+  '/luxury-gifts': typeof LuxuryGiftsRoute
   '/payment-options': typeof PaymentOptionsRoute
   '/privacy': typeof PrivacyRoute
   '/returns': typeof ReturnsRoute
+  '/rewards': typeof RewardsRoute
   '/search': typeof SearchRoute
   '/shipping': typeof ShippingRoute
   '/shop': typeof ShopRoute
@@ -241,7 +281,9 @@ export interface FileRoutesByFullPath {
   '/support': typeof SupportRoute
   '/terms': typeof TermsRoute
   '/track-order': typeof TrackOrderRoute
+  '/wedding-gifting': typeof WeddingGiftingRoute
   '/wishlist': typeof WishlistRoute
+  '/world-of-oasis': typeof WorldOfOasisRoute
   '/admin/status': typeof AdminStatusRoute
   '/collections/$slug': typeof CollectionsSlugRoute
   '/feed/products.xml': typeof FeedProductsDotxmlRoute
@@ -256,6 +298,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/account': typeof AccountRoute
+  '/baklawa': typeof BaklawaRoute
   '/build-a-gift': typeof BuildAGiftRoute
   '/build-your-box': typeof BuildYourBoxRoute
   '/business': typeof BusinessRoute
@@ -266,9 +309,12 @@ export interface FileRoutesByTo {
   '/faq': typeof FaqRoute
   '/gift-finder': typeof GiftFinderRoute
   '/gifting': typeof GiftingRoute
+  '/gourmet-food': typeof GourmetFoodRoute
+  '/luxury-gifts': typeof LuxuryGiftsRoute
   '/payment-options': typeof PaymentOptionsRoute
   '/privacy': typeof PrivacyRoute
   '/returns': typeof ReturnsRoute
+  '/rewards': typeof RewardsRoute
   '/search': typeof SearchRoute
   '/shipping': typeof ShippingRoute
   '/shop': typeof ShopRoute
@@ -277,7 +323,9 @@ export interface FileRoutesByTo {
   '/support': typeof SupportRoute
   '/terms': typeof TermsRoute
   '/track-order': typeof TrackOrderRoute
+  '/wedding-gifting': typeof WeddingGiftingRoute
   '/wishlist': typeof WishlistRoute
+  '/world-of-oasis': typeof WorldOfOasisRoute
   '/admin/status': typeof AdminStatusRoute
   '/collections/$slug': typeof CollectionsSlugRoute
   '/feed/products.xml': typeof FeedProductsDotxmlRoute
@@ -293,6 +341,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/account': typeof AccountRoute
+  '/baklawa': typeof BaklawaRoute
   '/build-a-gift': typeof BuildAGiftRoute
   '/build-your-box': typeof BuildYourBoxRoute
   '/business': typeof BusinessRoute
@@ -303,9 +352,12 @@ export interface FileRoutesById {
   '/faq': typeof FaqRoute
   '/gift-finder': typeof GiftFinderRoute
   '/gifting': typeof GiftingRoute
+  '/gourmet-food': typeof GourmetFoodRoute
+  '/luxury-gifts': typeof LuxuryGiftsRoute
   '/payment-options': typeof PaymentOptionsRoute
   '/privacy': typeof PrivacyRoute
   '/returns': typeof ReturnsRoute
+  '/rewards': typeof RewardsRoute
   '/search': typeof SearchRoute
   '/shipping': typeof ShippingRoute
   '/shop': typeof ShopRoute
@@ -314,7 +366,9 @@ export interface FileRoutesById {
   '/support': typeof SupportRoute
   '/terms': typeof TermsRoute
   '/track-order': typeof TrackOrderRoute
+  '/wedding-gifting': typeof WeddingGiftingRoute
   '/wishlist': typeof WishlistRoute
+  '/world-of-oasis': typeof WorldOfOasisRoute
   '/admin/status': typeof AdminStatusRoute
   '/collections/$slug': typeof CollectionsSlugRoute
   '/feed/products.xml': typeof FeedProductsDotxmlRoute
@@ -331,6 +385,7 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/account'
+    | '/baklawa'
     | '/build-a-gift'
     | '/build-your-box'
     | '/business'
@@ -341,9 +396,12 @@ export interface FileRouteTypes {
     | '/faq'
     | '/gift-finder'
     | '/gifting'
+    | '/gourmet-food'
+    | '/luxury-gifts'
     | '/payment-options'
     | '/privacy'
     | '/returns'
+    | '/rewards'
     | '/search'
     | '/shipping'
     | '/shop'
@@ -352,7 +410,9 @@ export interface FileRouteTypes {
     | '/support'
     | '/terms'
     | '/track-order'
+    | '/wedding-gifting'
     | '/wishlist'
+    | '/world-of-oasis'
     | '/admin/status'
     | '/collections/$slug'
     | '/feed/products.xml'
@@ -367,6 +427,7 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/account'
+    | '/baklawa'
     | '/build-a-gift'
     | '/build-your-box'
     | '/business'
@@ -377,9 +438,12 @@ export interface FileRouteTypes {
     | '/faq'
     | '/gift-finder'
     | '/gifting'
+    | '/gourmet-food'
+    | '/luxury-gifts'
     | '/payment-options'
     | '/privacy'
     | '/returns'
+    | '/rewards'
     | '/search'
     | '/shipping'
     | '/shop'
@@ -388,7 +452,9 @@ export interface FileRouteTypes {
     | '/support'
     | '/terms'
     | '/track-order'
+    | '/wedding-gifting'
     | '/wishlist'
+    | '/world-of-oasis'
     | '/admin/status'
     | '/collections/$slug'
     | '/feed/products.xml'
@@ -403,6 +469,7 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/account'
+    | '/baklawa'
     | '/build-a-gift'
     | '/build-your-box'
     | '/business'
@@ -413,9 +480,12 @@ export interface FileRouteTypes {
     | '/faq'
     | '/gift-finder'
     | '/gifting'
+    | '/gourmet-food'
+    | '/luxury-gifts'
     | '/payment-options'
     | '/privacy'
     | '/returns'
+    | '/rewards'
     | '/search'
     | '/shipping'
     | '/shop'
@@ -424,7 +494,9 @@ export interface FileRouteTypes {
     | '/support'
     | '/terms'
     | '/track-order'
+    | '/wedding-gifting'
     | '/wishlist'
+    | '/world-of-oasis'
     | '/admin/status'
     | '/collections/$slug'
     | '/feed/products.xml'
@@ -440,6 +512,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
   AccountRoute: typeof AccountRoute
+  BaklawaRoute: typeof BaklawaRoute
   BuildAGiftRoute: typeof BuildAGiftRoute
   BuildYourBoxRoute: typeof BuildYourBoxRoute
   BusinessRoute: typeof BusinessRoute
@@ -450,9 +523,12 @@ export interface RootRouteChildren {
   FaqRoute: typeof FaqRoute
   GiftFinderRoute: typeof GiftFinderRoute
   GiftingRoute: typeof GiftingRoute
+  GourmetFoodRoute: typeof GourmetFoodRoute
+  LuxuryGiftsRoute: typeof LuxuryGiftsRoute
   PaymentOptionsRoute: typeof PaymentOptionsRoute
   PrivacyRoute: typeof PrivacyRoute
   ReturnsRoute: typeof ReturnsRoute
+  RewardsRoute: typeof RewardsRoute
   SearchRoute: typeof SearchRoute
   ShippingRoute: typeof ShippingRoute
   ShopRoute: typeof ShopRoute
@@ -461,7 +537,9 @@ export interface RootRouteChildren {
   SupportRoute: typeof SupportRoute
   TermsRoute: typeof TermsRoute
   TrackOrderRoute: typeof TrackOrderRoute
+  WeddingGiftingRoute: typeof WeddingGiftingRoute
   WishlistRoute: typeof WishlistRoute
+  WorldOfOasisRoute: typeof WorldOfOasisRoute
   AdminStatusRoute: typeof AdminStatusRoute
   CollectionsSlugRoute: typeof CollectionsSlugRoute
   FeedProductsDotxmlRoute: typeof FeedProductsDotxmlRoute
@@ -494,6 +572,13 @@ declare module '@tanstack/react-router' {
       path: '/account'
       fullPath: '/account'
       preLoaderRoute: typeof AccountRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/baklawa': {
+      id: '/baklawa'
+      path: '/baklawa'
+      fullPath: '/baklawa'
+      preLoaderRoute: typeof BaklawaRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/build-a-gift': {
@@ -566,6 +651,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof GiftingRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/gourmet-food': {
+      id: '/gourmet-food'
+      path: '/gourmet-food'
+      fullPath: '/gourmet-food'
+      preLoaderRoute: typeof GourmetFoodRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/luxury-gifts': {
+      id: '/luxury-gifts'
+      path: '/luxury-gifts'
+      fullPath: '/luxury-gifts'
+      preLoaderRoute: typeof LuxuryGiftsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/payment-options': {
       id: '/payment-options'
       path: '/payment-options'
@@ -585,6 +684,13 @@ declare module '@tanstack/react-router' {
       path: '/returns'
       fullPath: '/returns'
       preLoaderRoute: typeof ReturnsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/rewards': {
+      id: '/rewards'
+      path: '/rewards'
+      fullPath: '/rewards'
+      preLoaderRoute: typeof RewardsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/search': {
@@ -643,11 +749,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TrackOrderRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/wedding-gifting': {
+      id: '/wedding-gifting'
+      path: '/wedding-gifting'
+      fullPath: '/wedding-gifting'
+      preLoaderRoute: typeof WeddingGiftingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/wishlist': {
       id: '/wishlist'
       path: '/wishlist'
       fullPath: '/wishlist'
       preLoaderRoute: typeof WishlistRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/world-of-oasis': {
+      id: '/world-of-oasis'
+      path: '/world-of-oasis'
+      fullPath: '/world-of-oasis'
+      preLoaderRoute: typeof WorldOfOasisRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin/status': {
@@ -720,6 +840,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
   AccountRoute: AccountRoute,
+  BaklawaRoute: BaklawaRoute,
   BuildAGiftRoute: BuildAGiftRoute,
   BuildYourBoxRoute: BuildYourBoxRoute,
   BusinessRoute: BusinessRoute,
@@ -730,9 +851,12 @@ const rootRouteChildren: RootRouteChildren = {
   FaqRoute: FaqRoute,
   GiftFinderRoute: GiftFinderRoute,
   GiftingRoute: GiftingRoute,
+  GourmetFoodRoute: GourmetFoodRoute,
+  LuxuryGiftsRoute: LuxuryGiftsRoute,
   PaymentOptionsRoute: PaymentOptionsRoute,
   PrivacyRoute: PrivacyRoute,
   ReturnsRoute: ReturnsRoute,
+  RewardsRoute: RewardsRoute,
   SearchRoute: SearchRoute,
   ShippingRoute: ShippingRoute,
   ShopRoute: ShopRoute,
@@ -741,7 +865,9 @@ const rootRouteChildren: RootRouteChildren = {
   SupportRoute: SupportRoute,
   TermsRoute: TermsRoute,
   TrackOrderRoute: TrackOrderRoute,
+  WeddingGiftingRoute: WeddingGiftingRoute,
   WishlistRoute: WishlistRoute,
+  WorldOfOasisRoute: WorldOfOasisRoute,
   AdminStatusRoute: AdminStatusRoute,
   CollectionsSlugRoute: CollectionsSlugRoute,
   FeedProductsDotxmlRoute: FeedProductsDotxmlRoute,
