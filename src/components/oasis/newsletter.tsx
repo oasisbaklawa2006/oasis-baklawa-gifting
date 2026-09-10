@@ -1,19 +1,20 @@
-import { useState, type FormEvent } from "react";
-import { toast } from "sonner";
-
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useLeadForm } from "@/lib/marketing/use-lead-form";
 
-/** UI only — no submission endpoint is wired in this build. */
+/**
+ * Newsletter sign-up. The address is stored through the single lead service;
+ * a confirmation is only shown once the server confirms it was saved.
+ */
 export function NewsletterModule() {
-  const [email, setEmail] = useState("");
-
-  function onSubmit(event: FormEvent) {
-    event.preventDefault();
-    setEmail("");
-    toast.success("Thank you", { description: "Sign-up is a UI placeholder in this build." });
-  }
+  const lead = useLeadForm({
+    kind: "newsletter",
+    source: "footer-newsletter",
+    event: "newsletter_signup",
+    successMessage: "Thank you — you’re on the list.",
+    failureMessage: "We couldn’t save your address just now. Please try again shortly.",
+  });
 
   return (
     <section className="border-t border-border bg-premium">
@@ -29,7 +30,7 @@ export function NewsletterModule() {
           </p>
         </div>
 
-        <form onSubmit={onSubmit} className="w-full max-w-md md:justify-self-end">
+        <form onSubmit={lead.onSubmit} className="w-full max-w-md md:justify-self-end">
           <Label
             htmlFor="newsletter-email"
             className="text-[0.75rem] uppercase tracking-[0.14em] text-driftwood"
@@ -39,20 +40,19 @@ export function NewsletterModule() {
           <div className="mt-3 flex flex-col gap-3 sm:flex-row">
             <Input
               id="newsletter-email"
+              name="email"
               type="email"
               required
               autoComplete="email"
               placeholder="you@example.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
               className="h-12 rounded-sm border-border bg-background"
             />
-            <Button type="submit" size="lg" className="sm:w-auto">
-              Sign up
+            <Button type="submit" size="lg" className="sm:w-auto" disabled={lead.pending}>
+              {lead.pending ? "Saving…" : "Sign up"}
             </Button>
           </div>
-          <p className="mt-3 text-[0.75rem] text-muted-foreground">
-            We will only use your address to send these updates.
+          <p aria-live="polite" className="mt-3 text-[0.75rem] text-muted-foreground">
+            {lead.statusMessage ?? "We will only use your address to send these updates."}
           </p>
         </form>
       </div>
