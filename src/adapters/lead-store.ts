@@ -1,17 +1,19 @@
 /**
  * LEAD / QUEUE PERSISTENCE ADAPTER
  *
- * IMPORTANT DURABILITY STATEMENT
- * The only backing store available without external credentials is process
- * memory. Process memory is NOT durable: every deploy, restart or idle
- * shutdown of the server loses queued leads and cart-recovery records. This
- * module therefore reports its own durability honestly (`durability:
- * "ephemeral"`) and the private admin surface shows it as a production
- * blocker. Swapping in a real store (Appverse, Postgres, Klaviyo) means
- * implementing `LeadStore` once — no UI or server function changes.
+ * DURABILITY STATEMENT
+ * The website's own durable store is the project database
+ * (`public.website_leads`, `public.cart_recovery_sessions`), reached
+ * server-side only. When it is configured, queued leads and cart-recovery
+ * sessions survive restarts and deploys and carry an explicit pending-sync
+ * state for a later Oasis Central connector.
+ *
+ * If the database is not configured the site falls back to process memory,
+ * which is NOT durable, and every status surface reports that honestly.
  */
 
 import { registerAdapter, resolveAdapter } from "./registry";
+import { envPresent } from "./env";
 
 export type StoreDurability = "ephemeral" | "durable";
 
@@ -40,6 +42,26 @@ export function createMemoryStore<T extends { key: string }>(provider = "memory"
 }
 
 registerAdapter({
+  id: "lead-store:database",
+  domain: "lead-store",
+  provider: "database",
+  label: "Project database queue (durable)",
+  capabilities: ["dedupe", "sync-state", "durable-persistence", "idempotent-writes", "expiry"],
+  requiredEnv: ["SUPABASE_URL", "SUPABASE_SERVICE_ROLE_KEY"],
+  fallback: "In-process memory queue, which is not durable.",
+});
+
+registerAdapter({
+  id: "lead-store:appverse",
+  domain: "lead-store",
+  provider: "appverse",
+  label: "Oasis Central / Appverse queue (authoritative, future)",
+  capabilities: ["dedupe", "sync-state", "durable-persistence", "replay"],
+  requiredEnv: ["APPVERSE_BASE_URL", "APPVERSE_API_KEY"],
+  fallback: "Records stay in the project database with an explicit pending-sync state.",
+});
+
+registerAdapter({
   id: "lead-store:memory",
   domain: "lead-store",
   provider: "memory",
@@ -51,28 +73,14 @@ registerAdapter({
   isFallback: true,
 });
 
-registerAdapter({
-  id: "lead-store:appverse",
-  domain: "lead-store",
-  provider: "appverse",
-  label: "Oasis Central / Appverse queue (durable, preferred)",
-  capabilities: ["dedupe", "sync-state", "durable-persistence", "replay"],
-  requiredEnv: ["APPVERSE_BASE_URL", "APPVERSE_API_KEY"],
-  fallback: "In-process memory queue, which is not durable.",
-});
-
-registerAdapter({
-  id: "lead-store:database",
-  domain: "lead-store",
-  provider: "database",
-  label: "Managed database queue (durable, optional)",
-  capabilities: ["dedupe", "sync-state", "durable-persistence"],
-  requiredEnv: ["LEAD_DATABASE_URL"],
-  fallback: "In-process memory queue, which is not durable.",
-});
+/** True when the server-side database credentials for durable storage exist. */
+export function databaseStoreConfigured(): boolean {
+  return envPresent("SUPABASE_URL") && envPresent("SUPABASE_SERVICE_ROLE_KEY");
+}
 
 /** Durability of the store actually in use right now. */
 export function leadStoreDurability(): StoreDurability {
+  if (databaseStoreConfigured()) return "durable";
   const descriptor = resolveAdapter("lead-store");
   return descriptor && descriptor.provider !== "memory" ? "durable" : "ephemeral";
 }

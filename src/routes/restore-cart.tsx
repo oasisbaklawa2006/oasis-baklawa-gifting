@@ -29,7 +29,7 @@ export const Route = createFileRoute("/restore-cart")({
   component: RestoreCartPage,
 });
 
-type Phase = "checking" | "restored" | "invalid";
+type Phase = "checking" | "restored" | "invalid" | "unavailable";
 
 function RestoreCartPage() {
   const { token } = Route.useSearch();
@@ -57,12 +57,16 @@ function RestoreCartPage() {
           replaceLines(result.lines);
           setPhase("restored");
           track({ name: "cart_restored", params: { items: result.lines.length } });
+        } else if (result.status === "unavailable") {
+          // Honest: the link may well be fine, we just could not check it.
+          setPhase("unavailable");
+          setMessage(result.reason);
         } else {
           setPhase("invalid");
           setMessage(result.reason);
         }
       } catch {
-        setPhase("invalid");
+        setPhase("unavailable");
         setMessage("We couldn’t check this basket link just now. Please try again shortly.");
       }
     })();
@@ -87,6 +91,17 @@ function RestoreCartPage() {
             </p>
             <div className="mt-8 flex flex-wrap justify-center gap-3">
               <Button onClick={() => void navigate({ to: "/cart" })}>View basket</Button>
+              <Button variant="outline" asChild>
+                <Link to="/shop">Continue shopping</Link>
+              </Button>
+            </div>
+          </>
+        ) : phase === "unavailable" ? (
+          <>
+            <h1 className="mt-4 font-display text-4xl">We couldn’t check this link just now</h1>
+            <p className="mt-3 text-sm text-muted-foreground">{message}</p>
+            <div className="mt-8 flex flex-wrap justify-center gap-3">
+              <Button onClick={() => window.location.reload()}>Try again</Button>
               <Button variant="outline" asChild>
                 <Link to="/shop">Continue shopping</Link>
               </Button>

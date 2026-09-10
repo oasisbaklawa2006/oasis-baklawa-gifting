@@ -26,3 +26,7 @@
 - [x] Contact: +91 72919 94141, info@oasisbaklawa.com, Kirti Nagar HO
 - [x] Top sellers merchandising with real product photos
 - [x] QA: typecheck, tests, build, mobile checks
+
+## Durable persistence (completed)
+- Enquiries, saved-basket links and payment-notification replay guards now live in the project database (server-only, no public access).
+- Remaining external values: provider IDs/secrets, official channel URLs, governed prices/weights, store hours and per-store phones.

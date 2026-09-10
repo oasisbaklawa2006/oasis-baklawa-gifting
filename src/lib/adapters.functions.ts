@@ -7,18 +7,20 @@
 import { createServerFn } from "@tanstack/react-start";
 
 import { adapterReport } from "@/adapters";
-import { leadStoreDurability } from "@/adapters/lead-store";
 
 export const adapterStatusReport = createServerFn({ method: "GET" }).handler(async () => {
+  const { persistenceHealth } = await import("@/lib/persistence/index.server");
   const adapters = adapterReport().map(({ testConnection: _testConnection, ...rest }) => rest);
+  const persistence = await persistenceHealth();
+
   return {
     adapters,
     leadStore: {
-      durability: leadStoreDurability(),
-      note:
-        leadStoreDurability() === "durable"
-          ? "Queued leads survive restarts."
-          : "Queued leads and cart-recovery records live in server memory and are LOST on restart or deploy. Not production-safe on its own.",
+      provider: persistence.provider,
+      durability: persistence.durability,
+      note: persistence.note,
+      leads: persistence.leads,
+      recovery: persistence.recovery,
     },
     checkedAt: new Date().toISOString(),
   };

@@ -25,7 +25,11 @@ import { localSearch, runSearch, searchAdapter } from "@/adapters/search";
 import { hasVerifiedReviews, reviewsAdapter } from "@/adapters/reviews";
 import { loyaltyAdapter } from "@/adapters/loyalty";
 import { isDuplicateLead, normalizeLead } from "@/adapters/crm";
-import { leadStoreDurability, createMemoryStore } from "@/adapters/lead-store";
+import {
+  leadStoreDurability,
+  createMemoryStore,
+  databaseStoreConfigured,
+} from "@/adapters/lead-store";
 import { validateAddressLocally } from "@/adapters/address";
 import { taxAdapter, validateGstinFormat } from "@/adapters/tax";
 import { channelProjection, channelAdapter } from "@/adapters/channels";
@@ -171,9 +175,12 @@ describe("crm and lead store", () => {
     expect(isDuplicateLead(a, { ...a, kind: "corporate" })).toBe(false);
   });
 
-  it("reports the in-memory queue as ephemeral, never durable", () => {
-    expect(leadStoreDurability()).toBe("ephemeral");
+  it("never claims durability for the in-memory queue", () => {
     expect(createMemoryStore().durability).toBe("ephemeral");
+  });
+
+  it("reports durability from the store actually in use", () => {
+    expect(leadStoreDurability()).toBe(databaseStoreConfigured() ? "durable" : "ephemeral");
   });
 });
 

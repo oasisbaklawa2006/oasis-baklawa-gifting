@@ -236,17 +236,31 @@ function StatusPage() {
               <p className="mt-4 text-sm text-muted-foreground">Reading adapters…</p>
             ) : adapters.data ? (
               <>
-                <p
+                <div
                   className={`mt-4 rounded-sm border p-4 text-[0.8125rem] ${
                     adapters.data.leadStore.durability === "durable"
                       ? "border-border text-muted-foreground"
                       : "border-gold text-foreground"
                   }`}
                 >
-                  Lead &amp; cart-recovery queue durability:{" "}
-                  <strong>{adapters.data.leadStore.durability}</strong> —{" "}
-                  {adapters.data.leadStore.note}
-                </p>
+                  <p>
+                    Enquiry &amp; saved-basket storage:{" "}
+                    <strong>
+                      {adapters.data.leadStore.durability} · {adapters.data.leadStore.provider}
+                    </strong>{" "}
+                    — {adapters.data.leadStore.note}
+                  </p>
+                  <p className="mt-2">
+                    Enquiries — awaiting Oasis Central: {adapters.data.leadStore.leads.pending_sync}{" "}
+                    · handed over: {adapters.data.leadStore.leads.synced} · failed:{" "}
+                    {adapters.data.leadStore.leads.failed}
+                  </p>
+                  <p className="mt-1">
+                    Saved baskets — live: {adapters.data.leadStore.recovery.active} · reopened:{" "}
+                    {adapters.data.leadStore.recovery.redeemed} · expired:{" "}
+                    {adapters.data.leadStore.recovery.expired}
+                  </p>
+                </div>
                 <ul className="mt-4 divide-y divide-border rounded-sm border border-border">
                   {adapters.data.adapters.map((item) => (
                     <li key={item.id} className="flex flex-wrap items-start gap-3 p-4">
