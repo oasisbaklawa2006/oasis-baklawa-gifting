@@ -117,7 +117,15 @@ export const currencyPolicy = {
 
 export type ReadinessItem = {
   id: string;
-  group: "Commerce" | "Catalogue" | "Analytics" | "Payments" | "Channels" | "Site";
+  group:
+    | "Commerce"
+    | "Catalogue"
+    | "Analytics"
+    | "Payments"
+    | "Channels"
+    | "Site"
+    | "Marketing"
+    | "Lifecycle";
   label: string;
   status: IntegrationStatus;
   /** What an owner must supply when this is not configured. */

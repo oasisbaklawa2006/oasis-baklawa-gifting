@@ -48,6 +48,7 @@ type ShopContextValue = ShopState & {
   setQuantity: (productId: string, variantId: string, quantity: number) => void;
   removeLine: (productId: string, variantId: string) => void;
   clearCart: () => void;
+  replaceLines: (lines: CartLine[]) => void;
   toggleWishlist: (productId: string) => void;
   setGift: (patch: Partial<GiftState>) => void;
   isWishlisted: (productId: string) => boolean;
@@ -133,6 +134,12 @@ export function ShopProvider({ children }: { children: ReactNode }) {
 
   const clearCart = useCallback(() => setState((prev) => ({ ...prev, lines: [] })), []);
 
+  /** Used by cart recovery: the restored selection replaces the current basket. */
+  const replaceLines = useCallback((lines: CartLine[]) => {
+    setState((prev) => ({ ...prev, lines }));
+  }, []);
+
+
   const toggleWishlist = useCallback((productId: string) => {
     setState((prev) => ({
       ...prev,
@@ -154,6 +161,7 @@ export function ShopProvider({ children }: { children: ReactNode }) {
       setQuantity,
       removeLine,
       clearCart,
+      replaceLines,
       toggleWishlist,
       setGift,
       isWishlisted: (id: string) => state.wishlist.includes(id),
@@ -168,6 +176,7 @@ export function ShopProvider({ children }: { children: ReactNode }) {
       setQuantity,
       removeLine,
       clearCart,
+      replaceLines,
       toggleWishlist,
       setGift,
       cartOpen,

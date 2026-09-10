@@ -20,7 +20,10 @@ import { Toaster } from "@/components/ui/sonner";
 import { Button } from "@/components/ui/button";
 import { siteUrl } from "@/lib/site-url";
 import { analyticsConfig } from "@/config/integrations";
-import { tagScripts, track } from "@/lib/analytics";
+import { track } from "@/lib/analytics";
+import { MarketingProvider } from "@/lib/marketing/runtime";
+import { consentModeDefaultScript } from "@/lib/marketing/scripts";
+import { ConsentManager } from "@/components/oasis/consent-banner";
 
 function NotFoundComponent() {
   return (
@@ -135,8 +138,9 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           ],
         }),
       },
-      // Analytics/tag loaders are added only for destinations that are configured.
-      ...tagScripts(),
+      // Consent Mode v2 defaults are set before any tag can load; the tags
+      // themselves are injected client-side only after a consent decision.
+      { children: consentModeDefaultScript },
     ],
   }),
 
@@ -170,8 +174,9 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <ShopProvider>
-        <div className="flex min-h-dvh flex-col bg-background">
+      <MarketingProvider>
+        <ShopProvider>
+          <div className="flex min-h-dvh flex-col bg-background">
           <SiteHeader />
           <main id="content" className="flex-1">
             {/* Required: nested routes render here. */}
@@ -179,9 +184,11 @@ function RootComponent() {
           </main>
           <SiteFooter />
         </div>
-        <CartDrawer />
-        <Toaster position="bottom-right" />
-      </ShopProvider>
+          <CartDrawer />
+          <ConsentManager />
+          <Toaster position="bottom-right" />
+        </ShopProvider>
+      </MarketingProvider>
     </QueryClientProvider>
   );
 }
