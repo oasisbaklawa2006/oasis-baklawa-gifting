@@ -27,6 +27,7 @@ import { Route as GourmetFoodRouteImport } from './routes/gourmet-food'
 import { Route as LuxuryGiftsRouteImport } from './routes/luxury-gifts'
 import { Route as PaymentOptionsRouteImport } from './routes/payment-options'
 import { Route as PrivacyRouteImport } from './routes/privacy'
+import { Route as RestoreCartRouteImport } from './routes/restore-cart'
 import { Route as ReturnsRouteImport } from './routes/returns'
 import { Route as RewardsRouteImport } from './routes/rewards'
 import { Route as SearchRouteImport } from './routes/search'
@@ -43,6 +44,7 @@ import { Route as WorldOfOasisRouteImport } from './routes/world-of-oasis'
 import { Route as AdminStatusRouteImport } from './routes/admin.status'
 import { Route as CollectionsIndexRouteImport } from './routes/collections.index'
 import { Route as CollectionsSlugRouteImport } from './routes/collections.$slug'
+import { Route as FeedProductsDottsvRouteImport } from './routes/feed.products[.]tsv'
 import { Route as FeedProductsDotxmlRouteImport } from './routes/feed.products[.]xml'
 import { Route as JournalIndexRouteImport } from './routes/journal.index'
 import { Route as JournalSlugRouteImport } from './routes/journal.$slug'
@@ -140,6 +142,11 @@ const PrivacyRoute = PrivacyRouteImport.update({
   path: '/privacy',
   getParentRoute: () => rootRouteImport,
 } as any)
+const RestoreCartRoute = RestoreCartRouteImport.update({
+  id: '/restore-cart',
+  path: '/restore-cart',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ReturnsRoute = ReturnsRouteImport.update({
   id: '/returns',
   path: '/returns',
@@ -220,6 +227,11 @@ const CollectionsSlugRoute = CollectionsSlugRouteImport.update({
   path: '/collections/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const FeedProductsDottsvRoute = FeedProductsDottsvRouteImport.update({
+  id: '/feed/products.tsv',
+  path: '/feed/products.tsv',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const FeedProductsDotxmlRoute = FeedProductsDotxmlRouteImport.update({
   id: '/feed/products.xml',
   path: '/feed/products.xml',
@@ -271,6 +283,7 @@ export interface FileRoutesByFullPath {
   '/luxury-gifts': typeof LuxuryGiftsRoute
   '/payment-options': typeof PaymentOptionsRoute
   '/privacy': typeof PrivacyRoute
+  '/restore-cart': typeof RestoreCartRoute
   '/returns': typeof ReturnsRoute
   '/rewards': typeof RewardsRoute
   '/search': typeof SearchRoute
@@ -286,6 +299,7 @@ export interface FileRoutesByFullPath {
   '/world-of-oasis': typeof WorldOfOasisRoute
   '/admin/status': typeof AdminStatusRoute
   '/collections/$slug': typeof CollectionsSlugRoute
+  '/feed/products.tsv': typeof FeedProductsDottsvRoute
   '/feed/products.xml': typeof FeedProductsDotxmlRoute
   '/journal/$slug': typeof JournalSlugRoute
   '/order/$reference': typeof OrderReferenceRoute
@@ -313,6 +327,7 @@ export interface FileRoutesByTo {
   '/luxury-gifts': typeof LuxuryGiftsRoute
   '/payment-options': typeof PaymentOptionsRoute
   '/privacy': typeof PrivacyRoute
+  '/restore-cart': typeof RestoreCartRoute
   '/returns': typeof ReturnsRoute
   '/rewards': typeof RewardsRoute
   '/search': typeof SearchRoute
@@ -328,6 +343,7 @@ export interface FileRoutesByTo {
   '/world-of-oasis': typeof WorldOfOasisRoute
   '/admin/status': typeof AdminStatusRoute
   '/collections/$slug': typeof CollectionsSlugRoute
+  '/feed/products.tsv': typeof FeedProductsDottsvRoute
   '/feed/products.xml': typeof FeedProductsDotxmlRoute
   '/journal/$slug': typeof JournalSlugRoute
   '/order/$reference': typeof OrderReferenceRoute
@@ -356,6 +372,7 @@ export interface FileRoutesById {
   '/luxury-gifts': typeof LuxuryGiftsRoute
   '/payment-options': typeof PaymentOptionsRoute
   '/privacy': typeof PrivacyRoute
+  '/restore-cart': typeof RestoreCartRoute
   '/returns': typeof ReturnsRoute
   '/rewards': typeof RewardsRoute
   '/search': typeof SearchRoute
@@ -371,6 +388,7 @@ export interface FileRoutesById {
   '/world-of-oasis': typeof WorldOfOasisRoute
   '/admin/status': typeof AdminStatusRoute
   '/collections/$slug': typeof CollectionsSlugRoute
+  '/feed/products.tsv': typeof FeedProductsDottsvRoute
   '/feed/products.xml': typeof FeedProductsDotxmlRoute
   '/journal/$slug': typeof JournalSlugRoute
   '/order/$reference': typeof OrderReferenceRoute
@@ -400,6 +418,7 @@ export interface FileRouteTypes {
     | '/luxury-gifts'
     | '/payment-options'
     | '/privacy'
+    | '/restore-cart'
     | '/returns'
     | '/rewards'
     | '/search'
@@ -415,6 +434,7 @@ export interface FileRouteTypes {
     | '/world-of-oasis'
     | '/admin/status'
     | '/collections/$slug'
+    | '/feed/products.tsv'
     | '/feed/products.xml'
     | '/journal/$slug'
     | '/order/$reference'
@@ -442,6 +462,7 @@ export interface FileRouteTypes {
     | '/luxury-gifts'
     | '/payment-options'
     | '/privacy'
+    | '/restore-cart'
     | '/returns'
     | '/rewards'
     | '/search'
@@ -457,6 +478,7 @@ export interface FileRouteTypes {
     | '/world-of-oasis'
     | '/admin/status'
     | '/collections/$slug'
+    | '/feed/products.tsv'
     | '/feed/products.xml'
     | '/journal/$slug'
     | '/order/$reference'
@@ -484,6 +506,7 @@ export interface FileRouteTypes {
     | '/luxury-gifts'
     | '/payment-options'
     | '/privacy'
+    | '/restore-cart'
     | '/returns'
     | '/rewards'
     | '/search'
@@ -499,6 +522,7 @@ export interface FileRouteTypes {
     | '/world-of-oasis'
     | '/admin/status'
     | '/collections/$slug'
+    | '/feed/products.tsv'
     | '/feed/products.xml'
     | '/journal/$slug'
     | '/order/$reference'
@@ -527,6 +551,7 @@ export interface RootRouteChildren {
   LuxuryGiftsRoute: typeof LuxuryGiftsRoute
   PaymentOptionsRoute: typeof PaymentOptionsRoute
   PrivacyRoute: typeof PrivacyRoute
+  RestoreCartRoute: typeof RestoreCartRoute
   ReturnsRoute: typeof ReturnsRoute
   RewardsRoute: typeof RewardsRoute
   SearchRoute: typeof SearchRoute
@@ -542,6 +567,7 @@ export interface RootRouteChildren {
   WorldOfOasisRoute: typeof WorldOfOasisRoute
   AdminStatusRoute: typeof AdminStatusRoute
   CollectionsSlugRoute: typeof CollectionsSlugRoute
+  FeedProductsDottsvRoute: typeof FeedProductsDottsvRoute
   FeedProductsDotxmlRoute: typeof FeedProductsDotxmlRoute
   JournalSlugRoute: typeof JournalSlugRoute
   OrderReferenceRoute: typeof OrderReferenceRoute
@@ -679,6 +705,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PrivacyRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/restore-cart': {
+      id: '/restore-cart'
+      path: '/restore-cart'
+      fullPath: '/restore-cart'
+      preLoaderRoute: typeof RestoreCartRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/returns': {
       id: '/returns'
       path: '/returns'
@@ -791,6 +824,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CollectionsSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/feed/products.tsv': {
+      id: '/feed/products.tsv'
+      path: '/feed/products.tsv'
+      fullPath: '/feed/products.tsv'
+      preLoaderRoute: typeof FeedProductsDottsvRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/feed/products.xml': {
       id: '/feed/products.xml'
       path: '/feed/products.xml'
@@ -855,6 +895,7 @@ const rootRouteChildren: RootRouteChildren = {
   LuxuryGiftsRoute: LuxuryGiftsRoute,
   PaymentOptionsRoute: PaymentOptionsRoute,
   PrivacyRoute: PrivacyRoute,
+  RestoreCartRoute: RestoreCartRoute,
   ReturnsRoute: ReturnsRoute,
   RewardsRoute: RewardsRoute,
   SearchRoute: SearchRoute,
@@ -870,6 +911,7 @@ const rootRouteChildren: RootRouteChildren = {
   WorldOfOasisRoute: WorldOfOasisRoute,
   AdminStatusRoute: AdminStatusRoute,
   CollectionsSlugRoute: CollectionsSlugRoute,
+  FeedProductsDottsvRoute: FeedProductsDottsvRoute,
   FeedProductsDotxmlRoute: FeedProductsDotxmlRoute,
   JournalSlugRoute: JournalSlugRoute,
   OrderReferenceRoute: OrderReferenceRoute,
