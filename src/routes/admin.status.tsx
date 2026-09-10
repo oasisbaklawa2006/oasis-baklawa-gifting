@@ -244,7 +244,8 @@ function StatusPage() {
                   }`}
                 >
                   Lead &amp; cart-recovery queue durability:{" "}
-                  <strong>{adapters.data.leadStore.durability}</strong> — {adapters.data.leadStore.note}
+                  <strong>{adapters.data.leadStore.durability}</strong> —{" "}
+                  {adapters.data.leadStore.note}
                 </p>
                 <ul className="mt-4 divide-y divide-border rounded-sm border border-border">
                   {adapters.data.adapters.map((item) => (
@@ -284,7 +285,9 @@ function StatusPage() {
                 </ul>
               </>
             ) : (
-              <p className="mt-4 text-sm text-muted-foreground">Adapter status could not be read.</p>
+              <p className="mt-4 text-sm text-muted-foreground">
+                Adapter status could not be read.
+              </p>
             )}
           </section>
 

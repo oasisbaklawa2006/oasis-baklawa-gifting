@@ -32,7 +32,11 @@ export interface ReferralAdapter {
 
 /** Codes are normalised so `OASIS-Gift`, `oasis gift` and `oasis_gift` match. */
 export function normalizeReferralCode(raw: string): string {
-  return raw.trim().toUpperCase().replace(/[\s_]+/g, "-").replace(/[^A-Z0-9-]/g, "");
+  return raw
+    .trim()
+    .toUpperCase()
+    .replace(/[\s_]+/g, "-")
+    .replace(/[^A-Z0-9-]/g, "");
 }
 
 const reported = new Set<string>();

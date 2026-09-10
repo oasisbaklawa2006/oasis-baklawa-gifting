@@ -16,7 +16,11 @@ import {
   resetCommunications,
   sendMessage,
 } from "@/adapters/communications";
-import { normalizeCourierStatus, normalizeShippingWebhook, shippingAdapter } from "@/adapters/shipping";
+import {
+  normalizeCourierStatus,
+  normalizeShippingWebhook,
+  shippingAdapter,
+} from "@/adapters/shipping";
 import { localSearch, runSearch, searchAdapter } from "@/adapters/search";
 import { hasVerifiedReviews, reviewsAdapter } from "@/adapters/reviews";
 import { loyaltyAdapter } from "@/adapters/loyalty";
@@ -184,8 +188,9 @@ describe("address", () => {
     });
     expect(result.normalized.postalCode).toBe("110015");
     expect(result.serviceabilityKnown).toBe(false);
-    expect(validateAddressLocally({ ...result.normalized, postalCode: "abc" }).issues.length)
-      .toBeGreaterThan(0);
+    expect(
+      validateAddressLocally({ ...result.normalized, postalCode: "abc" }).issues.length,
+    ).toBeGreaterThan(0);
   });
 });
 
@@ -243,9 +248,9 @@ describe("experiments", () => {
 
 describe("identity", () => {
   it("maps a provider identity to one stable Oasis reference key", () => {
-    expect(
-      identityKey({ provider: "email_otp", subject: " A@B.com ", emailVerified: true }),
-    ).toBe("email_otp:a@b.com");
+    expect(identityKey({ provider: "email_otp", subject: " A@B.com ", emailVerified: true })).toBe(
+      "email_otp:a@b.com",
+    );
     expect(identityKey({ provider: "google", subject: "sub-1", emailVerified: true })).toBe(
       "google:sub-1",
     );
@@ -335,20 +340,19 @@ describe("webhooks", () => {
 
 describe("content", () => {
   it("never returns drafts on a public read", () => {
-    const documents = [
-      { status: "draft" as const },
-      { status: "published" as const },
-    ].map((partial, index) => ({
-      id: String(index),
-      kind: "page" as const,
-      slug: `s${index}`,
-      title: "t",
-      body: "b",
-      revision: "1",
-      source: "local" as const,
-      updatedAt: "now",
-      ...partial,
-    }));
+    const documents = [{ status: "draft" as const }, { status: "published" as const }].map(
+      (partial, index) => ({
+        id: String(index),
+        kind: "page" as const,
+        slug: `s${index}`,
+        title: "t",
+        body: "b",
+        revision: "1",
+        source: "local" as const,
+        updatedAt: "now",
+        ...partial,
+      }),
+    );
     expect(publishedOnly(documents)).toHaveLength(1);
   });
 });

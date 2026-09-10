@@ -35,9 +35,7 @@ export interface LoyaltyAdapter {
     points: number;
     orderReference: string;
   }): Promise<AdapterResult<{ redeemed: boolean }>>;
-  registerInterest(input: {
-    email: string;
-  }): Promise<AdapterResult<{ registered: boolean }>>;
+  registerInterest(input: { email: string }): Promise<AdapterResult<{ registered: boolean }>>;
 }
 
 export const noLoyalty: LoyaltyAdapter = {

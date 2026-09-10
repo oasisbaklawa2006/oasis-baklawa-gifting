@@ -73,11 +73,7 @@ export type AdapterResult<T = unknown> =
   | { ok: false; provider: string; reason: AdapterFailureReason; detail: string };
 
 export type AdapterFailureReason =
-  | "not_configured"
-  | "unsupported"
-  | "invalid_input"
-  | "provider_error"
-  | "not_authoritative";
+  "not_configured" | "unsupported" | "invalid_input" | "provider_error" | "not_authoritative";
 
 export function notConfigured<T>(provider: string, detail: string): AdapterResult<T> {
   return { ok: false, provider, reason: "not_configured", detail };

@@ -24,9 +24,7 @@ export interface LeadStore<T extends { key: string }> {
   clear(): void;
 }
 
-export function createMemoryStore<T extends { key: string }>(
-  provider = "memory",
-): LeadStore<T> {
+export function createMemoryStore<T extends { key: string }>(provider = "memory"): LeadStore<T> {
   const map = new Map<string, T>();
   return {
     provider,

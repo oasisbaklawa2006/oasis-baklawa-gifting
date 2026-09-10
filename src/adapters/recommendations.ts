@@ -92,10 +92,11 @@ export async function recommend(
   limit = 6,
 ): Promise<Recommendation[]> {
   const result = await recommendationAdapter().recommend(context, limit);
-  if (!result.ok) return (await localRecommendations.recommend(context, limit)).ok
-    ? validateRecommendations(
-        recommendGifts(context, limit).map((entry) => ({ slug: entry.product.slug })),
-      )
-    : [];
+  if (!result.ok)
+    return (await localRecommendations.recommend(context, limit)).ok
+      ? validateRecommendations(
+          recommendGifts(context, limit).map((entry) => ({ slug: entry.product.slug })),
+        )
+      : [];
   return validateRecommendations(result.data).slice(0, limit);
 }

@@ -54,7 +54,10 @@ export function isTemplateKey(value: string): value is TemplateKey {
 
 /** Normalises any inbound/legacy key spelling to a known internal key. */
 export function normalizeTemplateKey(raw: string): TemplateKey | null {
-  const key = raw.trim().toLowerCase().replace(/[\s-]+/g, "_");
+  const key = raw
+    .trim()
+    .toLowerCase()
+    .replace(/[\s-]+/g, "_");
   return isTemplateKey(key) ? key : null;
 }
 
@@ -238,12 +241,7 @@ const providerMeta: Array<[string, string, readonly string[], readonly string[]]
     ["whatsapp", "delivery-webhook"],
     ["WHATSAPP_PHONE_NUMBER_ID", "WHATSAPP_ACCESS_TOKEN"],
   ],
-  [
-    "gupshup",
-    "Gupshup WhatsApp",
-    ["whatsapp"],
-    ["GUPSHUP_API_KEY", "GUPSHUP_SOURCE_NUMBER"],
-  ],
+  ["gupshup", "Gupshup WhatsApp", ["whatsapp"], ["GUPSHUP_API_KEY", "GUPSHUP_SOURCE_NUMBER"]],
 ];
 
 for (const [provider, label, capabilities, requiredEnv] of providerMeta) {
@@ -264,9 +262,7 @@ export function communicationsAdapter(): CommunicationsAdapter {
   return boundaries[descriptor.provider] ?? localCommunications;
 }
 
-export async function sendMessage(
-  request: MessageRequest,
-): Promise<AdapterResult<DeliveryResult>> {
+export async function sendMessage(request: MessageRequest): Promise<AdapterResult<DeliveryResult>> {
   const adapter = communicationsAdapter();
   const id = `communications:${adapter.provider}`;
   if (!adapter.supports(request.channel)) {

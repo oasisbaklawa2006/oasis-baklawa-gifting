@@ -30,7 +30,10 @@ export interface SupportAdapter {
     body: string,
     visibility: "public" | "internal",
   ): Promise<AdapterResult<{ appended: boolean }>>;
-  setStatus(ticketId: string, status: TicketStatus): Promise<AdapterResult<{ status: TicketStatus }>>;
+  setStatus(
+    ticketId: string,
+    status: TicketStatus,
+  ): Promise<AdapterResult<{ status: TicketStatus }>>;
   normalizeWebhook(payload: unknown): { ticketId: string; status: TicketStatus } | null;
 }
 
@@ -55,7 +58,10 @@ export const appverseSupport: SupportAdapter = {
     return notConfigured<{ appended: boolean }>("appverse", "Ticket threads need Appverse/Trace.");
   },
   async setStatus() {
-    return notConfigured<{ status: TicketStatus }>("appverse", "Status is owned by Appverse/Trace.");
+    return notConfigured<{ status: TicketStatus }>(
+      "appverse",
+      "Status is owned by Appverse/Trace.",
+    );
   },
   normalizeWebhook(payload) {
     if (!payload || typeof payload !== "object") return null;
@@ -70,7 +76,10 @@ const boundary = (provider: string, label: string, env: readonly string[]): Supp
   ...appverseSupport,
   provider,
   async createTicket() {
-    return notConfigured<Ticket>(provider, `${label} is not configured. Required: ${env.join(", ")}.`);
+    return notConfigured<Ticket>(
+      provider,
+      `${label} is not configured. Required: ${env.join(", ")}.`,
+    );
   },
 });
 

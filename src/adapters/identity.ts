@@ -58,7 +58,11 @@ export const emailOtpIdentity: IdentityAdapter = {
   },
 };
 
-const social = (provider: IdentityProviderId, label: string, env: readonly string[]): IdentityAdapter => ({
+const social = (
+  provider: IdentityProviderId,
+  label: string,
+  env: readonly string[],
+): IdentityAdapter => ({
   provider,
   async startChallenge() {
     return notConfigured<{ challengeId: string }>(
@@ -72,7 +76,10 @@ const social = (provider: IdentityProviderId, label: string, env: readonly strin
 });
 
 const boundaries: Record<string, IdentityAdapter> = {
-  google: social("google", "Google sign-in", ["GOOGLE_OAUTH_CLIENT_ID", "GOOGLE_OAUTH_CLIENT_SECRET"]),
+  google: social("google", "Google sign-in", [
+    "GOOGLE_OAUTH_CLIENT_ID",
+    "GOOGLE_OAUTH_CLIENT_SECRET",
+  ]),
   apple: social("apple", "Apple sign-in", ["APPLE_OAUTH_CLIENT_ID", "APPLE_OAUTH_PRIVATE_KEY"]),
 };
 

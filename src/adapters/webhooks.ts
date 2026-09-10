@@ -10,12 +10,7 @@
 import { registerAdapter } from "./registry";
 
 export type WebhookSource =
-  | "payment"
-  | "shipping"
-  | "communications"
-  | "reviews"
-  | "crm"
-  | "commerce";
+  "payment" | "shipping" | "communications" | "reviews" | "crm" | "commerce";
 
 export type InboundWebhook = {
   source: WebhookSource;

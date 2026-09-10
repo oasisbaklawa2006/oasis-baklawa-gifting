@@ -35,10 +35,7 @@ export function hashToUnit(input: string): number {
   return hash / 0xffffffff;
 }
 
-export function assignVariant(
-  experiment: ExperimentDefinition,
-  subjectId: string,
-): Variant | null {
+export function assignVariant(experiment: ExperimentDefinition, subjectId: string): Variant | null {
   if (!experiment.enabled || experiment.variants.length === 0) return null;
   const point = hashToUnit(`${experiment.key}:${subjectId}`);
   const weights =

@@ -80,7 +80,12 @@ function jsonChannel(channel: ChannelId, env: readonly string[]): SalesChannelAd
         );
         return { ok: true, provider: channel, data: [header, ...rows].join("\n") };
       }
-      return { ok: false, provider: channel, reason: "unsupported", detail: `No ${format} export.` };
+      return {
+        ok: false,
+        provider: channel,
+        reason: "unsupported",
+        detail: `No ${format} export.`,
+      };
     },
     async sync() {
       return notConfigured<{ pushed: number }>(

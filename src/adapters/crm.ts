@@ -44,7 +44,9 @@ export function normalizeLead(input: LeadInput): NormalizedLead {
 
 /** True when two submissions describe the same person on the same surface. */
 export function isDuplicateLead(a: LeadInput, b: LeadInput): boolean {
-  return normalizeLead(a).key === normalizeLead(b).key && Boolean(normalizeLead(a).key.split(":")[1]);
+  return (
+    normalizeLead(a).key === normalizeLead(b).key && Boolean(normalizeLead(a).key.split(":")[1])
+  );
 }
 
 export interface CRMAdapter {
@@ -87,7 +89,11 @@ function boundary(provider: string, label: string, env: readonly string[]): CRMA
 
 const boundaries: Record<string, CRMAdapter> = {
   hubspot: boundary("hubspot", "HubSpot", ["HUBSPOT_ACCESS_TOKEN"]),
-  zoho: boundary("zoho", "Zoho CRM", ["ZOHO_CLIENT_ID", "ZOHO_CLIENT_SECRET", "ZOHO_REFRESH_TOKEN"]),
+  zoho: boundary("zoho", "Zoho CRM", [
+    "ZOHO_CLIENT_ID",
+    "ZOHO_CLIENT_SECRET",
+    "ZOHO_REFRESH_TOKEN",
+  ]),
   klaviyo: boundary("klaviyo", "Klaviyo profile sync", ["KLAVIYO_PRIVATE_KEY"]),
 };
 

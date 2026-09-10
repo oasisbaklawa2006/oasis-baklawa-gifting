@@ -47,7 +47,9 @@ export function readPermission(): PushPermission {
 /** True only when a real provider is configured. Guards every prompt. */
 export function canPrompt(): boolean {
   const descriptor = resolveAdapter("push");
-  return Boolean(descriptor && !descriptor.isFallback && adapterStatus(descriptor) === "configured");
+  return Boolean(
+    descriptor && !descriptor.isFallback && adapterStatus(descriptor) === "configured",
+  );
 }
 
 export const disabledPush: PushAdapter = {
