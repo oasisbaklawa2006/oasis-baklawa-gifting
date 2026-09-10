@@ -85,10 +85,20 @@ export const Route = createFileRoute("/api/public/payments/webhook")({
           method: "POST",
           headers: {
             "content-type": "application/json",
-            "idempotency-key": event.id ?? expected.slice(0, 32),
+            "idempotency-key": eventId,
           },
           body,
         });
+
+        if (process.env["SUPABASE_SERVICE_ROLE_KEY"]) {
+          const { markWebhookEvent } = await import("@/lib/persistence/database.server");
+          await markWebhookEvent(
+            "payments",
+            eventId,
+            forwarded.ok ? "processed" : "failed",
+            forwarded.ok ? undefined : `Central responded ${forwarded.status}`,
+          );
+        }
 
         if (!forwarded.ok) {
           console.error(`Payment event forward failed [${forwarded.status}]`);
