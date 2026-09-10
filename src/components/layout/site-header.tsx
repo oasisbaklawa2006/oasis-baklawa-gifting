@@ -86,7 +86,7 @@ function MegaMenu({ item }: { item: (typeof primaryNav)[number] }) {
     <div className="group relative">
       <Link
         to={toRoute(item.to)}
-        className="inline-flex h-16 items-center gap-1.5 text-[0.8125rem] uppercase tracking-[0.14em] text-foreground transition-colors hover:text-earth"
+        className="inline-flex h-14 items-center gap-1 whitespace-nowrap px-1 text-[0.6875rem] uppercase tracking-[0.12em] text-foreground transition-colors hover:text-earth xl:text-[0.78125rem]"
         aria-haspopup="true"
       >
         {item.label}
@@ -216,16 +216,27 @@ export function SiteHeader() {
         <UtilityIcons className="-mr-2 justify-self-end" />
       </div>
 
-      <div className="container-oasis hidden h-16 grid-cols-[1fr_auto_1fr] items-center gap-6 lg:grid">
-        <nav aria-label="Primary" className="flex items-center gap-6 xl:gap-7">
-          {primaryNav.slice(0, 3).map((item) =>
+      <div className="hidden lg:block">
+        <div className="container-oasis grid h-20 grid-cols-[1fr_auto_1fr] items-center gap-6">
+          <div />
+          <div className="justify-self-center">
+            <Wordmark />
+          </div>
+          <UtilityIcons className="-mr-2 justify-self-end" />
+        </div>
+
+        <nav
+          aria-label="Primary"
+          className="container-oasis flex flex-wrap items-center justify-center gap-x-3 gap-y-0 border-t border-border xl:gap-x-7"
+        >
+          {primaryNav.map((item) =>
             item.columns ? (
               <MegaMenu key={item.label} item={item} />
             ) : (
               <Link
                 key={item.label}
                 to={toRoute(item.to)}
-                className="link-underline whitespace-nowrap text-[0.8125rem] uppercase tracking-[0.14em] text-foreground"
+                className="link-underline inline-flex h-14 items-center whitespace-nowrap px-1 text-[0.6875rem] uppercase tracking-[0.12em] text-foreground xl:text-[0.78125rem]"
                 activeProps={{ className: "text-earth" }}
               >
                 {item.label}
@@ -233,26 +244,6 @@ export function SiteHeader() {
             ),
           )}
         </nav>
-
-        <div className="justify-self-center">
-          <Wordmark />
-        </div>
-
-        <div className="flex items-center justify-end gap-6 xl:gap-7">
-          <nav aria-label="Secondary" className="flex items-center gap-6 xl:gap-7">
-            {primaryNav.slice(3).map((item) => (
-              <Link
-                key={item.label}
-                to={toRoute(item.to)}
-                className="link-underline whitespace-nowrap text-[0.8125rem] uppercase tracking-[0.14em] text-foreground"
-                activeProps={{ className: "text-earth" }}
-              >
-                {item.label}
-              </Link>
-            ))}
-          </nav>
-          <UtilityIcons className="-mr-2" />
-        </div>
       </div>
     </header>
   );

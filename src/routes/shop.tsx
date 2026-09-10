@@ -54,7 +54,7 @@ const sortOptions = [
   { value: "name", label: "Name: A–Z" },
 ];
 
-const PAGE_SIZE = 8;
+const PAGE_SIZE = 18;
 
 function priceOf(product: Product) {
   return product.variants[0]?.price.amount ?? 0;

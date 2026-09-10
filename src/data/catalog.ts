@@ -54,7 +54,7 @@ export const collections: Collection[] = [
     name: "The Signature Collection",
     kicker: "House classics",
     description: "The pieces the kitchen is known for, made to a fixed recipe every day.",
-    image: { src: heroBaklawa, alt: "Baklawa tray photographed on ivory linen" },
+    image: familyMedia.baklawa,
   },
   {
     id: "col-gifting",
@@ -62,7 +62,7 @@ export const collections: Collection[] = [
     name: "Gifting",
     kicker: "Occasion-led",
     description: "Boxed selections sized for festivals, hosting and thank-yous.",
-    image: { src: giftBox, alt: "Gift box with ribbon on a warm ivory surface" },
+    image: brandMedia.giftBanner,
   },
   {
     id: "col-seasonal",
@@ -70,7 +70,7 @@ export const collections: Collection[] = [
     name: "New & Noteworthy",
     kicker: "Seasonal",
     description: "Limited runs and recent additions from the kitchen.",
-    image: { src: assorted, alt: "Selection of seasonal Arabic sweets" },
+    image: familyMedia.chocolates,
   },
   {
     id: "col-corporate",
@@ -78,7 +78,7 @@ export const collections: Collection[] = [
     name: "Corporate Selection",
     kicker: "For business",
     description: "Volume-friendly formats with consistent presentation.",
-    image: { src: giftBox, alt: "Stacked corporate gift boxes" },
+    image: productMedia["crownmate"]!,
   },
 ];
 
