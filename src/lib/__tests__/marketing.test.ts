@@ -86,7 +86,7 @@ describe("provider payloads", () => {
 
 describe("merchant feed", () => {
   it("excludes unverified placeholder products", () => {
-    const feed = buildFeed();
+    const feed = buildFeed().items;
     const ids = new Set(feed.map((item) => item.id));
     for (const product of products.filter((p) => p.isMock)) {
       for (const variant of product.variants) expect(ids.has(variant.id)).toBe(false);
@@ -95,12 +95,12 @@ describe("merchant feed", () => {
 
   it("reports diagnostics that account for every excluded record", () => {
     const diagnostics = feedDiagnostics();
-    expect(diagnostics.eligible).toBe(buildFeed().length);
+    expect(diagnostics.eligible).toBe(buildFeed().items.length);
     expect(diagnostics.excluded).toBeGreaterThanOrEqual(0);
   });
 
   it("renders escaped XML and tab-separated rows", () => {
-    const feed = buildFeed();
+    const feed = buildFeed().items;
     const xml = feedToXml(feed);
     expect(xml.startsWith("<?xml")).toBe(true);
     expect(xml).not.toMatch(/<g:title>[^<]*&(?!amp;|lt;|gt;|quot;|#)/);
