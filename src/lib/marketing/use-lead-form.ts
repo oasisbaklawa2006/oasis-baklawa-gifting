@@ -11,17 +11,13 @@ import { useCallback, useState, type FormEvent } from "react";
 import { toast } from "sonner";
 
 import { submitLead, type LeadResult } from "@/lib/leads.functions";
-import { approvedAttributionFields } from "./attribution";
+import { approvedAttributionFields, readAttribution } from "./attribution";
 import { track } from "./dispatch";
 import type { EventName } from "./events";
 
-type LeadKind =
-  | "newsletter"
-  | "contact"
-  | "corporate_gifting"
-  | "wedding_gifting"
-  | "rewards_interest"
-  | "partnership";
+import type { LEAD_KINDS } from "@/lib/leads.functions";
+
+type LeadKind = (typeof LEAD_KINDS)[number];
 
 type Options = {
   kind: LeadKind;
@@ -78,7 +74,7 @@ export function useLeadForm(options: Options): LeadFormState {
         ...(messageParts.length ? { message: messageParts.join("\n\n") } : {}),
         source: options.source,
         marketingConsent: options.kind === "newsletter",
-        attribution: approvedAttributionFields(),
+        attribution: approvedAttributionFields(readAttribution()),
         ...(Object.keys(properties).length ? { properties } : {}),
       };
 
