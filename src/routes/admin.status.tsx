@@ -14,6 +14,7 @@ import { Button } from "@/components/ui/button";
 import { appverse, catalogueSource, commerceProvider } from "@/config/integrations";
 import { integrationHealth } from "@/lib/commerce.functions";
 import { marketingStatus } from "@/lib/marketing/status.functions";
+import { adapterStatusReport } from "@/lib/adapters.functions";
 import { marketingTelemetry } from "@/lib/marketing/dispatch";
 import { loadedTagKeys } from "@/lib/marketing/scripts";
 import { useConsent } from "@/lib/marketing/runtime";
@@ -217,6 +218,68 @@ function StatusPage() {
               <p className="mt-4 text-sm text-muted-foreground">
                 Marketing status could not be read.
               </p>
+            )}
+          </section>
+
+          <section className="mt-12">
+            <h2 className="font-display text-2xl">Adapter registry</h2>
+            <p className="mt-2 max-w-3xl text-[0.8125rem] text-muted-foreground">
+              Replaceable external boundaries. Oasis Central remains the authority for products,
+              prices, stock, orders, fulfilment and finance. Only key names are shown.
+            </p>
+            {adapters.isLoading ? (
+              <p className="mt-4 text-sm text-muted-foreground">Reading adapters…</p>
+            ) : adapters.data ? (
+              <>
+                <p
+                  className={`mt-4 rounded-sm border p-4 text-[0.8125rem] ${
+                    adapters.data.leadStore.durability === "durable"
+                      ? "border-border text-muted-foreground"
+                      : "border-gold text-foreground"
+                  }`}
+                >
+                  Lead &amp; cart-recovery queue durability:{" "}
+                  <strong>{adapters.data.leadStore.durability}</strong> — {adapters.data.leadStore.note}
+                </p>
+                <ul className="mt-4 divide-y divide-border rounded-sm border border-border">
+                  {adapters.data.adapters.map((item) => (
+                    <li key={item.id} className="flex flex-wrap items-start gap-3 p-4">
+                      <span className="mt-0.5">
+                        {icon(
+                          item.status === "built-in" || item.status === "configured"
+                            ? "configured"
+                            : item.status === "degraded"
+                              ? "not-configured"
+                              : "pending",
+                        )}
+                      </span>
+                      <span className="min-w-[16rem] flex-1">
+                        <span className="block text-[0.9375rem]">
+                          {item.label}
+                          {item.selected ? " · in use" : ""}
+                        </span>
+                        <span className="block text-[0.8125rem] text-muted-foreground">
+                          {item.capabilities.join(", ")}
+                        </span>
+                        <span className="block text-[0.8125rem] text-muted-foreground">
+                          {item.requiredEnv.length
+                            ? `Needs: ${item.requiredEnv.join(", ")}`
+                            : "No configuration required"}{" "}
+                          · Fallback: {item.fallback}
+                        </span>
+                        {item.health.lastError ? (
+                          <span className="block text-[0.8125rem] text-gold">
+                            Last error: {item.health.lastError}
+                          </span>
+                        ) : null}
+                      </span>
+                      <span className="eyebrow shrink-0">{item.domain}</span>
+                    </li>
+                  ))}
+                </ul>
+              </>
+            ) : (
+              <p className="mt-4 text-sm text-muted-foreground">Adapter status could not be read.</p>
             )}
           </section>
 
