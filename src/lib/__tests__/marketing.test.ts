@@ -66,13 +66,11 @@ describe("attribution", () => {
 describe("provider payloads", () => {
   const event = {
     name: "add_to_cart",
-    id: "evt-1",
-    at: new Date("2026-01-01T00:00:00.000Z").toISOString(),
-    properties: {
-      currency: "INR",
-      value: 1200,
-      items: [{ item_id: "v1", item_name: "Baklawa", price: 1200, quantity: 1 }],
-    },
+    eventId: "evt-1",
+    occurredAt: new Date("2026-01-01T00:00:00.000Z").toISOString(),
+    currency: "INR",
+    value: 1200,
+    items: [{ item_id: "v1", item_name: "Baklawa", price: 1200, quantity: 1 }],
   } as never;
 
   it("maps to each provider without leaking raw identity", () => {
