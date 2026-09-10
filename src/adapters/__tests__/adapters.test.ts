@@ -25,7 +25,11 @@ import { localSearch, runSearch, searchAdapter } from "@/adapters/search";
 import { hasVerifiedReviews, reviewsAdapter } from "@/adapters/reviews";
 import { loyaltyAdapter } from "@/adapters/loyalty";
 import { isDuplicateLead, normalizeLead } from "@/adapters/crm";
-import { leadStoreDurability, createMemoryStore } from "@/adapters/lead-store";
+import {
+  leadStoreDurability,
+  createMemoryStore,
+  databaseStoreConfigured,
+} from "@/adapters/lead-store";
 import { validateAddressLocally } from "@/adapters/address";
 import { taxAdapter, validateGstinFormat } from "@/adapters/tax";
 import { channelProjection, channelAdapter } from "@/adapters/channels";
