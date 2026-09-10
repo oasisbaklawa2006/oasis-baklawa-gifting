@@ -1,6 +1,5 @@
-import { useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { toast } from "sonner";
+import { useLeadForm } from "@/lib/marketing/use-lead-form";
 
 import { Breadcrumbs } from "@/components/oasis/breadcrumbs";
 import { CategoryHero } from "@/components/oasis/catalog-browser";
@@ -58,7 +57,15 @@ const strands = [
 ];
 
 function WeddingGiftingPage() {
-  const [sent, setSent] = useState(false);
+  const lead = useLeadForm({
+    kind: "wedding",
+    source: "wedding-gifting-page",
+    event: "wedding_gifting_lead",
+    properties: ["date", "quantity"],
+    successMessage:
+      "Thank you — your enquiry is with our gifting team. To confirm dates quickly you can also call us.",
+    failureMessage: "We couldn’t send this just now. Please try again, or call us directly.",
+  });
   const curated = products
     .filter((product) => product.occasions.some((o) => o === "Wedding" || o === "Mehendi"))
     .slice(0, 8);
@@ -146,16 +153,7 @@ function WeddingGiftingPage() {
             </p>
           </div>
 
-          <form
-            className="rounded-sm border border-border bg-card p-6"
-            onSubmit={(e) => {
-              e.preventDefault();
-              setSent(true);
-              toast.success("Enquiry noted", {
-                description: `Please also reach us on ${contact.phone} so we can confirm dates.`,
-              });
-            }}
-          >
+          <form className="rounded-sm border border-border bg-card p-6" onSubmit={lead.onSubmit}>
             <p className="eyebrow">Wedding enquiry</p>
             <div className="mt-5 grid gap-4">
               <div className="grid gap-2">
@@ -191,13 +189,12 @@ function WeddingGiftingPage() {
                   placeholder="Occasions, cities, presentation preferences."
                 />
               </div>
-              <Button type="submit" size="lg" className="mt-2">
-                Request an appointment
+              <Button type="submit" size="lg" className="mt-2" disabled={lead.pending}>
+                {lead.pending ? "Sending…" : "Request an appointment"}
               </Button>
               <p aria-live="polite" className="text-xs text-muted-foreground">
-                {sent
-                  ? `Thank you. So we can confirm your dates without delay, please also call ${contact.phone}.`
-                  : `Enquiries are answered by our gifting team on ${contact.phone}.`}
+                {lead.statusMessage ??
+                  `Enquiries are answered by our gifting team on ${contact.phone}.`}
               </p>
             </div>
           </form>

@@ -143,9 +143,7 @@ export function captureAttribution(): AttributionSnapshot {
  * The only attribution fields allowed to leave the browser with a lead or an
  * order. Flat, non-identifying and stable for Appverse/Central metadata.
  */
-export function approvedAttributionFields(
-  snapshot: AttributionSnapshot,
-): Record<string, string> {
+export function approvedAttributionFields(snapshot: AttributionSnapshot): Record<string, string> {
   const out: Record<string, string> = {};
   const put = (prefix: string, touch: TouchPoint | null) => {
     if (!touch) return;

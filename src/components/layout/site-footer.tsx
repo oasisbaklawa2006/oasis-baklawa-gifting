@@ -3,6 +3,7 @@ import { footerColumns } from "@/data/site";
 import { MarketplaceRow, SocialRow } from "@/components/oasis/channel-links";
 import { toLink } from "@/lib/routes";
 import { brand, contact, logos } from "@/data/brand";
+import { PrivacyPreferencesLink } from "@/components/oasis/consent-banner";
 
 export function SiteFooter() {
   return (
@@ -70,7 +71,10 @@ export function SiteFooter() {
           <p>
             © {new Date().getFullYear()} {brand.name}. Brand owned by {brand.legalOwner}.
           </p>
-          <p className="text-driftwood">{brand.manufacturingNote}</p>
+          <div className="flex flex-wrap items-center gap-4">
+            <PrivacyPreferencesLink />
+            <p className="text-driftwood">{brand.manufacturingNote}</p>
+          </div>
         </div>
       </div>
     </footer>

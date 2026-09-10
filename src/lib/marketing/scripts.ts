@@ -14,7 +14,13 @@ import { gtmOwnsTagging } from "./providers";
 type TagWindow = Window & {
   dataLayer?: unknown[];
   gtag?: (...args: unknown[]) => void;
-  fbq?: ((...args: unknown[]) => void) & { queue?: unknown[]; callMethod?: unknown; loaded?: boolean; version?: string; push?: unknown };
+  fbq?: ((...args: unknown[]) => void) & {
+    queue?: unknown[];
+    callMethod?: unknown;
+    loaded?: boolean;
+    version?: string;
+    push?: unknown;
+  };
   _fbq?: unknown;
   klaviyo?: { push: (args: unknown[]) => void };
   _learnq?: unknown[];
@@ -67,7 +73,10 @@ export function loadMarketingScripts(state: ConsentState): void {
   }
 
   if (analyticsOk && googleConfig.ga4MeasurementId && !gtmOwnsTagging()) {
-    injectSrc("ga4", `https://www.googletagmanager.com/gtag/js?id=${googleConfig.ga4MeasurementId}`);
+    injectSrc(
+      "ga4",
+      `https://www.googletagmanager.com/gtag/js?id=${googleConfig.ga4MeasurementId}`,
+    );
     injectInline(
       "ga4-init",
       `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)};gtag('js',new Date());gtag('config','${googleConfig.ga4MeasurementId}',{send_page_view:false});${

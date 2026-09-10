@@ -9,7 +9,13 @@
 import { consentConfig } from "@/config/marketing";
 
 import { approvedAttributionFields, readAttribution } from "./attribution";
-import { allows, consentSnapshot, defaultConsent, permissiveConsent, type ConsentState } from "./consent";
+import {
+  allows,
+  consentSnapshot,
+  defaultConsent,
+  permissiveConsent,
+  type ConsentState,
+} from "./consent";
 import { buildEvent, type CanonicalEvent, type EventName, type TrackInput } from "./events";
 import { clientId, sessionId } from "./identity";
 import { adapters, type ProviderId } from "./providers";
@@ -148,11 +154,7 @@ export function track(input: TrackInput): CanonicalEvent | null {
     telemetry.set(adapter.id, { event: event.name, at: event.timestamp, ok });
   }
 
-  if (
-    serverBridge &&
-    SERVER_MIRRORED.includes(event.name) &&
-    allows(consentState, "marketing")
-  ) {
+  if (serverBridge && SERVER_MIRRORED.includes(event.name) && allows(consentState, "marketing")) {
     try {
       serverBridge(event);
     } catch {

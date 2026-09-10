@@ -177,13 +177,13 @@ function RootComponent() {
       <MarketingProvider>
         <ShopProvider>
           <div className="flex min-h-dvh flex-col bg-background">
-          <SiteHeader />
-          <main id="content" className="flex-1">
-            {/* Required: nested routes render here. */}
-            <Outlet />
-          </main>
-          <SiteFooter />
-        </div>
+            <SiteHeader />
+            <main id="content" className="flex-1">
+              {/* Required: nested routes render here. */}
+              <Outlet />
+            </main>
+            <SiteFooter />
+          </div>
           <CartDrawer />
           <ConsentManager />
           <Toaster position="bottom-right" />

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { toast } from "sonner";
+import { useLeadForm } from "@/lib/marketing/use-lead-form";
 
 import { Breadcrumbs } from "@/components/oasis/breadcrumbs";
 import { SectionHeading } from "@/components/oasis/section-heading";
@@ -48,6 +48,13 @@ const topics = [
 
 function ContactPage() {
   const [topic, setTopic] = useState(topics[0]!);
+  const lead = useLeadForm({
+    kind: "contact",
+    source: "contact-page",
+    event: "contact",
+    successMessage: "Thank you — your message is with our team and we’ll reply by email.",
+    failureMessage: "We couldn’t send your message just now. Please try again, or call us.",
+  });
 
   return (
     <div className="pb-20">
@@ -64,12 +71,7 @@ function ContactPage() {
         <div className="mt-12 grid gap-12 lg:grid-cols-[minmax(0,1fr)_22rem] lg:gap-16">
           <form
             className="grid gap-5 border border-border bg-premium p-6 md:p-8"
-            onSubmit={(e) => {
-              e.preventDefault();
-              toast.success("Message noted", {
-                description: `We'll reply by email. For anything urgent, call ${contact.phone}.`,
-              });
-            }}
+            onSubmit={lead.onSubmit}
           >
             <div className="grid gap-5 sm:grid-cols-2">
               <div className="grid gap-2">
@@ -108,6 +110,7 @@ function ContactPage() {
               </div>
               <div className="grid gap-2">
                 <Label htmlFor="c-topic">Topic</Label>
+                <input type="hidden" name="topic" value={topic} />
                 <Select value={topic} onValueChange={setTopic}>
                   <SelectTrigger id="c-topic" className="h-11 bg-background">
                     <SelectValue placeholder="Select a topic" />
@@ -128,9 +131,13 @@ function ContactPage() {
               <Textarea id="c-message" name="message" rows={6} required className="bg-background" />
             </div>
 
+            <p aria-live="polite" className="text-xs text-muted-foreground">
+              {lead.statusMessage}
+            </p>
+
             <div className="flex flex-wrap items-center gap-4">
-              <Button type="submit" size="lg">
-                Send message
+              <Button type="submit" size="lg" disabled={lead.pending}>
+                {lead.pending ? "Sending…" : "Send message"}
               </Button>
               <p className="text-xs text-muted-foreground">
                 Prefer to talk? Call

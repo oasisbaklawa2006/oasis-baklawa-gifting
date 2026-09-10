@@ -39,7 +39,10 @@ async function storefront<T>(query: string, variables: Record<string, unknown> =
   return body.data;
 }
 
-const money = (amount: number, currency: Money["currency"] = "INR"): Money => ({ amount, currency });
+const money = (amount: number, currency: Money["currency"] = "INR"): Money => ({
+  amount,
+  currency,
+});
 
 export const shopifyProvider: CommerceProvider = {
   id: "shopify",
@@ -62,9 +65,20 @@ export const shopifyProvider: CommerceProvider = {
 
   async createOrderIntent(input: OrderIntentInput): Promise<OrderIntent> {
     if (!configured()) {
-      return { status: "unavailable", reason: "Shopify is selected but its credentials are not configured." };
+      return {
+        status: "unavailable",
+        reason: "Shopify is selected but its credentials are not configured.",
+      };
     }
-    const data = await storefront<{ cartCreate: { cart: { id: string; checkoutUrl: string; cost: { totalAmount: { amount: string; currencyCode: string } } } } }>(
+    const data = await storefront<{
+      cartCreate: {
+        cart: {
+          id: string;
+          checkoutUrl: string;
+          cost: { totalAmount: { amount: string; currencyCode: string } };
+        };
+      };
+    }>(
       `mutation CartCreate($lines:[CartLineInput!]!){cartCreate(input:{lines:$lines}){cart{id checkoutUrl cost{totalAmount{amount currencyCode}}}}}`,
       { lines: input.lines.map((l) => ({ merchandiseId: l.variantId, quantity: l.quantity })) },
     );
@@ -78,14 +92,20 @@ export const shopifyProvider: CommerceProvider = {
   },
 
   async getOrderStatus(reference, contact): Promise<OrderStatus> {
-    if (!configured()) return { status: "unknown", reason: "Shopify credentials are not configured." };
+    if (!configured())
+      return { status: "unknown", reason: "Shopify credentials are not configured." };
     return nativeProvider.getOrderStatus(reference, contact);
   },
 
   async health(): Promise<ProviderHealth> {
     const checkedAt = new Date().toISOString();
     if (!configured()) {
-      return { provider: "shopify", ok: false, detail: "Store domain or Storefront token missing.", checkedAt };
+      return {
+        provider: "shopify",
+        ok: false,
+        detail: "Store domain or Storefront token missing.",
+        checkedAt,
+      };
     }
     try {
       await storefront<{ shop: { name: string } }>(`{shop{name}}`);

@@ -1,6 +1,15 @@
-import { MapPin, Clock, Phone } from "lucide-react";
+import { MapPin, Clock, Phone, Navigation } from "lucide-react";
 
 import type { Store, Testimonial } from "@/data/types";
+import { track } from "@/lib/analytics";
+
+/** Maps search built from the published address — no invented place IDs. */
+function directionsUrl(store: Store): string {
+  const query = [...store.addressLines, store.city, store.region, store.postalCode]
+    .filter(Boolean)
+    .join(", ");
+  return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`;
+}
 
 export function TestimonialCard({ testimonial }: { testimonial: Testimonial }) {
   return (
@@ -53,6 +62,29 @@ export function StoreCard({ store }: { store: Store }) {
           </div>
         ) : null}
       </dl>
+
+      <div className="mt-5 flex flex-wrap gap-x-5 gap-y-2 text-[0.8125rem]">
+        <a
+          href={directionsUrl(store)}
+          target="_blank"
+          rel="noopener noreferrer"
+          onClick={() => track({ name: "directions_click", params: { store: store.id } })}
+          className="link-underline flex min-h-11 items-center gap-1.5 text-muted-foreground hover:text-foreground"
+        >
+          <Navigation className="size-3.5" aria-hidden="true" />
+          Directions
+        </a>
+        {store.phone ? (
+          <a
+            href={`tel:${store.phone.replace(/[^+0-9]/g, "")}`}
+            onClick={() => track({ name: "call_click", params: { store: store.id } })}
+            className="link-underline flex min-h-11 items-center gap-1.5 text-muted-foreground hover:text-foreground"
+          >
+            <Phone className="size-3.5" aria-hidden="true" />
+            Call this counter
+          </a>
+        ) : null}
+      </div>
 
       <ul className="mt-auto flex flex-wrap gap-2 pt-6">
         {store.services.map((service) => (

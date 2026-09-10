@@ -56,15 +56,29 @@ export type OrderIntentInput = {
   /** Free-text delivery note from the customer. */
   notes?: string | undefined;
   /** Optional business-invoice details; GSTIN is format-checked only. */
-  business?: { legalName: string; gstin?: string | undefined; placeOfSupply?: string | undefined } | undefined;
+  business?:
+    | { legalName: string; gstin?: string | undefined; placeOfSupply?: string | undefined }
+    | undefined;
   contact: { name: string; email: string; phone: string };
-  shipping: { addressLine1: string; addressLine2?: string | undefined; city: string; state?: string | undefined; pincode: string; country: string };
+  shipping: {
+    addressLine1: string;
+    addressLine2?: string | undefined;
+    city: string;
+    state?: string | undefined;
+    pincode: string;
+    country: string;
+  };
   /** Client-generated key so a retried submit never creates a second order. */
   idempotencyKey: string;
 };
 
 export type OrderIntent =
-  | { status: "created"; orderReference: string; total: Money; payment?: { provider: string; clientToken: string } }
+  | {
+      status: "created";
+      orderReference: string;
+      total: Money;
+      payment?: { provider: string; clientToken: string };
+    }
   | { status: "unavailable"; reason: string };
 
 export type OrderStatus =

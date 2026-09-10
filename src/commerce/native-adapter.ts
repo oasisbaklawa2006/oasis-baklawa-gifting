@@ -21,7 +21,10 @@ import type {
   ProviderHealth,
 } from "./types";
 
-const money = (amount: number, currency: Money["currency"] = "INR"): Money => ({ amount, currency });
+const money = (amount: number, currency: Money["currency"] = "INR"): Money => ({
+  amount,
+  currency,
+});
 
 /** Snapshot version stamped at build time from the in-repo governed data. */
 export const LOCAL_SNAPSHOT_VERSION = "local-2026-09";
@@ -68,7 +71,8 @@ export const nativeProvider: CommerceProvider = {
     if (!appverse.baseUrl) {
       return {
         status: "unavailable",
-        reason: "Order handoff is not connected yet. Please complete your order through the enquiry form.",
+        reason:
+          "Order handoff is not connected yet. Please complete your order through the enquiry form.",
       };
     }
 
@@ -111,7 +115,8 @@ export const nativeProvider: CommerceProvider = {
     const response = await fetch(url, {
       headers: { "x-oasis-contract-version": appverse.contractVersion },
     });
-    if (!response.ok) return { status: "unknown", reason: `Order service responded ${response.status}.` };
+    if (!response.ok)
+      return { status: "unknown", reason: `Order service responded ${response.status}.` };
 
     const payload = (await response.json()) as {
       orderReference: string;
@@ -129,7 +134,8 @@ export const nativeProvider: CommerceProvider = {
       return {
         provider: "native",
         ok: false,
-        detail: "Serving the in-repo governed catalogue snapshot. Central connector URL not configured.",
+        detail:
+          "Serving the in-repo governed catalogue snapshot. Central connector URL not configured.",
         checkedAt,
         snapshotVersion: LOCAL_SNAPSHOT_VERSION,
       };
@@ -143,7 +149,9 @@ export const nativeProvider: CommerceProvider = {
       return {
         provider: "native",
         ok: response.ok,
-        detail: response.ok ? "Central connector reachable." : `Central connector responded ${response.status}.`,
+        detail: response.ok
+          ? "Central connector reachable."
+          : `Central connector responded ${response.status}.`,
         checkedAt,
         snapshotVersion: body.snapshotVersion ?? LOCAL_SNAPSHOT_VERSION,
       };

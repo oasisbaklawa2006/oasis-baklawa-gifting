@@ -10,6 +10,27 @@ import {
 
 import { products } from "@/data/catalog";
 import type { Money, Product, ProductVariant } from "@/data/types";
+import { track, type AnalyticsItem } from "@/lib/analytics";
+
+/** Event payload built from the local catalogue only — never invented values. */
+function lineEvent(productId: string, variantId: string, quantity: number) {
+  const product = products.find((p) => p.id === productId);
+  const variant = product?.variants.find((v) => v.id === variantId);
+  if (!product || !variant) return null;
+  const item: AnalyticsItem = {
+    item_id: variant.id,
+    item_name: product.name,
+    item_category: product.categoryId,
+    price: variant.price.amount,
+    quantity,
+    currency: variant.price.currency,
+  };
+  return {
+    currency: variant.price.currency,
+    value: variant.price.amount * quantity,
+    items: [item],
+  };
+}
 
 /**
  * Client-side shop state (cart + wishlist), persisted to localStorage.
@@ -109,6 +130,8 @@ export function ShopProvider({ children }: { children: ReactNode }) {
         : [...prev.lines, { productId, variantId, quantity }];
       return { ...prev, lines };
     });
+    const params = lineEvent(productId, variantId, quantity);
+    if (params) track({ name: "add_to_cart", params });
   }, []);
 
   const setQuantity = useCallback((productId: string, variantId: string, quantity: number) => {
@@ -130,6 +153,8 @@ export function ShopProvider({ children }: { children: ReactNode }) {
       ...prev,
       lines: prev.lines.filter((l) => !(l.productId === productId && l.variantId === variantId)),
     }));
+    const params = lineEvent(productId, variantId, 1);
+    if (params) track({ name: "remove_from_cart", params });
   }, []);
 
   const clearCart = useCallback(() => setState((prev) => ({ ...prev, lines: [] })), []);
@@ -138,7 +163,6 @@ export function ShopProvider({ children }: { children: ReactNode }) {
   const replaceLines = useCallback((lines: CartLine[]) => {
     setState((prev) => ({ ...prev, lines }));
   }, []);
-
 
   const toggleWishlist = useCallback((productId: string) => {
     setState((prev) => ({

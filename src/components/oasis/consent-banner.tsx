@@ -102,8 +102,8 @@ export function ConsentManager() {
         >
           <div className="container-oasis flex flex-col gap-4 py-5 md:flex-row md:items-center md:justify-between">
             <p className="max-w-2xl text-[0.8125rem] leading-relaxed text-muted-foreground">
-              We use strictly necessary cookies to run the basket and checkout. With your
-              permission we also measure how the site is used and show relevant Oasis offers.
+              We use strictly necessary cookies to run the basket and checkout. With your permission
+              we also measure how the site is used and show relevant Oasis offers.
             </p>
             <div className="flex flex-wrap gap-3">
               <Button variant="ghost" onClick={openPreferences}>
@@ -127,7 +127,11 @@ export function ConsentManager() {
 export function PrivacyPreferencesLink({ className }: { className?: string }) {
   const { openPreferences } = useConsent();
   return (
-    <button type="button" onClick={openPreferences} className={className}>
+    <button
+      type="button"
+      onClick={openPreferences}
+      className={className ?? "link-underline text-driftwood hover:text-foreground"}
+    >
       Privacy preferences
     </button>
   );

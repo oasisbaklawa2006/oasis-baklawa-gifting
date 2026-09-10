@@ -1,6 +1,5 @@
-import { useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { toast } from "sonner";
+import { useLeadForm } from "@/lib/marketing/use-lead-form";
 
 import { Breadcrumbs } from "@/components/oasis/breadcrumbs";
 import { SectionHeading } from "@/components/oasis/section-heading";
@@ -59,7 +58,13 @@ const principles = [
 ];
 
 function RewardsPage() {
-  const [registered, setRegistered] = useState(false);
+  const lead = useLeadForm({
+    kind: "rewards",
+    source: "rewards-page",
+    event: "rewards_interest",
+    successMessage: "Thank you — we’ll write to you as membership opens.",
+    failureMessage: "We couldn’t register your interest just now. Please try again shortly.",
+  });
 
   return (
     <>
@@ -136,16 +141,7 @@ function RewardsPage() {
             </div>
           </div>
 
-          <form
-            className="rounded-sm border border-border bg-card p-6"
-            onSubmit={(e) => {
-              e.preventDefault();
-              setRegistered(true);
-              toast.success("Interest registered", {
-                description: "We will write to you as membership opens.",
-              });
-            }}
-          >
+          <form className="rounded-sm border border-border bg-card p-6" onSubmit={lead.onSubmit}>
             <div className="grid gap-4">
               <div className="grid gap-2">
                 <Label htmlFor="r-name">Name</Label>
@@ -159,13 +155,12 @@ function RewardsPage() {
                 <Label htmlFor="r-phone">Phone</Label>
                 <Input id="r-phone" name="phone" type="tel" autoComplete="tel" />
               </div>
-              <Button type="submit" size="lg" className="mt-2">
-                Register interest
+              <Button type="submit" size="lg" className="mt-2" disabled={lead.pending}>
+                {lead.pending ? "Sending…" : "Register interest"}
               </Button>
               <p aria-live="polite" className="text-xs text-muted-foreground">
-                {registered
-                  ? "Thank you — your details are with our team."
-                  : "We use these details only to contact you about Oasis Rewards."}
+                {lead.statusMessage ??
+                  "We use these details only to contact you about Oasis Rewards."}
               </p>
             </div>
           </form>
