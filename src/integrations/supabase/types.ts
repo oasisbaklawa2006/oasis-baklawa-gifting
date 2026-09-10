@@ -98,6 +98,176 @@ export type Database = {
         }
         Relationships: []
       }
+      website_catalog_products: {
+        Row: {
+          category_cue: string | null
+          commerce_verified: boolean
+          created_at: string
+          currency: string
+          display_name: string
+          id: string
+          media: Json
+          provenance: Json
+          provider: string
+          published: boolean
+          sku: string | null
+          slug: string
+          source_name: string | null
+          source_product_id: string
+          source_updated_at: string | null
+          synced_at: string
+          updated_at: string
+        }
+        Insert: {
+          category_cue?: string | null
+          commerce_verified?: boolean
+          created_at?: string
+          currency?: string
+          display_name: string
+          id?: string
+          media?: Json
+          provenance?: Json
+          provider?: string
+          published?: boolean
+          sku?: string | null
+          slug: string
+          source_name?: string | null
+          source_product_id: string
+          source_updated_at?: string | null
+          synced_at?: string
+          updated_at?: string
+        }
+        Update: {
+          category_cue?: string | null
+          commerce_verified?: boolean
+          created_at?: string
+          currency?: string
+          display_name?: string
+          id?: string
+          media?: Json
+          provenance?: Json
+          provider?: string
+          published?: boolean
+          sku?: string | null
+          slug?: string
+          source_name?: string | null
+          source_product_id?: string
+          source_updated_at?: string | null
+          synced_at?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      website_catalog_sync_runs: {
+        Row: {
+          created_at: string
+          errors: Json
+          finished_at: string | null
+          id: string
+          mode: string
+          note: string | null
+          products_upserted: number
+          provider: string
+          rejected: number
+          started_at: string
+          status: string
+          variants_upserted: number
+        }
+        Insert: {
+          created_at?: string
+          errors?: Json
+          finished_at?: string | null
+          id?: string
+          mode?: string
+          note?: string | null
+          products_upserted?: number
+          provider: string
+          rejected?: number
+          started_at?: string
+          status?: string
+          variants_upserted?: number
+        }
+        Update: {
+          created_at?: string
+          errors?: Json
+          finished_at?: string | null
+          id?: string
+          mode?: string
+          note?: string | null
+          products_upserted?: number
+          provider?: string
+          rejected?: number
+          started_at?: string
+          status?: string
+          variants_upserted?: number
+        }
+        Relationships: []
+      }
+      website_catalog_variants: {
+        Row: {
+          commerce_eligible: boolean
+          created_at: string
+          currency: string
+          current_price: number
+          id: string
+          option_kind: string
+          option_label: string | null
+          position: number
+          product_id: string
+          published: boolean
+          regular_price: number | null
+          sku: string | null
+          source_updated_at: string | null
+          source_variant_id: string
+          synced_at: string
+          updated_at: string
+        }
+        Insert: {
+          commerce_eligible?: boolean
+          created_at?: string
+          currency?: string
+          current_price: number
+          id?: string
+          option_kind?: string
+          option_label?: string | null
+          position?: number
+          product_id: string
+          published?: boolean
+          regular_price?: number | null
+          sku?: string | null
+          source_updated_at?: string | null
+          source_variant_id: string
+          synced_at?: string
+          updated_at?: string
+        }
+        Update: {
+          commerce_eligible?: boolean
+          created_at?: string
+          currency?: string
+          current_price?: number
+          id?: string
+          option_kind?: string
+          option_label?: string | null
+          position?: number
+          product_id?: string
+          published?: boolean
+          regular_price?: number | null
+          sku?: string | null
+          source_updated_at?: string | null
+          source_variant_id?: string
+          synced_at?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "website_catalog_variants_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "website_catalog_products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       website_leads: {
         Row: {
           attribution: Json
