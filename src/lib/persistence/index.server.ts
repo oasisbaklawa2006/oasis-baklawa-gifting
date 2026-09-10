@@ -6,7 +6,11 @@
  * honestly as `ephemeral` — no code path pretends a lost record was kept.
  */
 
-import { databaseConfigured, databaseLeadsRepository, databaseRecoveryRepository } from "./database.server";
+import {
+  databaseConfigured,
+  databaseLeadsRepository,
+  databaseRecoveryRepository,
+} from "./database.server";
 import { createMemoryLeadsRepository, createMemoryRecoveryRepository } from "./memory-repositories";
 import type { LeadsRepository, RecoveryRepository } from "./types";
 

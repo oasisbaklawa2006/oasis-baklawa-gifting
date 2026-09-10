@@ -29,11 +29,7 @@ export async function saveLead(draft: LeadDraft): Promise<SaveLeadOutcome> {
   return leadsRepository().save(draft);
 }
 
-export async function markSync(
-  key: string,
-  state: LeadSyncState,
-  detail?: string,
-): Promise<void> {
+export async function markSync(key: string, state: LeadSyncState, detail?: string): Promise<void> {
   await leadsRepository().markSync(key, state, detail);
 }
 

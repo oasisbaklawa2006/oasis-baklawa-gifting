@@ -12,12 +12,7 @@
  */
 
 export type LeadKind =
-  | "newsletter"
-  | "contact"
-  | "corporate"
-  | "wedding"
-  | "rewards"
-  | "partnership";
+  "newsletter" | "contact" | "corporate" | "wedding" | "rewards" | "partnership";
 
 export type LeadSyncState = "pending_sync" | "synced" | "failed";
 
@@ -48,8 +43,7 @@ export type LeadDraft = Omit<
 >;
 
 export type SaveLeadOutcome =
-  | { ok: true; record: LeadRecord; deduped: boolean }
-  | { ok: false; reason: string };
+  { ok: true; record: LeadRecord; deduped: boolean } | { ok: false; reason: string };
 
 export interface LeadsRepository {
   readonly provider: string;
@@ -77,8 +71,7 @@ export type RecoverySession = {
 };
 
 export type RecordSessionOutcome =
-  | { ok: true; session: RecoverySession; deduped: boolean }
-  | { ok: false; reason: string };
+  { ok: true; session: RecoverySession; deduped: boolean } | { ok: false; reason: string };
 
 export type ClaimOutcome =
   | { ok: true; session: RecoverySession }

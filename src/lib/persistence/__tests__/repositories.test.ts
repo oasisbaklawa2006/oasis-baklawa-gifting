@@ -73,8 +73,18 @@ const future = new Date(Date.now() + 86_400_000).toISOString();
 describe("cart recovery repository", () => {
   it("records one session per token and is idempotent on retry", async () => {
     const repo = createMemoryRecoveryRepository();
-    const first = await repo.record({ tokenHash: "hash-a", cartId: "cart_1", lines, expiresAt: future });
-    const retry = await repo.record({ tokenHash: "hash-a", cartId: "cart_1", lines, expiresAt: future });
+    const first = await repo.record({
+      tokenHash: "hash-a",
+      cartId: "cart_1",
+      lines,
+      expiresAt: future,
+    });
+    const retry = await repo.record({
+      tokenHash: "hash-a",
+      cartId: "cart_1",
+      lines,
+      expiresAt: future,
+    });
 
     expect(first.ok && first.deduped).toBe(false);
     expect(retry.ok && retry.deduped).toBe(true);

@@ -19,17 +19,15 @@ const lineSchema = z.object({
 });
 
 export type IssueResult =
-  | { status: "issued"; token: string; path: string }
-  | { status: "unavailable"; reason: string };
+  { status: "issued"; token: string; path: string } | { status: "unavailable"; reason: string };
 
 export const issueCartRecoveryLink = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) =>
     z.object({ cartId: z.string().min(6), lines: z.array(lineSchema).min(1) }).parse(input),
   )
   .handler(async ({ data }): Promise<IssueResult> => {
-    const { issueRecoveryToken, hashRecoveryToken, recoveryExpiry } = await import(
-      "./cart-recovery-token.server"
-    );
+    const { issueRecoveryToken, hashRecoveryToken, recoveryExpiry } =
+      await import("./cart-recovery-token.server");
     const { recoveryRepository } = await import("./persistence/index.server");
 
     const token = issueRecoveryToken(data.cartId, data.lines);

@@ -251,9 +251,8 @@ function StatusPage() {
                     — {adapters.data.leadStore.note}
                   </p>
                   <p className="mt-2">
-                    Enquiries — awaiting Oasis Central:{" "}
-                    {adapters.data.leadStore.leads.pending_sync} · handed over:{" "}
-                    {adapters.data.leadStore.leads.synced} · failed:{" "}
+                    Enquiries — awaiting Oasis Central: {adapters.data.leadStore.leads.pending_sync}{" "}
+                    · handed over: {adapters.data.leadStore.leads.synced} · failed:{" "}
                     {adapters.data.leadStore.leads.failed}
                   </p>
                   <p className="mt-1">
