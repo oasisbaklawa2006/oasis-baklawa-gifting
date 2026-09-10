@@ -29,7 +29,7 @@ export const Route = createFileRoute("/restore-cart")({
   component: RestoreCartPage,
 });
 
-type Phase = "checking" | "restored" | "invalid";
+type Phase = "checking" | "restored" | "invalid" | "unavailable";
 
 function RestoreCartPage() {
   const { token } = Route.useSearch();
@@ -57,12 +57,16 @@ function RestoreCartPage() {
           replaceLines(result.lines);
           setPhase("restored");
           track({ name: "cart_restored", params: { items: result.lines.length } });
+        } else if (result.status === "unavailable") {
+          // Honest: the link may well be fine, we just could not check it.
+          setPhase("unavailable");
+          setMessage(result.reason);
         } else {
           setPhase("invalid");
           setMessage(result.reason);
         }
       } catch {
-        setPhase("invalid");
+        setPhase("unavailable");
         setMessage("We couldn’t check this basket link just now. Please try again shortly.");
       }
     })();
