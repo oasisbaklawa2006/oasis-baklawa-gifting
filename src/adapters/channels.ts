@@ -7,7 +7,7 @@
  */
 
 import { products } from "@/data/catalog";
-import { absoluteUrl } from "@/lib/site-url";
+import { siteUrl } from "@/lib/site-url";
 
 import { registerAdapter, resolveAdapter } from "./registry";
 import type { AdapterResult } from "./types";
@@ -51,13 +51,14 @@ export function channelProjection(): ChannelProduct[] {
     .filter((product) => !product.isMock && product.images?.[0]?.src)
     .map((product) => ({
       id: product.slug,
-      title: product.title,
-      description: product.description ?? product.subtitle ?? product.title,
-      link: absoluteUrl(`/product/${product.slug}`),
+      title: product.name,
+      description: product.shortDescription || product.description || product.name,
+      link: siteUrl(`/product/${product.slug}`),
       ...(product.images[0]?.src ? { imageLink: product.images[0].src } : {}),
       brand: "Oasis Baklawa" as const,
-      ...(typeof product.price?.amount === "number"
-        ? { priceMinor: product.price.amount, currency: "INR" as const }
+      ...(typeof product.variants[0]?.price?.amount === "number" &&
+      product.variants[0]?.price?.currency === "INR"
+        ? { priceMinor: product.variants[0].price.amount, currency: "INR" as const }
         : {}),
     }));
 }

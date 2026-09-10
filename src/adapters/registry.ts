@@ -95,10 +95,8 @@ export function adapterReport(): AdapterReport[] {
       .filter((id): id is string => Boolean(id)),
   );
   return [...descriptors.values()]
-    .map((descriptor) => ({
+    .map(({ testConnection: _testConnection, ...descriptor }) => ({
       ...descriptor,
-      // Functions are not serialisable across the RPC boundary.
-      testConnection: undefined,
       status: adapterStatus(descriptor),
       selected: selectedIds.has(descriptor.id),
       health: adapterHealth(descriptor.id),

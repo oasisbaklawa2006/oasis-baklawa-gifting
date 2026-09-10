@@ -40,7 +40,7 @@ export interface SearchAdapter {
 function matches(product: Product, term: string): boolean {
   const needle = term.trim().toLowerCase();
   if (!needle) return false;
-  return [product.title, product.subtitle, product.description, product.categoryId]
+  return [product.name, product.shortDescription, product.description, product.categoryId]
     .filter(Boolean)
     .some((field) => String(field).toLowerCase().includes(needle));
 }
@@ -48,7 +48,7 @@ function matches(product: Product, term: string): boolean {
 export function localSearch(query: SearchQuery): SearchResponse {
   const list = products.filter((product) => matches(product, query.term));
   const scoped = query.department
-    ? list.filter((product) => product.departmentId === query.department)
+    ? list.filter((product) => product.collectionIds.includes(query.department!))
     : list;
   const facets: Record<string, Record<string, number>> = { category: {} };
   for (const product of scoped) {
@@ -58,8 +58,8 @@ export function localSearch(query: SearchQuery): SearchResponse {
   return {
     hits: scoped.slice(0, query.limit ?? 24).map((product) => ({
       slug: product.slug,
-      title: product.title,
-      ...(product.departmentId ? { department: product.departmentId } : {}),
+      title: product.name,
+      department: product.categoryId,
     })),
     total: scoped.length,
     facets,
