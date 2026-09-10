@@ -13,7 +13,7 @@ export const marketingStatus = createServerFn({ method: "GET" }).handler(async (
   return {
     readiness: marketingReadiness(),
     feed: feedDiagnostics(),
-    leads: leadCounts(),
+    leads: await leadCounts(),
     checkedAt: new Date().toISOString(),
   };
 });
