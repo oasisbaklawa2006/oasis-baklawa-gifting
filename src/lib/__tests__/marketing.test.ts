@@ -100,11 +100,11 @@ describe("merchant feed", () => {
   });
 
   it("renders escaped XML and tab-separated rows", () => {
-    const feed = buildFeed().items;
-    const xml = feedToXml(feed);
+    const report = buildFeed();
+    const xml = feedToXml(report);
     expect(xml.startsWith("<?xml")).toBe(true);
     expect(xml).not.toMatch(/<g:title>[^<]*&(?!amp;|lt;|gt;|quot;|#)/);
-    const tsv = feedToTsv(feed);
+    const tsv = feedToTsv(report);
     expect(tsv.split("\n")[0]).toContain("\t");
   });
 });
