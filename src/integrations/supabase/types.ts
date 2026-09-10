@@ -14,13 +14,166 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      cart_recovery_sessions: {
+        Row: {
+          attribution: Json
+          cart_id: string
+          created_at: string
+          expires_at: string
+          id: string
+          issued_at: string
+          last_redeemed_at: string | null
+          lines: Json
+          redeem_count: number
+          status: string
+          token_hash: string
+          updated_at: string
+        }
+        Insert: {
+          attribution?: Json
+          cart_id: string
+          created_at?: string
+          expires_at: string
+          id?: string
+          issued_at?: string
+          last_redeemed_at?: string | null
+          lines: Json
+          redeem_count?: number
+          status?: string
+          token_hash: string
+          updated_at?: string
+        }
+        Update: {
+          attribution?: Json
+          cart_id?: string
+          created_at?: string
+          expires_at?: string
+          id?: string
+          issued_at?: string
+          last_redeemed_at?: string | null
+          lines?: Json
+          redeem_count?: number
+          status?: string
+          token_hash?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      integration_webhook_events: {
+        Row: {
+          created_at: string
+          detail: string | null
+          event_id: string
+          event_type: string | null
+          id: string
+          processed_at: string | null
+          provider: string
+          received_at: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          detail?: string | null
+          event_id: string
+          event_type?: string | null
+          id?: string
+          processed_at?: string | null
+          provider: string
+          received_at?: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          detail?: string | null
+          event_id?: string
+          event_type?: string | null
+          id?: string
+          processed_at?: string | null
+          provider?: string
+          received_at?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      website_leads: {
+        Row: {
+          attribution: Json
+          company: string | null
+          consent_at: string | null
+          created_at: string
+          dedupe_key: string
+          email: string | null
+          full_name: string | null
+          id: string
+          kind: string
+          last_submitted_at: string
+          marketing_consent: boolean
+          message: string | null
+          phone: string | null
+          source: string
+          submission_count: number
+          sync_detail: string | null
+          sync_state: string
+          synced_at: string | null
+          updated_at: string
+        }
+        Insert: {
+          attribution?: Json
+          company?: string | null
+          consent_at?: string | null
+          created_at?: string
+          dedupe_key: string
+          email?: string | null
+          full_name?: string | null
+          id?: string
+          kind: string
+          last_submitted_at?: string
+          marketing_consent?: boolean
+          message?: string | null
+          phone?: string | null
+          source: string
+          submission_count?: number
+          sync_detail?: string | null
+          sync_state?: string
+          synced_at?: string | null
+          updated_at?: string
+        }
+        Update: {
+          attribution?: Json
+          company?: string | null
+          consent_at?: string | null
+          created_at?: string
+          dedupe_key?: string
+          email?: string | null
+          full_name?: string | null
+          id?: string
+          kind?: string
+          last_submitted_at?: string
+          marketing_consent?: boolean
+          message?: string | null
+          phone?: string | null
+          source?: string
+          submission_count?: number
+          sync_detail?: string | null
+          sync_state?: string
+          synced_at?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      expire_cart_recovery_sessions: { Args: never; Returns: number }
+      purge_stale_persistence: {
+        Args: { retain_days?: number }
+        Returns: number
+      }
     }
     Enums: {
       [_ in never]: never
