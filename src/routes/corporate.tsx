@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Building2, Globe2, Handshake, Store, Users } from "lucide-react";
-import { toast } from "sonner";
+import { useLeadForm } from "@/lib/marketing/use-lead-form";
 
 import { Breadcrumbs } from "@/components/oasis/breadcrumbs";
 import { SectionHeading } from "@/components/oasis/section-heading";
@@ -80,7 +80,14 @@ const workflow = [
 ];
 
 function CorporatePage() {
-  const [sent, setSent] = useState(false);
+  const lead = useLeadForm({
+    kind: "corporate",
+    source: "corporate-page",
+    event: "corporate_gifting_lead",
+    properties: ["quantity", "date"],
+    successMessage: "Thank you — your enquiry is with our commercial team.",
+    failureMessage: "We couldn’t send this just now. Please try again, or call us directly.",
+  });
 
   return (
     <>
@@ -180,16 +187,7 @@ function CorporatePage() {
             </ul>
           </div>
 
-          <form
-            className="rounded-sm border border-border bg-card p-6"
-            onSubmit={(e) => {
-              e.preventDefault();
-              setSent(true);
-              toast.success("Enquiry captured", {
-                description: "Submission is not connected to a backend in this build.",
-              });
-            }}
-          >
+          <form className="rounded-sm border border-border bg-card p-6" onSubmit={lead.onSubmit}>
             <div className="grid gap-4">
               <div className="grid gap-2">
                 <Label htmlFor="c-company">Company</Label>
@@ -248,13 +246,12 @@ function CorporatePage() {
                   placeholder="Occasion, budget band, delivery cities."
                 />
               </div>
-              <Button type="submit" size="lg" className="mt-2">
-                Submit enquiry
+              <Button type="submit" size="lg" className="mt-2" disabled={lead.pending}>
+                {lead.pending ? "Sending…" : "Submit enquiry"}
               </Button>
               <p aria-live="polite" className="text-xs text-muted-foreground">
-                {sent
-                  ? "Thank you — in this build the enquiry is captured in the interface only."
-                  : "Enquiries are not yet routed to a live inbox in this build."}
+                {lead.statusMessage ??
+                  "Our commercial team responds with formats, indicative pricing and timelines."}
               </p>
             </div>
           </form>
