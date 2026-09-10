@@ -46,6 +46,11 @@ function StatusPage() {
     queryFn: () => marketingStatus(),
     staleTime: 30_000,
   });
+  const adapters = useQuery({
+    queryKey: ["adapter-status"],
+    queryFn: () => adapterStatusReport(),
+    staleTime: 30_000,
+  });
   const telemetry = marketingTelemetry();
 
   const { data, isLoading, isError, refetch, isFetching } = useQuery({
