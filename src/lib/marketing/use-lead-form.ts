@@ -10,12 +10,10 @@ import { useServerFn } from "@tanstack/react-start";
 import { useCallback, useState, type FormEvent } from "react";
 import { toast } from "sonner";
 
-import { submitLead, type LeadResult } from "@/lib/leads.functions";
+import { submitLead, type LeadResult, type LEAD_KINDS } from "@/lib/leads.functions";
 import { approvedAttributionFields, readAttribution } from "./attribution";
 import { track } from "./dispatch";
 import type { EventName } from "./events";
-
-import type { LEAD_KINDS } from "@/lib/leads.functions";
 
 type LeadKind = (typeof LEAD_KINDS)[number];
 
