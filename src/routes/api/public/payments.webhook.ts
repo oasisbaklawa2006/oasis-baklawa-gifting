@@ -47,6 +47,27 @@ export const Route = createFileRoute("/api/public/payments/webhook")({
           return new Response("Invalid payload", { status: 400 });
         }
 
+        // Durable replay guard: the same provider event is only ever handled once.
+        const eventId = event.id ?? expected.slice(0, 32);
+        if (process.env["SUPABASE_SERVICE_ROLE_KEY"]) {
+          const { claimWebhookEvent } = await import("@/lib/persistence/database.server");
+          const claim = await claimWebhookEvent({
+            provider: "payments",
+            eventId,
+            ...(event.event ? { eventType: event.event } : {}),
+          });
+          if (!claim.ok) {
+            // Cannot guarantee single handling: ask the provider to retry.
+            return new Response("Event store unavailable", { status: 503 });
+          }
+          if (!claim.fresh) {
+            return new Response(JSON.stringify({ received: true, duplicate: true }), {
+              status: 200,
+              headers: { "content-type": "application/json" },
+            });
+          }
+        }
+
         const forwardUrl = process.env["APPVERSE_BASE_URL"];
         if (!forwardUrl) {
           // Verified but nowhere to hand off yet: acknowledge without inventing state.
