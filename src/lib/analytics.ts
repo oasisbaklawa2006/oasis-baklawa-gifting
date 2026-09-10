@@ -27,7 +27,8 @@ export function track(event: LegacyEvent): void {
   const params = { ...(event.params ?? {}) };
   const name = (LEGACY_NAMES[event.name] ?? event.name) as EventName;
 
-  const currency = typeof params["currency"] === "string" ? (params["currency"] as string) : undefined;
+  const currency =
+    typeof params["currency"] === "string" ? (params["currency"] as string) : undefined;
   const value = typeof params["value"] === "number" ? (params["value"] as number) : undefined;
   const items = Array.isArray(params["items"]) ? (params["items"] as AnalyticsItem[]) : undefined;
   const orderReference =

@@ -12,7 +12,13 @@ import { createHash } from "node:crypto";
 
 import { klaviyoConfig, metaConfig, serverMarketingSecrets } from "@/config/marketing";
 
-import { KLAVIYO_EVENTS, META_CUSTOM, META_STANDARD, klaviyoPayload, metaPayload } from "./providers";
+import {
+  KLAVIYO_EVENTS,
+  META_CUSTOM,
+  META_STANDARD,
+  klaviyoPayload,
+  metaPayload,
+} from "./providers";
 import type { CanonicalEvent } from "./events";
 
 export type ServerIdentity = {

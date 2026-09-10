@@ -51,5 +51,10 @@ export const redeemCartRecoveryLink = createServerFn({ method: "POST" })
 
     // Authoritative repricing/validation before anything is shown or checked out.
     const pricing = await commerce.priceCart(verified.payload.lines, {});
-    return { status: "restored", cartId: verified.payload.cartId, lines: verified.payload.lines, pricing };
+    return {
+      status: "restored",
+      cartId: verified.payload.cartId,
+      lines: verified.payload.lines,
+      pricing,
+    };
   });

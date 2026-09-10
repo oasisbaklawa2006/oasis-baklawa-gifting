@@ -67,7 +67,7 @@ function variantIdentifiers(variant: ProductVariant): { gtin?: string; mpn?: str
   const record = variant as unknown as { gtin?: string; sku?: string; mpn?: string };
   return {
     ...(record.gtin ? { gtin: record.gtin } : {}),
-    ...(record.mpn ?? record.sku ? { mpn: record.mpn ?? record.sku } : {}),
+    ...((record.mpn ?? record.sku) ? { mpn: record.mpn ?? record.sku } : {}),
   };
 }
 
@@ -151,7 +151,9 @@ export function feedToXml(report: FeedReport, requestUrl?: string): string {
       `      <g:condition>${item.condition}</g:condition>`,
       item.gtin ? `      <g:gtin>${escapeXml(item.gtin)}</g:gtin>` : "",
       item.mpn ? `      <g:mpn>${escapeXml(item.mpn)}</g:mpn>` : "",
-      item.productType ? `      <g:product_type>${escapeXml(item.productType)}</g:product_type>` : "",
+      item.productType
+        ? `      <g:product_type>${escapeXml(item.productType)}</g:product_type>`
+        : "",
       item.googleProductCategory
         ? `      <g:google_product_category>${escapeXml(item.googleProductCategory)}</g:google_product_category>`
         : "",

@@ -14,12 +14,7 @@
  */
 
 export type LeadKind =
-  | "newsletter"
-  | "contact"
-  | "corporate"
-  | "wedding"
-  | "rewards"
-  | "partnership";
+  "newsletter" | "contact" | "corporate" | "wedding" | "rewards" | "partnership";
 
 export type LeadSyncState = "pending_sync" | "synced" | "failed";
 

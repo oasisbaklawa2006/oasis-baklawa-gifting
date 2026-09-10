@@ -76,7 +76,11 @@ export const razorpayAdapter: PaymentAdapter = {
         }),
       });
       if (!response.ok) {
-        return { status: "error", provider: "razorpay", reason: `Razorpay responded ${response.status}.` };
+        return {
+          status: "error",
+          provider: "razorpay",
+          reason: `Razorpay responded ${response.status}.`,
+        };
       }
       const payload = (await response.json()) as { id: string };
       return {
@@ -98,7 +102,8 @@ export const razorpayAdapter: PaymentAdapter = {
     const orderId = payload["razorpay_order_id"] ?? "";
     const paymentId = payload["razorpay_payment_id"] ?? "";
     const signature = payload["razorpay_signature"] ?? "";
-    if (!orderId || !paymentId || !signature) return { valid: false, reason: "Incomplete payment response." };
+    if (!orderId || !paymentId || !signature)
+      return { valid: false, reason: "Incomplete payment response." };
     const ok = verifyRazorpayCallback({ orderId, paymentId, signature }, keySecret);
     return ok
       ? { valid: true, state: "authorized", providerReference: paymentId }
@@ -115,7 +120,13 @@ export const razorpayAdapter: PaymentAdapter = {
       created_at?: number;
       payload?: {
         payment?: {
-          entity?: { id: string; status: string; amount: number; currency: string; notes?: Record<string, string> };
+          entity?: {
+            id: string;
+            status: string;
+            amount: number;
+            currency: string;
+            notes?: Record<string, string>;
+          };
         };
       };
     };
@@ -133,25 +144,34 @@ export const razorpayAdapter: PaymentAdapter = {
       type: event.event,
       state: mapRazorpayState(entity.status),
       providerReference: entity.id,
-      ...(entity.notes?.["orderReference"] ? { orderReference: entity.notes["orderReference"] } : {}),
+      ...(entity.notes?.["orderReference"]
+        ? { orderReference: entity.notes["orderReference"] }
+        : {}),
       amount,
-      occurredAt: new Date((event.created_at ?? Math.floor(Date.now() / 1000)) * 1000).toISOString(),
+      occurredAt: new Date(
+        (event.created_at ?? Math.floor(Date.now() / 1000)) * 1000,
+      ).toISOString(),
     };
   },
 
   async requestRefund({ providerReference, amount }): Promise<RefundResult> {
     const { keyId, keySecret } = creds();
-    if (!keyId || !keySecret) return { status: "not-configured", reason: "Razorpay keys are not configured." };
+    if (!keyId || !keySecret)
+      return { status: "not-configured", reason: "Razorpay keys are not configured." };
     try {
-      const response = await fetch(`${API}/payments/${encodeURIComponent(providerReference)}/refund`, {
-        method: "POST",
-        headers: {
-          "content-type": "application/json",
-          authorization: `Basic ${btoa(`${keyId}:${keySecret}`)}`,
+      const response = await fetch(
+        `${API}/payments/${encodeURIComponent(providerReference)}/refund`,
+        {
+          method: "POST",
+          headers: {
+            "content-type": "application/json",
+            authorization: `Basic ${btoa(`${keyId}:${keySecret}`)}`,
+          },
+          body: JSON.stringify(amount ? { amount: Math.round(amount.amount * 100) } : {}),
         },
-        body: JSON.stringify(amount ? { amount: Math.round(amount.amount * 100) } : {}),
-      });
-      if (!response.ok) return { status: "error", reason: `Razorpay responded ${response.status}.` };
+      );
+      if (!response.ok)
+        return { status: "error", reason: `Razorpay responded ${response.status}.` };
       const payload = (await response.json()) as { id: string };
       return { status: "requested", refundReference: payload.id };
     } catch {

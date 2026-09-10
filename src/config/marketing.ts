@@ -11,7 +11,12 @@
  * ONLY inside server handlers via `serverMarketingSecrets()`.
  */
 
-import { analyticsConfig, statusOf, type IntegrationStatus, type ReadinessItem } from "./integrations";
+import {
+  analyticsConfig,
+  statusOf,
+  type IntegrationStatus,
+  type ReadinessItem,
+} from "./integrations";
 
 function viteEnv(key: string): string {
   const env = typeof import.meta !== "undefined" ? import.meta.env : undefined;

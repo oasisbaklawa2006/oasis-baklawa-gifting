@@ -78,7 +78,11 @@ export const stripeAdapter: PaymentAdapter = {
         body,
       });
       if (!response.ok) {
-        return { status: "error", provider: "stripe", reason: `Stripe responded ${response.status}.` };
+        return {
+          status: "error",
+          provider: "stripe",
+          reason: `Stripe responded ${response.status}.`,
+        };
       }
       const payload = (await response.json()) as { id: string; client_secret: string };
       return {
@@ -141,7 +145,10 @@ export const stripeAdapter: PaymentAdapter = {
 
     const amount: Money | undefined =
       typeof object.amount === "number"
-        ? { amount: object.amount / 100, currency: (object.currency?.toUpperCase() as Money["currency"]) ?? "INR" }
+        ? {
+            amount: object.amount / 100,
+            currency: (object.currency?.toUpperCase() as Money["currency"]) ?? "INR",
+          }
         : undefined;
 
     return {
@@ -150,7 +157,9 @@ export const stripeAdapter: PaymentAdapter = {
       type: event.type,
       state: mapStripeState(object.status),
       providerReference: object.id,
-      ...(object.metadata?.["orderReference"] ? { orderReference: object.metadata["orderReference"] } : {}),
+      ...(object.metadata?.["orderReference"]
+        ? { orderReference: object.metadata["orderReference"] }
+        : {}),
       ...(amount ? { amount } : {}),
       occurredAt: new Date((event.created ?? Math.floor(Date.now() / 1000)) * 1000).toISOString(),
     };

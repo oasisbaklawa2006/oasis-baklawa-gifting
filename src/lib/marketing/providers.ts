@@ -194,12 +194,9 @@ export const metaAdapter: ProviderAdapter = {
     const custom = META_CUSTOM[event.name];
     if (!standard && !custom) return false;
     // eventID is shared with the server CAPI event so Meta de-duplicates.
-    w.fbq(
-      standard ? "track" : "trackCustom",
-      standard ?? custom,
-      metaPayload(event),
-      { eventID: event.eventId },
-    );
+    w.fbq(standard ? "track" : "trackCustom", standard ?? custom, metaPayload(event), {
+      eventID: event.eventId,
+    });
     return true;
   },
 };

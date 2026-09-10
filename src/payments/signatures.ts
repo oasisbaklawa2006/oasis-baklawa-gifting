@@ -17,7 +17,11 @@ function safeEqualHex(a: string, b: string): boolean {
 /* ------------------------------- Razorpay ------------------------------- */
 
 /** Checkout handshake: HMAC-SHA256 of `${order_id}|${payment_id}` in hex. */
-export function razorpayCallbackSignature(orderId: string, paymentId: string, keySecret: string): string {
+export function razorpayCallbackSignature(
+  orderId: string,
+  paymentId: string,
+  keySecret: string,
+): string {
   return createHmac("sha256", keySecret).update(`${orderId}|${paymentId}`).digest("hex");
 }
 
@@ -26,11 +30,18 @@ export function verifyRazorpayCallback(
   keySecret: string,
 ): boolean {
   if (!keySecret || !input.signature) return false;
-  return safeEqualHex(razorpayCallbackSignature(input.orderId, input.paymentId, keySecret), input.signature);
+  return safeEqualHex(
+    razorpayCallbackSignature(input.orderId, input.paymentId, keySecret),
+    input.signature,
+  );
 }
 
 /** Webhook: HMAC-SHA256 of the raw body, hex, in `x-razorpay-signature`. */
-export function verifyRazorpayWebhook(rawBody: string, signature: string, webhookSecret: string): boolean {
+export function verifyRazorpayWebhook(
+  rawBody: string,
+  signature: string,
+  webhookSecret: string,
+): boolean {
   if (!webhookSecret || !signature) return false;
   const expected = createHmac("sha256", webhookSecret).update(rawBody).digest("hex");
   return safeEqualHex(expected, signature);

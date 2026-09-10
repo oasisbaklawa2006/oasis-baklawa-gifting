@@ -66,11 +66,20 @@ export interface PaymentAdapter {
     amount: Money;
     orderReference: string;
     idempotencyKey: string;
-    customer?: { name?: string | undefined; email?: string | undefined; phone?: string | undefined } | undefined;
+    customer?:
+      | { name?: string | undefined; email?: string | undefined; phone?: string | undefined }
+      | undefined;
   }): Promise<PaymentIntentResult>;
   /** Verify a browser-returned payment handshake. */
   verifyCallback(payload: Record<string, string>): Promise<VerificationResult>;
   /** Verify + normalize a raw webhook body. */
-  parseWebhook(rawBody: string, headers: Record<string, string>): Promise<NormalizedWebhookEvent | null>;
-  requestRefund(input: { providerReference: string; amount?: Money; reason?: string }): Promise<RefundResult>;
+  parseWebhook(
+    rawBody: string,
+    headers: Record<string, string>,
+  ): Promise<NormalizedWebhookEvent | null>;
+  requestRefund(input: {
+    providerReference: string;
+    amount?: Money;
+    reason?: string;
+  }): Promise<RefundResult>;
 }
