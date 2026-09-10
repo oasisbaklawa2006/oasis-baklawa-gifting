@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Building2, Globe2, Handshake, Store, Users } from "lucide-react";
 import { useLeadForm } from "@/lib/marketing/use-lead-form";
