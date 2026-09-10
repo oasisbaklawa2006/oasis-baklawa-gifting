@@ -50,6 +50,7 @@ import { Route as JournalIndexRouteImport } from './routes/journal.index'
 import { Route as JournalSlugRouteImport } from './routes/journal.$slug'
 import { Route as OrderReferenceRouteImport } from './routes/order.$reference'
 import { Route as ProductSlugRouteImport } from './routes/product.$slug'
+import { Route as ApiPublicMarketingDiagnosticsRouteImport } from './routes/api/public/marketing-diagnostics'
 import { Route as ApiPublicPaymentsWebhookRouteImport } from './routes/api/public/payments.webhook'
 
 const IndexRoute = IndexRouteImport.update({
@@ -257,6 +258,12 @@ const ProductSlugRoute = ProductSlugRouteImport.update({
   path: '/product/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicMarketingDiagnosticsRoute =
+  ApiPublicMarketingDiagnosticsRouteImport.update({
+    id: '/api/public/marketing-diagnostics',
+    path: '/api/public/marketing-diagnostics',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicPaymentsWebhookRoute =
   ApiPublicPaymentsWebhookRouteImport.update({
     id: '/api/public/payments/webhook',
@@ -306,6 +313,7 @@ export interface FileRoutesByFullPath {
   '/product/$slug': typeof ProductSlugRoute
   '/collections/': typeof CollectionsIndexRoute
   '/journal/': typeof JournalIndexRoute
+  '/api/public/marketing-diagnostics': typeof ApiPublicMarketingDiagnosticsRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
 }
 export interface FileRoutesByTo {
@@ -350,6 +358,7 @@ export interface FileRoutesByTo {
   '/product/$slug': typeof ProductSlugRoute
   '/collections': typeof CollectionsIndexRoute
   '/journal': typeof JournalIndexRoute
+  '/api/public/marketing-diagnostics': typeof ApiPublicMarketingDiagnosticsRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
 }
 export interface FileRoutesById {
@@ -395,6 +404,7 @@ export interface FileRoutesById {
   '/product/$slug': typeof ProductSlugRoute
   '/collections/': typeof CollectionsIndexRoute
   '/journal/': typeof JournalIndexRoute
+  '/api/public/marketing-diagnostics': typeof ApiPublicMarketingDiagnosticsRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
 }
 export interface FileRouteTypes {
@@ -441,6 +451,7 @@ export interface FileRouteTypes {
     | '/product/$slug'
     | '/collections/'
     | '/journal/'
+    | '/api/public/marketing-diagnostics'
     | '/api/public/payments/webhook'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -485,6 +496,7 @@ export interface FileRouteTypes {
     | '/product/$slug'
     | '/collections'
     | '/journal'
+    | '/api/public/marketing-diagnostics'
     | '/api/public/payments/webhook'
   id:
     | '__root__'
@@ -529,6 +541,7 @@ export interface FileRouteTypes {
     | '/product/$slug'
     | '/collections/'
     | '/journal/'
+    | '/api/public/marketing-diagnostics'
     | '/api/public/payments/webhook'
   fileRoutesById: FileRoutesById
 }
@@ -574,6 +587,7 @@ export interface RootRouteChildren {
   ProductSlugRoute: typeof ProductSlugRoute
   CollectionsIndexRoute: typeof CollectionsIndexRoute
   JournalIndexRoute: typeof JournalIndexRoute
+  ApiPublicMarketingDiagnosticsRoute: typeof ApiPublicMarketingDiagnosticsRoute
   ApiPublicPaymentsWebhookRoute: typeof ApiPublicPaymentsWebhookRoute
 }
 
@@ -866,6 +880,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProductSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/marketing-diagnostics': {
+      id: '/api/public/marketing-diagnostics'
+      path: '/api/public/marketing-diagnostics'
+      fullPath: '/api/public/marketing-diagnostics'
+      preLoaderRoute: typeof ApiPublicMarketingDiagnosticsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/payments/webhook': {
       id: '/api/public/payments/webhook'
       path: '/api/public/payments/webhook'
@@ -918,6 +939,7 @@ const rootRouteChildren: RootRouteChildren = {
   ProductSlugRoute: ProductSlugRoute,
   CollectionsIndexRoute: CollectionsIndexRoute,
   JournalIndexRoute: JournalIndexRoute,
+  ApiPublicMarketingDiagnosticsRoute: ApiPublicMarketingDiagnosticsRoute,
   ApiPublicPaymentsWebhookRoute: ApiPublicPaymentsWebhookRoute,
 }
 export const routeTree = rootRouteImport
