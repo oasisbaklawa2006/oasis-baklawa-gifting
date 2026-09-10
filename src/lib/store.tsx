@@ -164,7 +164,6 @@ export function ShopProvider({ children }: { children: ReactNode }) {
     setState((prev) => ({ ...prev, lines }));
   }, []);
 
-
   const toggleWishlist = useCallback((productId: string) => {
     setState((prev) => ({
       ...prev,
