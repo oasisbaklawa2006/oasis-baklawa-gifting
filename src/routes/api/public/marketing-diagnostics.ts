@@ -30,7 +30,7 @@ export const Route = createFileRoute("/api/public/marketing-diagnostics")({
           {
             readiness: marketingReadiness(),
             feed: feedDiagnostics(request.url),
-            leads: leadCounts(),
+            leads: await leadCounts(),
             checkedAt: new Date().toISOString(),
           },
           { headers: { "cache-control": "no-store" } },

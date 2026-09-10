@@ -7,7 +7,7 @@
  * is always re-priced and re-validated server-side before checkout.
  */
 
-import { createHmac, randomBytes, timingSafeEqual } from "node:crypto";
+import { createHash, createHmac, randomBytes, timingSafeEqual } from "node:crypto";
 
 export type RecoveryLine = { productId: string; variantId: string; quantity: number };
 
@@ -91,4 +91,26 @@ export function verifyRecoveryToken(token: string, now = new Date()): VerifyResu
   if (!payload.cartId || !Array.isArray(payload.lines)) return { ok: false, reason: "malformed" };
   if (payload.exp * 1000 < now.getTime()) return { ok: false, reason: "expired" };
   return { ok: true, payload };
+}
+
+/**
+ * Storage handle for a token. Only this hash is ever persisted, so a leaked
+ * database row cannot be turned back into a working recovery link.
+ */
+export function hashRecoveryToken(token: string): string {
+  return createHash("sha256").update(token).digest("hex");
+}
+
+/** Expiry of an issued token as an ISO timestamp, for the durable session row. */
+export function recoveryExpiry(token: string, now = new Date()): string {
+  const [body] = token.split(".");
+  if (body) {
+    try {
+      const payload = JSON.parse(fromB64url(body).toString("utf8")) as RecoveryPayload;
+      if (typeof payload.exp === "number") return new Date(payload.exp * 1000).toISOString();
+    } catch {
+      /* fall through to the default window */
+    }
+  }
+  return new Date(now.getTime() + RECOVERY_TTL_DAYS * 86_400_000).toISOString();
 }
