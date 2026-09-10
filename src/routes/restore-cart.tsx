@@ -96,6 +96,17 @@ function RestoreCartPage() {
               </Button>
             </div>
           </>
+        ) : phase === "unavailable" ? (
+          <>
+            <h1 className="mt-4 font-display text-4xl">We couldn’t check this link just now</h1>
+            <p className="mt-3 text-sm text-muted-foreground">{message}</p>
+            <div className="mt-8 flex flex-wrap justify-center gap-3">
+              <Button onClick={() => window.location.reload()}>Try again</Button>
+              <Button variant="outline" asChild>
+                <Link to="/shop">Continue shopping</Link>
+              </Button>
+            </div>
+          </>
         ) : (
           <>
             <h1 className="mt-4 font-display text-4xl">This basket link can’t be opened</h1>
