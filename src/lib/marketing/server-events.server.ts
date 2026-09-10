@@ -16,15 +16,15 @@ import { KLAVIYO_EVENTS, META_CUSTOM, META_STANDARD, klaviyoPayload, metaPayload
 import type { CanonicalEvent } from "./events";
 
 export type ServerIdentity = {
-  email?: string;
-  phone?: string;
-  firstName?: string;
-  lastName?: string;
-  city?: string;
-  postalCode?: string;
-  country?: string;
-  clientIpAddress?: string;
-  clientUserAgent?: string;
+  email?: string | undefined;
+  phone?: string | undefined;
+  firstName?: string | undefined;
+  lastName?: string | undefined;
+  city?: string | undefined;
+  postalCode?: string | undefined;
+  country?: string | undefined;
+  clientIpAddress?: string | undefined;
+  clientUserAgent?: string | undefined;
 };
 
 export type ServerDispatchResult = {

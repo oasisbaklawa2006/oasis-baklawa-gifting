@@ -30,9 +30,9 @@ const schema = z.object({
   source: z.string().min(2).max(80),
   marketingConsent: z.boolean(),
   /** Approved, non-identifying campaign fields only. */
-  attribution: z.record(z.string(), z.string()).max(40).optional(),
+  attribution: z.record(z.string(), z.string()).optional(),
   /** Restrained profile properties (occasion, product family, recipient band). */
-  properties: z.record(z.string(), z.string()).max(20).optional(),
+  properties: z.record(z.string(), z.string()).optional(),
 });
 
 export type LeadInput = z.infer<typeof schema>;
