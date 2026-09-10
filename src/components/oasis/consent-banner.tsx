@@ -127,7 +127,11 @@ export function ConsentManager() {
 export function PrivacyPreferencesLink({ className }: { className?: string }) {
   const { openPreferences } = useConsent();
   return (
-    <button type="button" onClick={openPreferences} className={className}>
+    <button
+      type="button"
+      onClick={openPreferences}
+      className={className ?? "link-underline text-driftwood hover:text-foreground"}
+    >
       Privacy preferences
     </button>
   );
