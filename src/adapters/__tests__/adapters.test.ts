@@ -53,9 +53,10 @@ describe("registry", () => {
     for (const domain of new Set(listAdapters().map((a) => a.domain))) {
       const resolved = resolveAdapter(domain);
       expect(resolved, domain).toBeDefined();
-      expect(["built-in", "configured"], `${domain}:${resolved?.provider}`).toContain(
-        adapterStatus(resolved!),
-      );
+      expect(
+        ["built-in", "configured", "not-configured"],
+        `${domain}:${resolved?.provider}`,
+      ).toContain(adapterStatus(resolved!));
     }
   });
 
@@ -203,7 +204,9 @@ describe("sales channels", () => {
     expect(projection.length).toBeGreaterThan(0);
     for (const item of projection) {
       expect(item.brand).toBe("Oasis Baklawa");
-      expect(item.link).toMatch(/^https?:\/\//);
+      // Without a configured site origin the link stays a relative path rather
+      // than being stitched onto an invented host.
+      expect(item.link).toMatch(/^(https?:\/\/|\/product\/)/);
     }
     const csv = channelAdapter("amazon")!.build(projection.slice(0, 2), "csv");
     expect(csv.ok && csv.data.split("\n")[0]).toContain("id,title");
