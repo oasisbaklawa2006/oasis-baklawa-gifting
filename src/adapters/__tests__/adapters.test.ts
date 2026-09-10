@@ -171,9 +171,12 @@ describe("crm and lead store", () => {
     expect(isDuplicateLead(a, { ...a, kind: "corporate" })).toBe(false);
   });
 
-  it("reports the in-memory queue as ephemeral, never durable", () => {
-    expect(leadStoreDurability()).toBe("ephemeral");
+  it("never claims durability for the in-memory queue", () => {
     expect(createMemoryStore().durability).toBe("ephemeral");
+  });
+
+  it("reports durability from the store actually in use", () => {
+    expect(leadStoreDurability()).toBe(databaseStoreConfigured() ? "durable" : "ephemeral");
   });
 });
 
