@@ -24,9 +24,8 @@ const validQuote: PricedCart = {
 
 describe("governed commerce quote policy", () => {
   it("rejects local and unverified pricing regardless of a connector URL", () => {
-    expect(
-      isAuthoritativeOrderQuote(requested, { ...validQuote, authoritative: false }),
-    ).toBe(false);
+    const localQuote = { ...validQuote, authoritative: false };
+    expect(isAuthoritativeOrderQuote(requested, localQuote)).toBe(false);
   });
 
   it("accepts an explicitly authoritative complete quote", () => {
