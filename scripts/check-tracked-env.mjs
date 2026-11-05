@@ -28,8 +28,13 @@ const permittedPublicKeys = new Set([
 const findings = [];
 for (const file of tracked) {
   for (const [index, line] of readFileSync(file, "utf8").split(/\r?\n/).entries()) {
-    const assignment = /^\s*(?:export\s+)?([A-Z][A-Z0-9_]*)\s*=/.exec(line);
-    if (assignment && (forbidden.test(assignment[1]) || !permittedPublicKeys.has(assignment[1]))) {
+    const trimmed = line.trim();
+    if (!trimmed || trimmed.startsWith("#")) continue;
+    // Parse upper- and lower-case names before applying the strict public allowlist.
+    const assignment = /^\s*(?:export\s+)?([A-Za-z_][A-Za-z0-9_]*)\s*=/.exec(line);
+    if (!assignment) {
+      findings.push(`${file}:${index + 1}: unrecognized environment assignment`);
+    } else if (forbidden.test(assignment[1]) || !permittedPublicKeys.has(assignment[1])) {
       findings.push(`${file}:${index + 1}: ${assignment[1]}`);
     }
   }
