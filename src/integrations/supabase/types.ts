@@ -10,7 +10,7 @@ export type Database = {
   // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
-    PostgrestVersion: "14.5"
+    PostgrestVersion: "14.17"
   }
   public: {
     Tables: {
@@ -340,6 +340,15 @@ export type Database = {
     }
     Functions: {
       expire_cart_recovery_sessions: { Args: never; Returns: number }
+      import_wix_catalog_compact: {
+        Args: { payload: Json; run_note?: string }
+        Returns: {
+          products_blocked: number
+          products_upserted: number
+          run_id: string
+          variants_upserted: number
+        }[]
+      }
       purge_stale_persistence: {
         Args: { retain_days?: number }
         Returns: number
