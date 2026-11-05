@@ -15,11 +15,21 @@ const tracked = execFileSync("git", ["ls-files", "-z"], { encoding: "utf8" })
   .filter((file) => !/\.(?:example|sample|template)$/.test(file));
 
 const forbidden = /(?:SERVICE_ROLE|SECRET|PRIVATE_KEY|PASSWORD|ACCESS_TOKEN|CLIENT_SECRET)/i;
+// An allowlist is mandatory: private credentials can have names like DATABASE_URL
+// or THIRD_PARTY_API_KEY that do not match the sensitive-name pattern above.
+const permittedPublicKeys = new Set([
+  "SUPABASE_PROJECT_ID",
+  "SUPABASE_PUBLISHABLE_KEY",
+  "SUPABASE_URL",
+  "VITE_SUPABASE_PROJECT_ID",
+  "VITE_SUPABASE_PUBLISHABLE_KEY",
+  "VITE_SUPABASE_URL",
+]);
 const findings = [];
 for (const file of tracked) {
   for (const [index, line] of readFileSync(file, "utf8").split(/\r?\n/).entries()) {
     const assignment = /^\s*(?:export\s+)?([A-Z][A-Z0-9_]*)\s*=/.exec(line);
-    if (assignment && forbidden.test(assignment[1])) {
+    if (assignment && (forbidden.test(assignment[1]) || !permittedPublicKeys.has(assignment[1]))) {
       findings.push(`${file}:${index + 1}: ${assignment[1]}`);
     }
   }
