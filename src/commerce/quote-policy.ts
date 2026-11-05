@@ -26,7 +26,12 @@ export function isAuthoritativeOrderQuote(
 
   const requestedLines = new Map<string, number>();
   for (const line of requested) {
-    if (!line.productId || !line.variantId || !Number.isInteger(line.quantity) || line.quantity <= 0) {
+    if (
+      !line.productId ||
+      !line.variantId ||
+      !Number.isInteger(line.quantity) ||
+      line.quantity <= 0
+    ) {
       return false;
     }
     const key = lineKey(line.productId, line.variantId);
