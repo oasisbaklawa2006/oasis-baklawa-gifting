@@ -62,8 +62,9 @@ export const nativeProvider: CommerceProvider = {
       lines: priced,
       subtotal,
       total: subtotal,
-      // Local snapshot pricing is indicative until Central confirms it.
-      authoritative: Boolean(appverse.baseUrl),
+      // A configured connector URL does not turn local snapshot prices into an authoritative quote.
+      // Only a successfully verified remote quote may set authoritative: true.
+      authoritative: false,
     };
   },
 
