@@ -9,20 +9,24 @@ import { products } from "@/data/catalog";
 const requested: CartLineInput[] = [{ productId: "p1", variantId: "v1", quantity: 2 }];
 const validQuote: PricedCart = {
   authoritative: true,
-  lines: [{
-    productId: "p1",
-    variantId: "v1",
-    quantity: 2,
-    unitPrice: { amount: 100, currency: "INR" },
-    lineTotal: { amount: 200, currency: "INR" },
-  }],
+  lines: [
+    {
+      productId: "p1",
+      variantId: "v1",
+      quantity: 2,
+      unitPrice: { amount: 100, currency: "INR" },
+      lineTotal: { amount: 200, currency: "INR" },
+    },
+  ],
   subtotal: { amount: 200, currency: "INR" },
   total: { amount: 200, currency: "INR" },
 };
 
 describe("governed commerce quote policy", () => {
   it("rejects local and unverified pricing regardless of a connector URL", () => {
-    expect(isAuthoritativeOrderQuote(requested, { ...validQuote, authoritative: false })).toBe(false);
+    expect(
+      isAuthoritativeOrderQuote(requested, { ...validQuote, authoritative: false }),
+    ).toBe(false);
   });
 
   it("accepts an explicitly authoritative complete quote", () => {
@@ -31,15 +35,24 @@ describe("governed commerce quote policy", () => {
 
   it("rejects missing lines, quantity mismatches, duplicate lines and bad money", () => {
     expect(isAuthoritativeOrderQuote(requested, { ...validQuote, lines: [] })).toBe(false);
-    expect(isAuthoritativeOrderQuote(requested, {
-      ...validQuote, lines: [{ ...validQuote.lines[0]!, quantity: 3 }],
-    })).toBe(false);
-    expect(isAuthoritativeOrderQuote([...requested, ...requested], {
-      ...validQuote, lines: [...validQuote.lines, ...validQuote.lines],
-    })).toBe(false);
-    expect(isAuthoritativeOrderQuote(requested, {
-      ...validQuote, total: { amount: Number.NaN, currency: "INR" },
-    })).toBe(false);
+    expect(
+      isAuthoritativeOrderQuote(requested, {
+        ...validQuote,
+        lines: [{ ...validQuote.lines[0]!, quantity: 3 }],
+      }),
+    ).toBe(false);
+    expect(
+      isAuthoritativeOrderQuote([...requested, ...requested], {
+        ...validQuote,
+        lines: [...validQuote.lines, ...validQuote.lines],
+      }),
+    ).toBe(false);
+    expect(
+      isAuthoritativeOrderQuote(requested, {
+        ...validQuote,
+        total: { amount: Number.NaN, currency: "INR" },
+      }),
+    ).toBe(false);
   });
 
   it("does not upgrade a native snapshot or Shopify's unverified local subtotal", async () => {
