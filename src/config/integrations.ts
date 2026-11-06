@@ -94,8 +94,8 @@ export const paymentProvider: PaymentProviderId = (() => {
 /** Public key only. Secrets never reach the browser. */
 export const paymentPublicKey = viteEnv("VITE_PAYMENT_PUBLIC_KEY");
 
-/** Checkout may only take money when a provider AND its public key exist. */
-export const paymentsLive = paymentProvider !== "none" && Boolean(paymentPublicKey);
+/** Gateway credentials alone cannot certify an order or authorize a charge. */
+export const paymentsLive = false;
 
 /* ------------------------------------------------------------------ */
 /* Currency policy                                                     */
