@@ -38,9 +38,7 @@ export const Route = createFileRoute("/api/public/payments/webhook")({
           return new Response("Payload too large", { status: 413 });
         }
 
-        const { verifyIncomingWebhook } = await import(
-          "@/payments/webhook-verification.server"
-        );
+        const { verifyIncomingWebhook } = await import("@/payments/webhook-verification.server");
         const verified = verifyIncomingWebhook(
           provider,
           body,
