@@ -44,7 +44,7 @@ describe("Core CONNECT-2 public catalogue projection", () => {
     const transport: typeof fetch = async (url, init) => {
       expect(String(url)).toBe("https://example.supabase.co/rest/v1/rpc/connect_authorize_and_project_v1");
       expect(init?.method).toBe("POST");
-      expect((init?.headers as Record<string, string>).apikey).toBe(config.OASIS_CORE_PUBLISHABLE_KEY);
+      expect((init?.headers as Record<string, string>)["apikey"]).toBe(config.OASIS_CORE_PUBLISHABLE_KEY);
       const request = JSON.parse(String(init?.body));
       expect(request.p_token).toBe(config.OASIS_CORE_CONNECT_TOKEN);
       expect(request.p_resource).toBe("catalogue.products");
