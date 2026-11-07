@@ -128,12 +128,13 @@ export const submitLead = createServerFn({ method: "POST" })
             ? { oasis_last_campaign: record.attribution["last_utm_campaign"] }
             : {}),
         };
-        const outcome = await upsertKlaviyoProfile({
+        await upsertKlaviyoProfile({
           ...(record.email ? { email: record.email } : {}),
           ...(record.phone ? { phone: record.phone } : {}),
           properties,
         });
-        if (outcome === "sent") syncState = syncState === "failed" ? "failed" : "synced";
+        // Marketing delivery does not settle the outstanding Central/Appverse handoff.
+        // Only a confirmed Central response may mark the operational sync state as "synced".
       } catch {
         /* Klaviyo failure never loses the persisted record */
       }
