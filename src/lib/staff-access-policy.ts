@@ -6,3 +6,9 @@
 export async function requireVerifiedStaffStatusAccess(): Promise<void> {
   throw new Error("Gifting staff status access is disabled pending verified Core SSO.");
 }
+
+/** Ensure unverified callers cannot reach a private diagnostic handler. */
+export async function runVerifiedStaffStatusHandler<T>(handler: () => Promise<T>): Promise<T> {
+  await requireVerifiedStaffStatusAccess();
+  return await handler();
+}
