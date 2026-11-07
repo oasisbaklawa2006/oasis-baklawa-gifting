@@ -106,12 +106,21 @@ export const lookupOrder = createServerFn({ method: "POST" })
 /** Integration health for the private status surface. */
 export const integrationHealth = createServerFn({ method: "GET" }).handler(async () => {
   const provider = await commerce.health();
-  const paymentSecretPresent = Boolean(
-    process.env["PAYMENT_PROVIDER_SECRET"] ||
-    process.env["RAZORPAY_KEY_SECRET"] ||
-    process.env["STRIPE_SECRET_KEY"],
-  );
-  const webhookSecretPresent = Boolean(process.env["PAYMENT_WEBHOOK_SECRET"]);
+  const configuredProvider = (process.env["PAYMENT_PROVIDER"] ?? "").trim();
+  const paymentKeyName =
+    configuredProvider === "razorpay"
+      ? "RAZORPAY_KEY_SECRET"
+      : configuredProvider === "stripe"
+        ? "STRIPE_SECRET_KEY"
+        : "";
+  const webhookSecretName =
+    configuredProvider === "razorpay"
+      ? "RAZORPAY_WEBHOOK_SECRET"
+      : configuredProvider === "stripe"
+        ? "STRIPE_WEBHOOK_SECRET"
+        : "";
+  const paymentSecretPresent = Boolean(paymentKeyName && process.env[paymentKeyName]);
+  const webhookSecretPresent = Boolean(webhookSecretName && process.env[webhookSecretName]);
 
   return {
     provider,
@@ -123,14 +132,18 @@ export const integrationHealth = createServerFn({ method: "GET" }).handler(async
         group: "Payments",
         label: "Gateway server secret",
         status: paymentSecretPresent ? "configured" : "not-configured",
-        requires: "PAYMENT_PROVIDER_SECRET in project secrets",
+        requires: paymentKeyName
+          ? `${paymentKeyName} in project secrets`
+          : "PAYMENT_PROVIDER and its server secret",
       },
       {
         id: "payment-webhook",
         group: "Payments",
         label: "Signed payment webhook secret",
         status: webhookSecretPresent ? "configured" : "not-configured",
-        requires: "PAYMENT_WEBHOOK_SECRET shared with the gateway dashboard",
+        requires: webhookSecretName
+          ? `${webhookSecretName} shared with the gateway dashboard`
+          : "PAYMENT_PROVIDER and its provider webhook secret",
       },
     ]),
     generatedAt: new Date().toISOString(),
