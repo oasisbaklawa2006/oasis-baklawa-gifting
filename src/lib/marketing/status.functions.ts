@@ -12,11 +12,11 @@ import { staffStatusMiddleware } from "@/lib/staff-access-middleware";
 export const marketingStatus = createServerFn({ method: "GET" })
   .middleware([staffStatusMiddleware])
   .handler(async () => {
-  const { leadCounts } = await import("@/lib/leads.server");
-  return {
-    readiness: marketingReadiness(),
-    feed: feedDiagnostics(),
-    leads: await leadCounts(),
-    checkedAt: new Date().toISOString(),
-  };
-});
+    const { leadCounts } = await import("@/lib/leads.server");
+    return {
+      readiness: marketingReadiness(),
+      feed: feedDiagnostics(),
+      leads: await leadCounts(),
+      checkedAt: new Date().toISOString(),
+    };
+  });
