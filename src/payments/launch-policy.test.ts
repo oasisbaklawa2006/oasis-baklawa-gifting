@@ -16,19 +16,18 @@ describe("payment launch safety", () => {
     const signature = createHmac("sha256", secret).update(body).digest("hex");
     expect(verifyIncomingWebhook("razorpay", body, { razorpay: signature }, secret)).toBe(true);
     expect(verifyIncomingWebhook("razorpay", body, { stripe: signature }, secret)).toBe(false);
-    expect(verifyIncomingWebhook("razorpay", body + " ", { razorpay: signature }, secret)).toBe(false);
+    const changedBody = body + " ";
+    expect(verifyIncomingWebhook("razorpay", changedBody, { razorpay: signature }, secret)).toBe(
+      false,
+    );
   });
 
   it("checks Stripe timestamped v1 signatures and rejects the wrong protocol", () => {
     const timestamp = 1_700_000_000;
-    const signature = createHmac("sha256", secret)
-      .update(`${timestamp}.${body}`)
-      .digest("hex");
+    const signature = createHmac("sha256", secret).update(`${timestamp}.${body}`).digest("hex");
     const stripe = `t=${timestamp},v1=${signature}`;
     const now = Math.floor(Date.now() / 1000);
-    const currentSignature = createHmac("sha256", secret)
-      .update(`${now}.${body}`)
-      .digest("hex");
+    const currentSignature = createHmac("sha256", secret).update(`${now}.${body}`).digest("hex");
     const current = `t=${now},v1=${currentSignature}`;
     expect(verifyIncomingWebhook("stripe", body, { stripe }, secret)).toBe(false);
     expect(verifyIncomingWebhook("stripe", body, { stripe: current }, secret)).toBe(true);
