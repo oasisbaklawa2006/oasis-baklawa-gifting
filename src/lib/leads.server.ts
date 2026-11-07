@@ -4,7 +4,8 @@
  * One store for every capture surface: newsletter, contact, corporate,
  * wedding, rewards and partnership. Records are de-duplicated on a normalized
  * email/phone key, keep the consent timestamp and source, and are marked
- * `pending_sync` until Appverse/Central or Klaviyo accepts them.
+ * `pending_sync` until Appverse/Central accepts them. Klaviyo marketing delivery
+ * is tracked independently and cannot mark the operational handoff as synced.
  *
  * DURABILITY: backed by the project database (`public.website_leads`) through
  * the repository port in `src/lib/persistence`. Writes are idempotent on the

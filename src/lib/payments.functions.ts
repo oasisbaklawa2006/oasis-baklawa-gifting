@@ -1,28 +1,32 @@
 /**
- * Server boundary for payments. Secrets stay on the server; the browser only
- * ever receives client-safe values. With no provider configured every call
- * returns a clean `not-configured` result rather than a fake success.
+ * Public payment server functions deliberately fail closed until an
+ * authoritative Oasis Core order/amount contract has passed non-production
+ * integration and reconciliation tests. Gateway configuration is not authority.
  */
-
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
+
+import { paymentLaunchPolicy } from "@/payments/launch-policy";
 
 const moneySchema = z.object({
   amount: z.number().nonnegative(),
   currency: z.enum(["INR", "AED", "USD"]),
 });
 
-/** Which payment provider (if any) the checkout may present as live. */
+/** Credentials are configuration diagnostics, not permission to take money. */
 export const paymentStatus = createServerFn({ method: "GET" }).handler(async () => {
-  const { resolvePaymentAdapter, paymentReadiness } = await import("@/payments/index.server");
-  const adapter = resolvePaymentAdapter();
+  const { paymentReadiness } = await import("@/payments/index.server");
   return {
-    live: Boolean(adapter),
-    provider: adapter?.provider ?? null,
+    live: paymentLaunchPolicy.operational,
+    provider: null,
     providers: paymentReadiness(),
   };
 });
 
+/**
+ * The client cannot authorize an amount or invent an orderReference.
+ * A verified server-owned order and quote are prerequisites not yet available.
+ */
 export const createPaymentIntent = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) =>
     z
@@ -40,33 +44,18 @@ export const createPaymentIntent = createServerFn({ method: "POST" })
       })
       .parse(input),
   )
-  .handler(async ({ data }) => {
-    const { resolvePaymentAdapter } = await import("@/payments/index.server");
-    const adapter = resolvePaymentAdapter();
-    if (!adapter) {
-      return {
-        status: "not-configured" as const,
-        provider: null,
-        reason: "Online payment is not available at the moment.",
-      };
-    }
-    const result = await adapter.createIntent({
-      amount: data.amount,
-      orderReference: data.orderReference,
-      idempotencyKey: data.idempotencyKey,
-      ...(data.customer ? { customer: data.customer } : {}),
-    });
-    return result;
-  });
+  .handler(async () => ({
+    status: "not-configured" as const,
+    provider: null,
+    reason: paymentLaunchPolicy.reason,
+  }));
 
+/** A callback cannot certify payment without a verified Core order association. */
 export const confirmPayment = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) =>
     z.object({ payload: z.record(z.string(), z.string()) }).parse(input),
   )
-  .handler(async ({ data }) => {
-    const { resolvePaymentAdapter } = await import("@/payments/index.server");
-    const adapter = resolvePaymentAdapter();
-    if (!adapter)
-      return { valid: false as const, reason: "Payments are not available at the moment." };
-    return adapter.verifyCallback(data.payload);
-  });
+  .handler(async () => ({
+    valid: false as const,
+    reason: paymentLaunchPolicy.reason,
+  }));

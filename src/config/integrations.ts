@@ -10,6 +10,8 @@
  * Server-only values are read inside server handlers via process.env.
  */
 
+import { paymentLaunchPolicy } from "@/payments/launch-policy";
+
 export type IntegrationStatus = "configured" | "not-configured" | "disabled";
 
 function viteEnv(key: string): string {
@@ -94,8 +96,9 @@ export const paymentProvider: PaymentProviderId = (() => {
 /** Public key only. Secrets never reach the browser. */
 export const paymentPublicKey = viteEnv("VITE_PAYMENT_PUBLIC_KEY");
 
-/** Checkout may only take money when a provider AND its public key exist. */
-export const paymentsLive = paymentProvider !== "none" && Boolean(paymentPublicKey);
+/** Gateway credentials alone cannot certify an order or authorize a charge. */
+export const paymentsLive =
+  paymentLaunchPolicy.operational && paymentProvider !== "none" && Boolean(paymentPublicKey);
 
 /* ------------------------------------------------------------------ */
 /* Currency policy                                                     */
@@ -204,7 +207,9 @@ export function readinessReport(extra: ReadinessItem[] = []): ReadinessItem[] {
       group: "Payments",
       label: `Payment provider: ${paymentProvider}`,
       status: paymentsLive ? "configured" : "not-configured",
-      requires: "Gateway merchant ID, public key and server-side secret",
+      requires: paymentLaunchPolicy.operational
+        ? "Gateway merchant ID, public key and server-side secret"
+        : paymentLaunchPolicy.reason,
     },
     {
       id: "fx",
