@@ -9,6 +9,7 @@ import { z } from "zod";
 import { commerce } from "@/commerce";
 import { isAuthoritativeOrderQuote } from "@/commerce/quote-policy";
 import { readinessReport } from "@/config/integrations";
+import { staffStatusMiddleware } from "@/lib/staff-access-middleware";
 
 const lineSchema = z.object({
   productId: z.string().min(1),
@@ -104,48 +105,50 @@ export const lookupOrder = createServerFn({ method: "POST" })
   .handler(async ({ data }) => commerce.getOrderStatus(data.reference, data.contact));
 
 /** Integration health for the private status surface. */
-export const integrationHealth = createServerFn({ method: "GET" }).handler(async () => {
-  const provider = await commerce.health();
-  const configuredProvider = (process.env["PAYMENT_PROVIDER"] ?? "").trim();
-  const paymentKeyName =
-    configuredProvider === "razorpay"
-      ? "RAZORPAY_KEY_SECRET"
-      : configuredProvider === "stripe"
-        ? "STRIPE_SECRET_KEY"
-        : "";
-  const webhookSecretName =
-    configuredProvider === "razorpay"
-      ? "RAZORPAY_WEBHOOK_SECRET"
-      : configuredProvider === "stripe"
-        ? "STRIPE_WEBHOOK_SECRET"
-        : "";
-  const paymentSecretPresent = Boolean(paymentKeyName && process.env[paymentKeyName]);
-  const webhookSecretPresent = Boolean(webhookSecretName && process.env[webhookSecretName]);
+export const integrationHealth = createServerFn({ method: "GET" })
+  .middleware([staffStatusMiddleware])
+  .handler(async () => {
+    const provider = await commerce.health();
+    const configuredProvider = (process.env["PAYMENT_PROVIDER"] ?? "").trim();
+    const paymentKeyName =
+      configuredProvider === "razorpay"
+        ? "RAZORPAY_KEY_SECRET"
+        : configuredProvider === "stripe"
+          ? "STRIPE_SECRET_KEY"
+          : "";
+    const webhookSecretName =
+      configuredProvider === "razorpay"
+        ? "RAZORPAY_WEBHOOK_SECRET"
+        : configuredProvider === "stripe"
+          ? "STRIPE_WEBHOOK_SECRET"
+          : "";
+    const paymentSecretPresent = Boolean(paymentKeyName && process.env[paymentKeyName]);
+    const webhookSecretPresent = Boolean(webhookSecretName && process.env[webhookSecretName]);
 
-  return {
-    provider,
-    paymentSecretPresent,
-    webhookSecretPresent,
-    readiness: readinessReport([
-      {
-        id: "payment-secret",
-        group: "Payments",
-        label: "Gateway server secret",
-        status: paymentSecretPresent ? "configured" : "not-configured",
-        requires: paymentKeyName
-          ? `${paymentKeyName} in project secrets`
-          : "PAYMENT_PROVIDER and its server secret",
-      },
-      {
-        id: "payment-webhook",
-        group: "Payments",
-        label: "Signed payment webhook secret",
-        status: webhookSecretPresent ? "configured" : "not-configured",
-        requires: webhookSecretName
-          ? `${webhookSecretName} shared with the gateway dashboard`
-          : "PAYMENT_PROVIDER and its provider webhook secret",
-      },
-    ]),
-    generatedAt: new Date().toISOString(),
-  };
-});
+    return {
+      provider,
+      paymentSecretPresent,
+      webhookSecretPresent,
+      readiness: readinessReport([
+        {
+          id: "payment-secret",
+          group: "Payments",
+          label: "Gateway server secret",
+          status: paymentSecretPresent ? "configured" : "not-configured",
+          requires: paymentKeyName
+            ? `${paymentKeyName} in project secrets`
+            : "PAYMENT_PROVIDER and its server secret",
+        },
+        {
+          id: "payment-webhook",
+          group: "Payments",
+          label: "Signed payment webhook secret",
+          status: webhookSecretPresent ? "configured" : "not-configured",
+          requires: webhookSecretName
+            ? `${webhookSecretName} shared with the gateway dashboard`
+            : "PAYMENT_PROVIDER and its provider webhook secret",
+        },
+      ]),
+      generatedAt: new Date().toISOString(),
+    };
+  });

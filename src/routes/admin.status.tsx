@@ -6,7 +6,7 @@
  * connector health — never credentials, customer data or commercial figures.
  */
 
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, notFound } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { AlertTriangle, CheckCircle2, MinusCircle, RefreshCw } from "lucide-react";
 
@@ -20,6 +20,11 @@ import { loadedTagKeys } from "@/lib/marketing/scripts";
 import { useConsent } from "@/lib/marketing/runtime";
 
 export const Route = createFileRoute("/admin/status")({
+  // No verified Oasis staff identity bridge exists for this website yet.
+  // Hide this private route until role-based server authorization is available.
+  beforeLoad: () => {
+    throw notFound();
+  },
   head: () => ({
     meta: [
       { title: "Integration status — Oasis Baklawa" },

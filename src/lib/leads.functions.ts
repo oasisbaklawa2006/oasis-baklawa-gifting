@@ -11,6 +11,8 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 
+import { staffStatusMiddleware } from "@/lib/staff-access-middleware";
+
 export const LEAD_KINDS = [
   "newsletter",
   "contact",
@@ -143,7 +145,9 @@ export const submitLead = createServerFn({ method: "POST" })
   });
 
 /** Pending-sync counters for the private status surface. */
-export const leadQueueStatus = createServerFn({ method: "GET" }).handler(async () => {
-  const { leadCounts } = await import("./leads.server");
-  return leadCounts();
-});
+export const leadQueueStatus = createServerFn({ method: "GET" })
+  .middleware([staffStatusMiddleware])
+  .handler(async () => {
+    const { leadCounts } = await import("./leads.server");
+    return leadCounts();
+  });
