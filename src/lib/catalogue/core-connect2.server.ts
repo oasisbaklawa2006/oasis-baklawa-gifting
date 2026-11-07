@@ -102,21 +102,36 @@ export async function readCoreCataloguePage(
   const consumerKey = env["OASIS_CORE_CONNECT_CONSUMER_KEY"];
   const environment = env["OASIS_CORE_CONNECT_ENV"];
   if (!urlText || !publicKey || !token || token.length < 32 || !consumerKey || !environment) {
-    return { status: "unavailable", reason: "A governed Core consumer identity is not configured." };
+    return {
+      status: "unavailable",
+      reason: "A governed Core consumer identity is not configured.",
+    };
   }
 
   const limit = page.limit ?? 50;
   const offset = page.offset ?? 0;
-  if (!Number.isInteger(limit) || limit < 1 || limit > MAX_LIMIT ||
-      !Number.isInteger(offset) || offset < 0 || offset > 100_000) {
+  if (
+    !Number.isInteger(limit) ||
+    limit < 1 ||
+    limit > MAX_LIMIT ||
+    !Number.isInteger(offset) ||
+    offset < 0 ||
+    offset > 100_000
+  ) {
     return { status: "unavailable", reason: "Invalid catalogue pagination." };
   }
 
   let endpoint: URL;
   try {
     const base = new URL(urlText);
-    if (base.protocol !== "https:" || base.username || base.password ||
-        base.pathname !== "/" || base.search || base.hash) {
+    if (
+      base.protocol !== "https:" ||
+      base.username ||
+      base.password ||
+      base.pathname !== "/" ||
+      base.search ||
+      base.hash
+    ) {
       throw new Error("Invalid backend origin");
     }
     endpoint = new URL("/rest/v1/rpc/connect_authorize_and_project_v1", base);
@@ -145,23 +160,43 @@ export async function readCoreCataloguePage(
       cache: "no-store",
     });
     if (!response.ok) {
-      return { status: "unavailable", reason: `Core rejected catalogue projection (${response.status}).` };
+      return {
+        status: "unavailable",
+        reason: `Core rejected catalogue projection (${response.status}).`,
+      };
     }
     const parsed = envelopeSchema.safeParse(await response.json());
-    if (!parsed.success || parsed.data.row_count !== parsed.data.data.length ||
-        parsed.data.consumer_key !== consumerKey || parsed.data.environment !== environment) {
-      return { status: "unavailable", reason: "Core catalogue response failed contract validation." };
+    if (
+      !parsed.success ||
+      parsed.data.row_count !== parsed.data.data.length ||
+      parsed.data.consumer_key !== consumerKey ||
+      parsed.data.environment !== environment
+    ) {
+      return {
+        status: "unavailable",
+        reason: "Core catalogue response failed contract validation.",
+      };
     }
 
     const products: CoreCatalogueProduct[] = [];
     for (const row of parsed.data.data) {
       const product = projectWebsiteProduct(row);
       if (!product) {
-        return { status: "unavailable", reason: "Core catalogue response contains invalid or unauthorized fields." };
+        return {
+          status: "unavailable",
+          reason: "Core catalogue response contains invalid or unauthorized fields.",
+        };
       }
       products.push(product);
     }
-    return { status: "available", products, count: products.length, limit, offset, source: "core-connect2" };
+    return {
+      status: "available",
+      products,
+      count: products.length,
+      limit,
+      offset,
+      source: "core-connect2",
+    };
   } catch {
     // Never log connector tokens, returned product rows or provider error payloads.
     return { status: "unavailable", reason: "Core catalogue projection is currently unavailable." };
