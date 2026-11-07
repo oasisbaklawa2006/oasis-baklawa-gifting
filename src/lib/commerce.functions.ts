@@ -108,34 +108,34 @@ export const lookupOrder = createServerFn({ method: "POST" })
 export const integrationHealth = createServerFn({ method: "GET" })
   .middleware([staffStatusMiddleware])
   .handler(async () => {
-  const provider = await commerce.health();
-  const paymentSecretPresent = Boolean(
-    process.env["PAYMENT_PROVIDER_SECRET"] ||
-    process.env["RAZORPAY_KEY_SECRET"] ||
-    process.env["STRIPE_SECRET_KEY"],
-  );
-  const webhookSecretPresent = Boolean(process.env["PAYMENT_WEBHOOK_SECRET"]);
+    const provider = await commerce.health();
+    const paymentSecretPresent = Boolean(
+      process.env["PAYMENT_PROVIDER_SECRET"] ||
+      process.env["RAZORPAY_KEY_SECRET"] ||
+      process.env["STRIPE_SECRET_KEY"],
+    );
+    const webhookSecretPresent = Boolean(process.env["PAYMENT_WEBHOOK_SECRET"]);
 
-  return {
-    provider,
-    paymentSecretPresent,
-    webhookSecretPresent,
-    readiness: readinessReport([
-      {
-        id: "payment-secret",
-        group: "Payments",
-        label: "Gateway server secret",
-        status: paymentSecretPresent ? "configured" : "not-configured",
-        requires: "PAYMENT_PROVIDER_SECRET in project secrets",
-      },
-      {
-        id: "payment-webhook",
-        group: "Payments",
-        label: "Signed payment webhook secret",
-        status: webhookSecretPresent ? "configured" : "not-configured",
-        requires: "PAYMENT_WEBHOOK_SECRET shared with the gateway dashboard",
-      },
-    ]),
-    generatedAt: new Date().toISOString(),
-  };
-});
+    return {
+      provider,
+      paymentSecretPresent,
+      webhookSecretPresent,
+      readiness: readinessReport([
+        {
+          id: "payment-secret",
+          group: "Payments",
+          label: "Gateway server secret",
+          status: paymentSecretPresent ? "configured" : "not-configured",
+          requires: "PAYMENT_PROVIDER_SECRET in project secrets",
+        },
+        {
+          id: "payment-webhook",
+          group: "Payments",
+          label: "Signed payment webhook secret",
+          status: webhookSecretPresent ? "configured" : "not-configured",
+          requires: "PAYMENT_WEBHOOK_SECRET shared with the gateway dashboard",
+        },
+      ]),
+      generatedAt: new Date().toISOString(),
+    };
+  });
