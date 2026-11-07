@@ -71,28 +71,24 @@ function projectWebsiteProduct(row: Record<string, unknown>): CoreCatalogueProdu
   const id = z.string().uuid().safeParse(row["product_id"]);
   const name = z.string().min(1).safeParse(row["product_name"]);
   if (!id.success || !name.success) return null;
-  return {
-    productId: id.data,
-    name: name.data,
-    ...(optionalString(row, "sku") ? { sku: optionalString(row, "sku") } : {}),
-    ...(optionalString(row, "short_description")
-      ? { shortDescription: optionalString(row, "short_description") }
-      : {}),
-    ...(optionalString(row, "long_description")
-      ? { longDescription: optionalString(row, "long_description") }
-      : {}),
-    ...(optionalString(row, "category") ? { category: optionalString(row, "category") } : {}),
-    ...(optionalString(row, "subcategory")
-      ? { subcategory: optionalString(row, "subcategory") }
-      : {}),
-    ...(optionalString(row, "hero_image_url")
-      ? { heroImageUrl: optionalString(row, "hero_image_url") }
-      : {}),
-    ...(optionalString(row, "pack_size") ? { packSize: optionalString(row, "pack_size") } : {}),
-    ...(optionalString(row, "primary_uom")
-      ? { primaryUom: optionalString(row, "primary_uom") }
-      : {}),
-  };
+  const product: CoreCatalogueProduct = { productId: id.data, name: name.data };
+  const sku = optionalString(row, "sku");
+  const shortDescription = optionalString(row, "short_description");
+  const longDescription = optionalString(row, "long_description");
+  const category = optionalString(row, "category");
+  const subcategory = optionalString(row, "subcategory");
+  const heroImageUrl = optionalString(row, "hero_image_url");
+  const packSize = optionalString(row, "pack_size");
+  const primaryUom = optionalString(row, "primary_uom");
+  if (sku) product.sku = sku;
+  if (shortDescription) product.shortDescription = shortDescription;
+  if (longDescription) product.longDescription = longDescription;
+  if (category) product.category = category;
+  if (subcategory) product.subcategory = subcategory;
+  if (heroImageUrl) product.heroImageUrl = heroImageUrl;
+  if (packSize) product.packSize = packSize;
+  if (primaryUom) product.primaryUom = primaryUom;
+  return product;
 }
 
 export async function readCoreCataloguePage(
@@ -134,7 +130,7 @@ export async function readCoreCataloguePage(
     accept: "application/json",
   };
   // Legacy Supabase anon keys are public JWTs; new sb_publishable keys are opaque.
-  if (publicKey.split(".").length === 3) headers.authorization = `Bearer ${publicKey}`;
+  if (publicKey.split(".").length === 3) headers["authorization"] = `Bearer ${publicKey}`;
 
   try {
     const response = await transport(endpoint.toString(), {
