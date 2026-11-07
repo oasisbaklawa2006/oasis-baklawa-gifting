@@ -12,7 +12,7 @@
  * which is NOT durable, and every status surface reports that honestly.
  */
 
-import { registerAdapter, resolveAdapter } from "./registry";
+import { registerAdapter } from "./registry";
 import { envPresent } from "./env";
 
 export type StoreDurability = "ephemeral" | "durable";
@@ -80,7 +80,7 @@ export function databaseStoreConfigured(): boolean {
 
 /** Durability of the store actually in use right now. */
 export function leadStoreDurability(): StoreDurability {
-  if (databaseStoreConfigured()) return "durable";
-  const descriptor = resolveAdapter("lead-store");
-  return descriptor && descriptor.provider !== "memory" ? "durable" : "ephemeral";
+  // The actual repository uses the website database, or process memory when it is absent.
+  // A configured future Central adapter must not relabel memory as durable.
+  return databaseStoreConfigured() ? "durable" : "ephemeral";
 }
