@@ -207,7 +207,9 @@ export function readinessReport(extra: ReadinessItem[] = []): ReadinessItem[] {
       group: "Payments",
       label: `Payment provider: ${paymentProvider}`,
       status: paymentsLive ? "configured" : "not-configured",
-      requires: "Gateway merchant ID, public key and server-side secret",
+      requires: paymentLaunchPolicy.operational
+        ? "Gateway merchant ID, public key and server-side secret"
+        : paymentLaunchPolicy.reason,
     },
     {
       id: "fx",
