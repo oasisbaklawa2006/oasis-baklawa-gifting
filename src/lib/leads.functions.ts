@@ -147,6 +147,6 @@ export const submitLead = createServerFn({ method: "POST" })
 export const leadQueueStatus = createServerFn({ method: "GET" })
   .middleware([staffStatusMiddleware])
   .handler(async () => {
-  const { leadCounts } = await import("./leads.server");
-  return leadCounts();
-});
+    const { leadCounts } = await import("./leads.server");
+    return leadCounts();
+  });
