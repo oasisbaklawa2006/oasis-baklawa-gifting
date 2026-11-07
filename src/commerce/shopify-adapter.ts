@@ -58,9 +58,11 @@ export const shopifyProvider: CommerceProvider = {
   },
 
   async priceCart(lines: CartLineInput[], options): Promise<PricedCart> {
-    if (!configured()) return nativeProvider.priceCart(lines, options);
+    // The Shopify integration currently uses the in-repository catalogue snapshot.
+    // Even with Storefront credentials, no live Shopify price has been fetched here.
+    // Never advertise this provisional subtotal as an authoritative checkout quote.
     const priced = await nativeProvider.priceCart(lines, options);
-    return { ...priced, authoritative: true };
+    return { ...priced, authoritative: false };
   },
 
   async createOrderIntent(input: OrderIntentInput): Promise<OrderIntent> {

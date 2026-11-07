@@ -7,6 +7,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 
 import { commerce } from "@/commerce";
+import { isAuthoritativeOrderQuote } from "@/commerce/quote-policy";
 import { readinessReport } from "@/config/integrations";
 
 const lineSchema = z.object({
@@ -67,6 +68,18 @@ export const placeOrder = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => orderSchema.parse(input))
   .handler(async ({ data }) => {
     try {
+      // Reprice on the server and refuse handoff unless a genuine provider-owned quote
+      // covers every requested line. A locally rendered catalogue is not price authority.
+      const quote = await commerce.priceCart(
+        data.lines,
+        data.deliveryOptionId ? { deliveryOptionId: data.deliveryOptionId } : {},
+      );
+      if (!isAuthoritativeOrderQuote(data.lines, quote)) {
+        return {
+          status: "unavailable" as const,
+          reason: "Order submission is unavailable until a verified checkout quote is available.",
+        };
+      }
       const { gift, deliveryOptionId, notes, business, ...rest } = data;
       return await commerce.createOrderIntent({
         ...rest,

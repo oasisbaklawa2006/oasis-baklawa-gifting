@@ -37,4 +37,13 @@ export default tseslint.config(
     },
   },
   eslintPluginPrettier,
+  // Lovable-generated integration files are not formatted with this repository's
+  // Prettier settings. Keep TypeScript and security lint rules active for them.
+  {
+    files: [
+      "src/integrations/supabase/previewAuthStorage.ts",
+      "src/integrations/supabase/types.ts",
+    ],
+    rules: { "prettier/prettier": "off" },
+  },
 );
