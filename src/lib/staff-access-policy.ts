@@ -8,7 +8,7 @@ export async function requireVerifiedStaffStatusAccess(): Promise<void> {
 }
 
 /** Ensure unverified callers cannot reach a private diagnostic handler. */
-export async function runVerifiedStaffStatusHandler<T>(handler: () => Promise<T>): Promise<T> {
+export async function runVerifiedStaffStatusHandler<T>(handler: () => T | Promise<T>): Promise<T> {
   await requireVerifiedStaffStatusAccess();
   return await handler();
 }
