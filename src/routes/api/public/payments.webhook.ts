@@ -33,10 +33,15 @@ export const Route = createFileRoute("/api/public/payments/webhook")({
           return new Response("Payload too large", { status: 413 });
         }
 
-        const body = await request.text();
-        if (Buffer.byteLength(body, "utf8") > MAX_BODY_BYTES) {
-          return new Response("Payload too large", { status: 413 });
+        const { readBoundedWebhookBody } = await import("@/payments/webhook-body.server");
+        let bounded: Awaited<ReturnType<typeof readBoundedWebhookBody>>;
+        try {
+          bounded = await readBoundedWebhookBody(request.body, MAX_BODY_BYTES);
+        } catch {
+          return new Response("Invalid payload encoding", { status: 400 });
         }
+        if (!bounded.ok) return new Response("Payload too large", { status: 413 });
+        const body = bounded.body;
 
         const { verifyIncomingWebhook } = await import("@/payments/webhook-verification.server");
         const verified = verifyIncomingWebhook(
