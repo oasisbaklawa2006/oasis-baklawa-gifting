@@ -10,6 +10,8 @@
  * Server-only values are read inside server handlers via process.env.
  */
 
+import { paymentLaunchPolicy } from "@/payments/launch-policy";
+
 export type IntegrationStatus = "configured" | "not-configured" | "disabled";
 
 function viteEnv(key: string): string {
@@ -95,7 +97,8 @@ export const paymentProvider: PaymentProviderId = (() => {
 export const paymentPublicKey = viteEnv("VITE_PAYMENT_PUBLIC_KEY");
 
 /** Gateway credentials alone cannot certify an order or authorize a charge. */
-export const paymentsLive = false;
+export const paymentsLive =
+  paymentLaunchPolicy.operational && paymentProvider !== "none" && Boolean(paymentPublicKey);
 
 /* ------------------------------------------------------------------ */
 /* Currency policy                                                     */
