@@ -29,10 +29,11 @@ describe("Gifting staff status authorization", () => {
     ["leads.functions.ts", "leadQueueStatus"],
   ])("requires server middleware on %s / %s", (file, functionName) => {
     const source = readFileSync(fileURLToPath(new URL(file, import.meta.url)), "utf8");
-    const name = functionName.replace(/[.*+?^$()|[\]{}]/g, "\\$&");
-    const guardedHandler = new RegExp(
-      `export const ${name} = createServerFn[\\s\\S]*?\\.middleware\\(\\[staffStatusMiddleware\\]\\)\\s*\\.handler`,
-    );
-    expect(source).toMatch(guardedHandler);
+    const functionStart = source.indexOf(`export const ${functionName} = createServerFn`);
+    const middleware = source.indexOf(".middleware([staffStatusMiddleware])", functionStart);
+    const handler = source.indexOf(".handler(", functionStart);
+    expect(functionStart).toBeGreaterThanOrEqual(0);
+    expect(middleware).toBeGreaterThan(functionStart);
+    expect(handler).toBeGreaterThan(middleware);
   });
 });
