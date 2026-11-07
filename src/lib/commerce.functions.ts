@@ -9,6 +9,7 @@ import { z } from "zod";
 import { commerce } from "@/commerce";
 import { isAuthoritativeOrderQuote } from "@/commerce/quote-policy";
 import { readinessReport } from "@/config/integrations";
+import { staffStatusMiddleware } from "@/lib/staff-access-middleware";
 
 const lineSchema = z.object({
   productId: z.string().min(1),
@@ -104,7 +105,9 @@ export const lookupOrder = createServerFn({ method: "POST" })
   .handler(async ({ data }) => commerce.getOrderStatus(data.reference, data.contact));
 
 /** Integration health for the private status surface. */
-export const integrationHealth = createServerFn({ method: "GET" }).handler(async () => {
+export const integrationHealth = createServerFn({ method: "GET" })
+  .middleware([staffStatusMiddleware])
+  .handler(async () => {
   const provider = await commerce.health();
   const paymentSecretPresent = Boolean(
     process.env["PAYMENT_PROVIDER_SECRET"] ||
