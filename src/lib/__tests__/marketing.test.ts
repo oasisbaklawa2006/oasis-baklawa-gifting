@@ -83,6 +83,17 @@ describe("provider payloads", () => {
 });
 
 describe("merchant feed", () => {
+  it("fails closed for every local catalogue record until Core B2C publication is certified", () => {
+    const report = buildFeed();
+    expect(report.items).toHaveLength(0);
+    expect(report.excluded).toHaveLength(products.length);
+    expect(report.excluded.every((item) =>
+      item.missing.includes("approved Core B2C merchant-feed publication authority"),
+    )).toBe(true);
+    expect(feedToXml(report)).not.toContain("<item>");
+    expect(feedToTsv(report).split("\\n")).toHaveLength(1);
+  });
+
   it("excludes unverified placeholder products", () => {
     const feed = buildFeed().items;
     const ids = new Set(feed.map((item) => item.id));
