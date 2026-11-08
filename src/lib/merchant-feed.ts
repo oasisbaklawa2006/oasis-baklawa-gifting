@@ -89,8 +89,6 @@ export function buildFeed(requestUrl?: string, now = new Date()): FeedReport {
     })),
     generatedAt: now.toISOString(),
   };
-
-
 }
 
 const escapeXml = (value: string) =>
