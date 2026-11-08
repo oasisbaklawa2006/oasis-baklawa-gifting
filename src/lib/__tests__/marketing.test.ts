@@ -91,7 +91,7 @@ describe("merchant feed", () => {
       item.missing.includes("approved Core B2C merchant-feed publication authority"),
     )).toBe(true);
     expect(feedToXml(report)).not.toContain("<item>");
-    expect(feedToTsv(report).split("\\n")).toHaveLength(1);
+    expect(feedToTsv(report).split("\n")).toHaveLength(1);
   });
 
   it("excludes unverified placeholder products", () => {
