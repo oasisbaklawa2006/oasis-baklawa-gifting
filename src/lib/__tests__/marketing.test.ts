@@ -87,9 +87,11 @@ describe("merchant feed", () => {
     const report = buildFeed();
     expect(report.items).toHaveLength(0);
     expect(report.excluded).toHaveLength(products.length);
-    expect(report.excluded.every((item) =>
-      item.missing.includes("approved Core B2C merchant-feed publication authority"),
-    )).toBe(true);
+    expect(
+      report.excluded.every((item) =>
+        item.missing.includes("approved Core B2C merchant-feed publication authority"),
+      ),
+    ).toBe(true);
     expect(feedToXml(report)).not.toContain("<item>");
     expect(feedToTsv(report).split("\n")).toHaveLength(1);
   });
