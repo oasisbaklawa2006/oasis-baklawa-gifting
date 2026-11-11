@@ -65,8 +65,8 @@ function EnquiryForm() {
     >
       <h3 className="font-display text-2xl">Business enquiry</h3>
       <p className="mt-2 text-[0.8125rem] text-muted-foreground">
-        Share your requirement. We will confirm availability, pricing and timelines before
-        making any commitment.
+        Share your requirement. We will confirm availability, pricing and timelines before making
+        any commitment.
       </p>
 
       <div className="mt-7 grid gap-5 sm:grid-cols-2">
