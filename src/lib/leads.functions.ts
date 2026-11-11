@@ -24,6 +24,7 @@ export const LEAD_KINDS = [
 
 const schema = z.object({
   kind: z.enum(LEAD_KINDS),
+  submissionId: z.string().uuid().optional(),
   email: z.string().email().optional(),
   phone: z.string().min(6).max(24).optional(),
   name: z.string().max(120).optional(),
@@ -48,6 +49,9 @@ export type LeadResult =
 export const submitLead = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => schema.parse(input))
   .handler(async ({ data }): Promise<LeadResult> => {
+    if (["corporate", "wedding", "contact", "partnership"].includes(data.kind) && !data.submissionId) {
+      return { status: "invalid", reason: "An enquiry submission identifier is required." };
+    }
     if (!data.email && !data.phone) {
       return { status: "invalid", reason: "An email address or phone number is required." };
     }
@@ -56,6 +60,7 @@ export const submitLead = createServerFn({ method: "POST" })
 
     const outcome = await saveLead({
       kind: data.kind,
+      ...(data.submissionId ? { submissionId: data.submissionId } : {}),
       ...(data.email ? { email: data.email.trim().toLowerCase() } : {}),
       ...(data.phone ? { phone: data.phone } : {}),
       ...(data.name ? { name: data.name } : {}),
