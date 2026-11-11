@@ -7,7 +7,7 @@
  */
 
 import { useServerFn } from "@tanstack/react-start";
-import { useCallback, useState, type FormEvent } from "react";
+import { useCallback, useRef, useState, type FormEvent } from "react";
 import { toast } from "sonner";
 
 import { submitLead, type LeadResult, type LEAD_KINDS } from "@/lib/leads.functions";
@@ -43,6 +43,7 @@ const str = (value: FormDataEntryValue | null) =>
 
 export function useLeadForm(options: Options): LeadFormState {
   const send = useServerFn(submitLead);
+  const submissionId = useRef<string | null>(null);
   const [pending, setPending] = useState(false);
   const [status, setStatus] = useState<"idle" | "saved" | "error">("idle");
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
@@ -63,8 +64,11 @@ export function useLeadForm(options: Options): LeadFormState {
         .map((field) => str(data.get(field)))
         .filter((value): value is string => Boolean(value));
 
+      const isEnquiry = ["corporate", "wedding", "contact", "partnership"].includes(options.kind);
+      if (isEnquiry && !submissionId.current) submissionId.current = crypto.randomUUID();
       const payload = {
         kind: options.kind,
+        ...(isEnquiry && submissionId.current ? { submissionId: submissionId.current } : {}),
         ...(str(data.get("email")) ? { email: str(data.get("email"))! } : {}),
         ...(str(data.get("phone")) ? { phone: str(data.get("phone"))! } : {}),
         ...(str(data.get("name")) ? { name: str(data.get("name"))! } : {}),
@@ -87,6 +91,7 @@ export function useLeadForm(options: Options): LeadFormState {
 
         setPending(false);
         if (result.status === "saved") {
+          submissionId.current = null;
           setStatus("saved");
           setStatusMessage(options.successMessage);
           form.reset();
