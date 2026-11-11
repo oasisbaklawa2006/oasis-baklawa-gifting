@@ -8,7 +8,7 @@ import {
   parseTouch,
 } from "@/lib/marketing/attribution";
 import { metaPayload, ga4Payload, klaviyoPayload } from "@/lib/marketing/providers";
-import { buildFeed, feedDiagnostics, feedToTsv, feedToXml } from "@/lib/merchant-feed";
+import { buildFeed, feedDiagnostics, feedToTsv, feedToXml, type FeedReport } from "@/lib/merchant-feed";
 import { products } from "@/data/catalog";
 
 describe("consent", () => {
@@ -108,6 +108,37 @@ describe("merchant feed", () => {
     const diagnostics = feedDiagnostics();
     expect(diagnostics.eligible).toBe(buildFeed().items.length);
     expect(diagnostics.excluded).toBeGreaterThanOrEqual(0);
+  });
+
+  it("escapes and serializes a synthetic nonempty report without activating the feed", () => {
+    const report: FeedReport = {
+      items: [
+        {
+          id: "gift-<1>&2",
+          title: 'Baklawa & "Dates"',
+          description: "Layered <sweet> & honey",
+          link: "https://example.com/product?x=1&y=2",
+          imageLink: "https://example.com/image?size=1&view=front",
+          additionalImageLinks: [],
+          price: { amount: 1200, currency: "INR" },
+          availability: "in_stock",
+          brand: "Oasis Baklawa",
+          condition: "new",
+        },
+      ],
+      excluded: [],
+      generatedAt: "2026-11-11T00:00:00.000Z",
+    };
+    const xml = feedToXml(report);
+    expect(xml).toContain("<item>");
+    expect(xml).toContain("<g:id>gift-&lt;1&gt;&amp;2</g:id>");
+    expect(xml).toContain("<g:title>Baklawa &amp; &quot;Dates&quot;</g:title>");
+    expect(xml).toContain("<g:description>Layered &lt;sweet&gt; &amp; honey</g:description>");
+    expect(xml).toContain("https://example.com/product?x=1&amp;y=2");
+    const rows = feedToTsv(report).split("\n");
+    expect(rows).toHaveLength(2);
+    expect(rows[1]?.split("\t")).toHaveLength(rows[0]?.split("\t").length);
+    expect(rows[1]).toContain('Baklawa & "Dates"');
   });
 
   it("renders escaped XML and tab-separated rows", () => {
