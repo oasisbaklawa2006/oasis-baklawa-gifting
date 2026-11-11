@@ -1,8 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import type {} from "@tanstack/react-start";
 
-import { products } from "@/data/catalog";
-import { collections } from "@/data/catalog";
 import { articles } from "@/data/journal";
 
 import { siteUrl } from "@/lib/site-url";
@@ -40,20 +38,12 @@ export const Route = createFileRoute("/sitemap.xml")({
           { path: "/contact", changefreq: "monthly", priority: "0.6" },
           { path: "/faq", changefreq: "monthly", priority: "0.5" },
           { path: "/search", changefreq: "monthly", priority: "0.3" },
-          ...collections.map((collection) => ({
-            path: `/collections/${collection.slug}`,
-            changefreq: "weekly" as const,
-            priority: "0.7",
-          })),
+          // Product and collection URLs require approved Core publication.
+          // Local catalogue entries are presentation fixtures, not SEO authority.
           ...articles.map((article) => ({
             path: `/journal/${article.slug}`,
             changefreq: "monthly" as const,
             priority: "0.6",
-          })),
-          ...products.map((product) => ({
-            path: `/product/${product.slug}`,
-            changefreq: "weekly" as const,
-            priority: "0.8",
           })),
         ];
 
