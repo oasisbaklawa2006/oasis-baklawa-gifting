@@ -1,0 +1,35 @@
+name: Gifting Reviewer Image Provenance
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize, ready_for_review]
+    paths:
+      - '.github/workflows/gifting-budgeted-ai-review.yml'
+      - '.github/workflows/gifting-ai-image-provenance.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  verify-image:
+    name: Verify PR-Agent immutable image provenance
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - name: Resolve published multi-arch image digest
+        id: digest
+        shell: bash
+        run: |
+          set -euo pipefail
+          tag='pragent/pr-agent:0.41.0-github_action'
+          digest="$(docker buildx imagetools inspect "$tag" --format '{{.Manifest.Digest}}')"
+          [[ "$digest" =~ ^sha256:[0-9a-f]{64}$ ]]
+          echo "digest=$digest" >> "$GITHUB_OUTPUT"
+          echo "Verified Docker manifest reference: pragent/pr-agent@$digest" >> "$GITHUB_STEP_SUMMARY"
+      - name: Verify published image attestation against upstream repository
+        shell: bash
+        run: |
+          set -euo pipefail
+          gh attestation verify "oci://index.docker.io/pragent/pr-agent@${{ steps.digest.outputs.digest }}" --repo The-PR-Agent/pr-agent
