@@ -52,7 +52,7 @@ function EnquiryForm() {
     kind: "corporate",
     source: "business-page",
     event: "corporate_gifting_lead",
-    properties: ["type"],
+    messageFields: ["type", "message"],
     successMessage: "Your enquiry has been received and saved for our commercial team.",
     failureMessage: "We could not save your enquiry. Please try again or contact our team.",
   });
@@ -69,12 +69,13 @@ function EnquiryForm() {
         any commitment.
       </p>
 
-      <div className="mt-7 grid gap-5 sm:grid-cols-2">
+      <fieldset disabled={lead.pending} className="mt-7 grid gap-5 sm:grid-cols-2">
         <div className="grid gap-2">
           <Label htmlFor="b2b-name">Full name</Label>
           <Input
             id="b2b-name"
             name="name"
+            maxLength={120}
             required
             autoComplete="name"
             className="h-11 rounded-sm"
@@ -85,6 +86,7 @@ function EnquiryForm() {
           <Input
             id="b2b-company"
             name="company"
+            maxLength={160}
             required
             autoComplete="organization"
             className="h-11 rounded-sm"
@@ -106,6 +108,8 @@ function EnquiryForm() {
           <Input
             id="b2b-phone"
             name="phone"
+            minLength={6}
+            maxLength={24}
             type="tel"
             autoComplete="tel"
             className="h-11 rounded-sm"
@@ -131,12 +135,13 @@ function EnquiryForm() {
           <Textarea
             id="b2b-message"
             name="message"
+            maxLength={1900}
             rows={4}
             placeholder="Volumes, formats, timelines"
             className="rounded-sm"
           />
         </div>
-      </div>
+      </fieldset>
 
       <Button type="submit" size="lg" className="mt-7 w-full sm:w-auto" disabled={lead.pending}>
         {lead.pending ? "Sending…" : "Send enquiry"}
