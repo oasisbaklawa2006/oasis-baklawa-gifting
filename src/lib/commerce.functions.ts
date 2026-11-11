@@ -54,7 +54,7 @@ const orderSchema = z.object({
 
 /** Authoritative cart pricing. */
 export const priceCart = createServerFn({ method: "POST" })
-  .inputValidator((input: unknown) =>
+  .validator((input: unknown) =>
     z.object({ lines: z.array(lineSchema), deliveryOptionId: z.string().optional() }).parse(input),
   )
   .handler(async ({ data }) =>
@@ -66,7 +66,7 @@ export const priceCart = createServerFn({ method: "POST" })
 
 /** Idempotent order handoff. Fails closed when no connector is configured. */
 export const placeOrder = createServerFn({ method: "POST" })
-  .inputValidator((input: unknown) => orderSchema.parse(input))
+  .validator((input: unknown) => orderSchema.parse(input))
   .handler(async ({ data }) => {
     try {
       // Reprice on the server and refuse handoff unless a genuine provider-owned quote
@@ -99,7 +99,7 @@ export const placeOrder = createServerFn({ method: "POST" })
   });
 
 export const lookupOrder = createServerFn({ method: "POST" })
-  .inputValidator((input: unknown) =>
+  .validator((input: unknown) =>
     z.object({ reference: z.string().min(3), contact: z.string().min(3) }).parse(input),
   )
   .handler(async ({ data }) => commerce.getOrderStatus(data.reference, data.contact));

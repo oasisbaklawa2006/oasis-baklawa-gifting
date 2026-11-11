@@ -46,7 +46,7 @@ export type LeadResult =
   | { status: "unavailable"; reason: string };
 
 export const submitLead = createServerFn({ method: "POST" })
-  .inputValidator((input: unknown) => schema.parse(input))
+  .validator((input: unknown) => schema.parse(input))
   .handler(async ({ data }): Promise<LeadResult> => {
     if (!data.email && !data.phone) {
       return { status: "invalid", reason: "An email address or phone number is required." };

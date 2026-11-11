@@ -33,7 +33,7 @@ export type SupportSubmitResult =
   { status: "received"; ticketReference: string } | { status: "unavailable"; reason: string };
 
 export const submitSupportRequest = createServerFn({ method: "POST" })
-  .inputValidator((input: unknown) => schema.parse(input))
+  .validator((input: unknown) => schema.parse(input))
   .handler(async ({ data }): Promise<SupportSubmitResult> => {
     const baseUrl = process.env["APPVERSE_BASE_URL"] ?? process.env["VITE_APPVERSE_BASE_URL"] ?? "";
     if (!baseUrl) {

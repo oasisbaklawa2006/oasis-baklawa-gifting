@@ -22,7 +22,7 @@ export type IssueResult =
   { status: "issued"; token: string; path: string } | { status: "unavailable"; reason: string };
 
 export const issueCartRecoveryLink = createServerFn({ method: "POST" })
-  .inputValidator((input: unknown) =>
+  .validator((input: unknown) =>
     z.object({ cartId: z.string().min(6), lines: z.array(lineSchema).min(1) }).parse(input),
   )
   .handler(async ({ data }): Promise<IssueResult> => {
@@ -60,7 +60,7 @@ export type RedeemResult =
   | { status: "unavailable"; reason: string };
 
 export const redeemCartRecoveryLink = createServerFn({ method: "POST" })
-  .inputValidator((input: unknown) => z.object({ token: z.string().min(10) }).parse(input))
+  .validator((input: unknown) => z.object({ token: z.string().min(10) }).parse(input))
   .handler(async ({ data }): Promise<RedeemResult> => {
     const { verifyRecoveryToken, hashRecoveryToken } = await import("./cart-recovery-token.server");
     const { recoveryRepository } = await import("./persistence/index.server");

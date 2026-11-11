@@ -28,7 +28,7 @@ export const paymentStatus = createServerFn({ method: "GET" }).handler(async () 
  * A verified server-owned order and quote are prerequisites not yet available.
  */
 export const createPaymentIntent = createServerFn({ method: "POST" })
-  .inputValidator((input: unknown) =>
+  .validator((input: unknown) =>
     z
       .object({
         amount: moneySchema,
@@ -52,7 +52,7 @@ export const createPaymentIntent = createServerFn({ method: "POST" })
 
 /** A callback cannot certify payment without a verified Core order association. */
 export const confirmPayment = createServerFn({ method: "POST" })
-  .inputValidator((input: unknown) =>
+  .validator((input: unknown) =>
     z.object({ payload: z.record(z.string(), z.string()) }).parse(input),
   )
   .handler(async () => ({
