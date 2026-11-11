@@ -136,7 +136,11 @@ export const databaseLeadsRepository: LeadsRepository = {
       // Enquiry UUIDs are insert-only: a concurrent retry must never overwrite
       // the original message, consent or an already-completed Central handoff.
       if (draft.submissionId) {
-        const inserted = await supabaseAdmin.from("website_leads").insert(payload).select("*").single();
+        const inserted = await supabaseAdmin
+          .from("website_leads")
+          .insert(payload)
+          .select("*")
+          .single();
         if (!inserted.error) {
           return { ok: true as const, record: toLead(inserted.data as LeadRow), deduped: false };
         }
@@ -149,7 +153,10 @@ export const databaseLeadsRepository: LeadsRepository = {
           .eq("dedupe_key", key)
           .maybeSingle();
         if (winner.error || !winner.data) {
-          return { ok: false as const, reason: winner.error?.message ?? "Enquiry retry unavailable." };
+          return {
+            ok: false as const,
+            reason: winner.error?.message ?? "Enquiry retry unavailable.",
+          };
         }
         return { ok: true as const, record: toLead(winner.data as LeadRow), deduped: true };
       }
