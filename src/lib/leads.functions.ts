@@ -49,7 +49,10 @@ export type LeadResult =
 export const submitLead = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => schema.parse(input))
   .handler(async ({ data }): Promise<LeadResult> => {
-    if (["corporate", "wedding", "contact", "partnership"].includes(data.kind) && !data.submissionId) {
+    if (
+      ["corporate", "wedding", "contact", "partnership"].includes(data.kind) &&
+      !data.submissionId
+    ) {
       return { status: "invalid", reason: "An enquiry submission identifier is required." };
     }
     if (!data.email && !data.phone) {
