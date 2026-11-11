@@ -8,7 +8,13 @@ import {
   parseTouch,
 } from "@/lib/marketing/attribution";
 import { metaPayload, ga4Payload, klaviyoPayload } from "@/lib/marketing/providers";
-import { buildFeed, feedDiagnostics, feedToTsv, feedToXml, type FeedReport } from "@/lib/merchant-feed";
+import {
+  buildFeed,
+  feedDiagnostics,
+  feedToTsv,
+  feedToXml,
+  type FeedReport,
+} from "@/lib/merchant-feed";
 import { products } from "@/data/catalog";
 
 describe("consent", () => {
