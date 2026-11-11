@@ -18,7 +18,12 @@ import type {
   RecoverySessionStatus,
 } from "./types";
 
-export function dedupeKey(kind: string, email?: string, phone?: string, submissionId?: string): string {
+export function dedupeKey(
+  kind: string,
+  email?: string,
+  phone?: string,
+  submissionId?: string,
+): string {
   const normalizedEmail = email?.trim().toLowerCase() || undefined;
   const normalizedPhone = phone?.replace(/[^0-9]/g, "") || undefined;
   const contact = normalizedEmail ?? normalizedPhone ?? "";
@@ -39,7 +44,8 @@ export function createMemoryLeadsRepository(): LeadsRepository & { reset(): void
       if (!key.split(":")[1]) return { ok: false as const, reason: "No contact detail supplied." };
       const now = new Date().toISOString();
       const existing = rows.get(key);
-      if (existing && draft.submissionId) return { ok: true as const, record: existing, deduped: true };
+      if (existing && draft.submissionId)
+        return { ok: true as const, record: existing, deduped: true };
       const record: LeadRecord = existing
         ? {
             ...existing,
