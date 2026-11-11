@@ -25,9 +25,12 @@ jobs:
       pull-requests: write
       issues: write
     steps:
+      # Version-numbered PR-Agent Docker tags are immutable upstream; avoid the
+      # SHA-pinned wrapper that builds FROM a mutable rolling image.
+      # Upgrade only by explicit review of a new immutable version/digest.
       - name: Review changed code with PR-Agent (no checkout)
         if: ${{ env.REVIEW_OPENAI_KEY != '' }}
-        uses: the-pr-agent/pr-agent@c3f0b12133ff287b343a4bb3af5900c1e65cac69
+        uses: docker://pragent/pr-agent:0.41.0-github_action
         env:
           OPENAI_KEY: ${{ secrets.OPENAI_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
