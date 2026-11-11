@@ -1,9 +1,8 @@
-import { useState, type FormEvent } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { toast } from "sonner";
 import { ArrowUpRight } from "lucide-react";
 
 import { Breadcrumbs } from "@/components/oasis/breadcrumbs";
+import { useLeadForm } from "@/lib/marketing/use-lead-form";
 import { SectionHeading } from "@/components/oasis/section-heading";
 import { ProductCard } from "@/components/oasis/product-card";
 import { Button } from "@/components/ui/button";
@@ -49,23 +48,24 @@ const audiences = [
 ];
 
 function EnquiryForm() {
-  const [submitted, setSubmitted] = useState(false);
-
-  function onSubmit(event: FormEvent) {
-    event.preventDefault();
-    setSubmitted(true);
-    toast.success("Enquiry noted", { description: "This form is a UI placeholder in this build." });
-  }
+  const lead = useLeadForm({
+    kind: "corporate",
+    source: "business-page",
+    event: "corporate_gifting_lead",
+    properties: ["type"],
+    successMessage: "Your enquiry has been received and saved for our commercial team.",
+    failureMessage: "We could not save your enquiry. Please try again or contact our team.",
+  });
 
   return (
     <form
-      onSubmit={onSubmit}
+      onSubmit={lead.onSubmit}
       className="border border-border bg-background p-6 md:p-8"
       noValidate={false}
     >
       <h3 className="font-display text-2xl">Business enquiry</h3>
       <p className="mt-2 text-[0.8125rem] text-muted-foreground">
-        Not connected to a backend in this build. Fields are illustrative.
+        Share your requirement. We will confirm availability, pricing and timelines before making any commitment.
       </p>
 
       <div className="mt-7 grid gap-5 sm:grid-cols-2">
@@ -137,11 +137,11 @@ function EnquiryForm() {
         </div>
       </div>
 
-      <Button type="submit" size="lg" className="mt-7 w-full sm:w-auto">
-        Send enquiry
+      <Button type="submit" size="lg" className="mt-7 w-full sm:w-auto" disabled={lead.pending}>
+        {lead.pending ? "Sending…" : "Send enquiry"}
       </Button>
       <p aria-live="polite" className="mt-3 text-[0.8125rem] text-muted-foreground">
-        {submitted ? "Thank you — a real submission endpoint will be connected later." : "\u00A0"}
+        {lead.statusMessage ?? "We will acknowledge your enquiry after it has been saved."}
       </p>
     </form>
   );
