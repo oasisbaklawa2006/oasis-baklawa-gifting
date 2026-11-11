@@ -87,6 +87,7 @@ jobs:
           fs.writeFileSync(rootPath, root);
           console.log('Migrated', replaced, 'server function validators and normalized root error type');
           NODE
+          ./node_modules/.bin/prettier --write src/routes/__root.tsx
       - name: Verify high and critical advisories are resolved
         run: bun audit --audit-level high
       - name: Verify tracked-environment safety boundary
