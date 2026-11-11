@@ -11,7 +11,7 @@ const paging = z.object({
 });
 
 export const readGovernedPublicCatalogue = createServerFn({ method: "GET" })
-  .inputValidator((input: unknown) => paging.parse(input ?? {}))
+  .validator((input: unknown) => paging.parse(input ?? {}))
   .handler(async ({ data }) => {
     const { readCoreCataloguePage } = await import("./core-connect2.server");
     return await readCoreCataloguePage(data);

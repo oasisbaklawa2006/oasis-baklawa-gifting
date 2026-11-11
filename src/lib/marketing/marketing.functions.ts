@@ -29,7 +29,7 @@ const schema = z.object({
 });
 
 export const dispatchMarketingEvent = createServerFn({ method: "POST" })
-  .inputValidator((input: unknown) => schema.parse(input))
+  .validator((input: unknown) => schema.parse(input))
   .handler(async ({ data }) => {
     // Marketing consent is the lawful basis for any server-side dispatch.
     if (!data.event.consent.marketing) {

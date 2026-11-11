@@ -40,7 +40,7 @@ export const catalogueStatus = createServerFn({ method: "GET" }).handler(
  * Requires CATALOGUE_IMPORT_TOKEN; without it the endpoint does nothing.
  */
 export const importCatalogueBatch = createServerFn({ method: "POST" })
-  .inputValidator((input: unknown) =>
+  .validator((input: unknown) =>
     importBatchSchema.extend({ token: z.string().min(16) }).parse(input),
   )
   .handler(async ({ data }): Promise<CatalogueImportResult> => {
