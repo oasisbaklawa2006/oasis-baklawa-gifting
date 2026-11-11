@@ -88,7 +88,7 @@ export const databaseLeadsRepository: LeadsRepository = {
   durability: "durable",
 
   async save(draft: LeadDraft) {
-    const key = dedupeKey(draft.kind, draft.email, draft.phone);
+    const key = dedupeKey(draft.kind, draft.email, draft.phone, draft.submissionId);
     if (!key.split(":")[1]) return { ok: false as const, reason: "No contact detail supplied." };
 
     const email = draft.email?.trim().toLowerCase() ?? null;
@@ -103,6 +103,9 @@ export const databaseLeadsRepository: LeadsRepository = {
       if (existing.error) return { ok: false as const, reason: existing.error.message };
 
       const previous = existing.data as LeadRow | null;
+      if (previous && draft.submissionId) {
+        return { ok: true as const, record: toLead(previous), deduped: true };
+      }
       const nowIso = new Date().toISOString();
 
       // The first consent timestamp is the record of when permission was given.
