@@ -76,57 +76,19 @@ export function buildFeed(requestUrl?: string, now = new Date()): FeedReport {
   const items: FeedItem[] = [];
   const excluded: FeedExclusion[] = [];
 
-  for (const product of products) {
-    const missing: string[] = [];
-    if (product.isMock) missing.push("approved catalogue record (isMock)");
-
-    const variant = product.variants[0];
-    if (!variant) missing.push("variant");
-
-    const description = product.shortDescription?.trim();
-    if (!description) missing.push("description");
-
-    const link = absolute(`/product/${product.slug}`, requestUrl);
-    if (!link) missing.push("absolute product URL (VITE_SITE_URL)");
-
-    const images = productImages(product)
-      .map((src) => absolute(src, requestUrl))
-      .filter((src): src is string => Boolean(src));
-    if (images.length === 0) missing.push("image_link");
-
-    const price = variant?.price;
-    if (!price || !(price.amount > 0)) missing.push("current governed price");
-
-    if (missing.length || !variant || !link || !description || !price) {
-      excluded.push({ id: variant?.id ?? product.id, title: product.name, missing });
-      continue;
-    }
-
-    const [primary, ...rest] = images;
-    const identifiers = variantIdentifiers(variant);
-    const googleCategory = GOOGLE_CATEGORY[product.categoryId];
-
-    items.push({
-      id: variant.id,
+  // GFT-100: local product fixtures are not a certified retail publication source.
+  // CONNECT-2 publishes product descriptions only, not approved B2C price/stock.
+  // Fail closed until a governed, versioned Core merchant-feed authority exists.
+  // Do not introduce an environment toggle that bypasses this requirement.
+  return {
+    items,
+    excluded: products.map((product) => ({
+      id: product.id,
       title: product.name,
-      description,
-      link,
-      ...(primary ? { imageLink: primary } : {}),
-      additionalImageLinks: rest.slice(0, 10),
-      price: { amount: price.amount, currency: price.currency },
-      brand: BRAND,
-      condition: "new",
-      ...identifiers,
-      ...(product.categoryId ? { productType: product.categoryId } : {}),
-      // Availability comes from the governed catalogue record only.
-      ...(variant.availability === "in-stock" || variant.availability === "low-stock"
-        ? { availability: "in_stock" as const }
-        : {}),
-      ...(googleCategory ? { googleProductCategory: googleCategory } : {}),
-    });
-  }
-
-  return { items, excluded, generatedAt: now.toISOString() };
+      missing: ["approved Core B2C merchant-feed publication authority"],
+    })),
+    generatedAt: now.toISOString(),
+  };
 }
 
 const escapeXml = (value: string) =>
