@@ -137,7 +137,7 @@ describe("merchant feed", () => {
     expect(xml).toContain("https://example.com/product?x=1&amp;y=2");
     const rows = feedToTsv(report).split("\n");
     expect(rows).toHaveLength(2);
-    expect(rows[1]?.split("\t")).toHaveLength(rows[0]?.split("\t").length);
+    expect((rows[1] ?? "").split("\t")).toHaveLength((rows[0] ?? "").split("\t").length);
     expect(rows[1]).toContain('Baklawa & "Dates"');
   });
 
