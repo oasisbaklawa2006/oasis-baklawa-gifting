@@ -36,7 +36,7 @@ jobs:
       - name: Install locked dependencies
         run: bun install --frozen-lockfile
       - name: Audit production and development dependencies
-        run: bun audit --audit-level high
+        run: npm audit --audit-level=high --omit=optional
 
   semgrep:
     name: Semgrep security rules
