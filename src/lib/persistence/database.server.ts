@@ -133,8 +133,29 @@ export const databaseLeadsRepository: LeadsRepository = {
         last_submitted_at: nowIso,
       };
 
-      // Idempotent under retries and concurrent submissions: the unique dedupe
-      // key turns a racing insert into an update of the same row.
+      // Enquiry UUIDs are insert-only: a concurrent retry must never overwrite
+      // the original message, consent or an already-completed Central handoff.
+      if (draft.submissionId) {
+        const inserted = await supabaseAdmin.from("website_leads").insert(payload).select("*").single();
+        if (!inserted.error) {
+          return { ok: true as const, record: toLead(inserted.data as LeadRow), deduped: false };
+        }
+        if (inserted.error.code !== "23505") {
+          return { ok: false as const, reason: inserted.error.message };
+        }
+        const winner = await supabaseAdmin
+          .from("website_leads")
+          .select("*")
+          .eq("dedupe_key", key)
+          .maybeSingle();
+        if (winner.error || !winner.data) {
+          return { ok: false as const, reason: winner.error?.message ?? "Enquiry retry unavailable." };
+        }
+        return { ok: true as const, record: toLead(winner.data as LeadRow), deduped: true };
+      }
+
+      // Subscription-style contact deduplication intentionally retains the
+      // existing update semantics for newsletter and rewards submissions.
       const upserted = await supabaseAdmin
         .from("website_leads")
         .upsert(payload, { onConflict: "dedupe_key" })
