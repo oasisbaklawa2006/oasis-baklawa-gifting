@@ -1,0 +1,38 @@
+name: Gifting Budgeted AI PR Review
+
+on:
+  pull_request:
+    types: [opened, reopened, ready_for_review, synchronize]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: gifting-ai-review-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  review:
+    # No secret, no billable call. Repository administrator explicitly enables
+    # only after a project-scoped API key and billing budget are configured.
+    if: ${{ vars.GIFTING_AI_REVIEW_ENABLED == 'true' && github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository && github.event.pull_request.draft == false && github.actor != 'dependabot[bot]' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    permissions:
+      contents: read
+      pull-requests: write
+      issues: write
+    steps:
+      - name: Review changed code with PR-Agent (no checkout)
+        uses: the-pr-agent/pr-agent@c3f0b12133ff287b343a4bb3af5900c1e65cac69
+        env:
+          OPENAI_KEY: ${{ secrets.OPENAI_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          config.model: "gpt-4.1-mini"
+          config.num_retries: "1"
+          github_action_config.auto_review: "true"
+          github_action_config.auto_describe: "false"
+          github_action_config.auto_improve: "false"
+          github_action_config.pr_actions: '["opened", "reopened", "ready_for_review", "synchronize"]'
+          pr_reviewer.extra_instructions: "Oasis Baklawa D2C: identify concrete correctness, data-loss, idempotency, authorization, privacy, financial, checkout, webhook and migration defects. Core is authoritative for price, GST, inventory, orders and refunds. Never recommend bypassing fail-closed guards or auto-merging. Cite affected code and propose targeted tests."
