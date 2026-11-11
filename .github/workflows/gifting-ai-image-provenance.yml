@@ -26,6 +26,8 @@ jobs:
           tag='pragent/pr-agent:0.41.0-github_action'
           digest="$(docker buildx imagetools inspect "$tag" --format '{{.Manifest.Digest}}')"
           [[ "$digest" =~ ^sha256:[0-9a-f]{64}$ ]]
+          # Refuse an unexpected retag or registry/manifests discrepancy.
+          test "$digest" = "sha256:3121a7b8e3ab497b4df09dea6a444da8f01a474496c8c2f722828512c52fd266"
           echo "digest=$digest" >> "$GITHUB_OUTPUT"
           echo "Verified Docker manifest reference: pragent/pr-agent@$digest" >> "$GITHUB_STEP_SUMMARY"
       - name: Verify published image attestation against upstream repository
