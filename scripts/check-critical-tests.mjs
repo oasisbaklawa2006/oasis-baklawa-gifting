@@ -35,5 +35,7 @@ if (failures.length) {
   for (const failure of failures) console.error(failure);
   process.exitCode = 1;
 } else {
-  console.log(`Critical regression inventory: ${total} tests across ${required.size} required suites.`);
+  console.log(
+    `Critical regression inventory: ${total} tests across ${required.size} required suites.`,
+  );
 }
