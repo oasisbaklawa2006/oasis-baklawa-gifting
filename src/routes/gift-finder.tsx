@@ -85,7 +85,7 @@ function GiftFinderPage() {
           as="h1"
           eyebrow="Gift finder"
           title="Find the right gift in four answers"
-          intro="Tell us the occasion, who it is for, roughly what you would like to spend and the taste you have in mind. Your answers stay in the page address, so you can share the shortlist with anyone."
+          intro="Tell us the occasion, recipient, budget and taste. Your answers stay in the page address for sharing. This is a catalogue preview: recommendations and displayed prices are illustrative, not verified live offers. Ordering requires the authoritative Oasis Core retail catalogue and checkout."
         />
       </section>
 
