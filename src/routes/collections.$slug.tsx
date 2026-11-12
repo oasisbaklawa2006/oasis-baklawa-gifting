@@ -101,6 +101,10 @@ function CollectionPage() {
             </Button>
           }
         />
+        <p className="mt-5 text-sm leading-relaxed text-muted-foreground">
+          Catalogue preview only. Product prices and availability are illustrative until
+          verified by Oasis Core retail checkout.
+        </p>
         {items.length === 0 ? (
           <div className="mt-10">
             <EmptyState
