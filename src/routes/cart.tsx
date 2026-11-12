@@ -115,6 +115,10 @@ function CartPage() {
 
           <aside className="h-fit border border-border bg-premium p-6 lg:sticky lg:top-28">
             <h2 className="font-display text-xl">Order summary</h2>
+            <p className="mt-3 text-xs leading-relaxed text-muted-foreground">
+              Preview estimates only. Product prices and availability are illustrative until
+              verified by Oasis Core retail checkout.
+            </p>
             <Separator className="my-5 bg-border" />
             <dl className="space-y-3 text-[0.875rem]">
               <div className="flex justify-between">
