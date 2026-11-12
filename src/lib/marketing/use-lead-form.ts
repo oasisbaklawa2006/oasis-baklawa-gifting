@@ -64,7 +64,9 @@ export function useLeadForm(options: Options): LeadFormState {
         .map((field) => str(data.get(field)))
         .filter((value): value is string => Boolean(value));
 
-      const isEnquiry = ["corporate", "wedding", "contact", "partnership"].includes(options.kind);
+      const isEnquiry = ["corporate", "wedding", "contact", "partnership"].includes(
+        options.kind,
+      );
 
       const payload = {
         kind: options.kind,
@@ -88,9 +90,10 @@ export function useLeadForm(options: Options): LeadFormState {
           submission.current = { id: crypto.randomUUID(), fingerprint };
         }
       }
-      const request = isEnquiry && submission.current
-        ? { ...payload, submissionId: submission.current.id }
-        : payload;
+      const request =
+        isEnquiry && submission.current
+          ? { ...payload, submissionId: submission.current.id }
+          : payload;
 
       setPending(true);
       void (async () => {
