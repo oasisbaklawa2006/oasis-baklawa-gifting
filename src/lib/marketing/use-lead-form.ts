@@ -43,7 +43,7 @@ const str = (value: FormDataEntryValue | null) =>
 
 export function useLeadForm(options: Options): LeadFormState {
   const send = useServerFn(submitLead);
-  const submissionId = useRef<string | null>(null);
+  const submission = useRef<{ id: string; fingerprint: string } | null>(null);
   const [pending, setPending] = useState(false);
   const [status, setStatus] = useState<"idle" | "saved" | "error">("idle");
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
@@ -65,10 +65,10 @@ export function useLeadForm(options: Options): LeadFormState {
         .filter((value): value is string => Boolean(value));
 
       const isEnquiry = ["corporate", "wedding", "contact", "partnership"].includes(options.kind);
-      if (isEnquiry && !submissionId.current) submissionId.current = crypto.randomUUID();
+
       const payload = {
         kind: options.kind,
-        ...(isEnquiry && submissionId.current ? { submissionId: submissionId.current } : {}),
+
         ...(str(data.get("email")) ? { email: str(data.get("email"))! } : {}),
         ...(str(data.get("phone")) ? { phone: str(data.get("phone"))! } : {}),
         ...(str(data.get("name")) ? { name: str(data.get("name"))! } : {}),
@@ -80,18 +80,30 @@ export function useLeadForm(options: Options): LeadFormState {
         ...(Object.keys(properties).length ? { properties } : {}),
       };
 
+      // A retry may reuse an ID only for the exact same submitted data.
+      // Edited requirements are a new enquiry, never a silent discard.
+      const fingerprint = JSON.stringify(payload);
+      if (isEnquiry) {
+        if (!submission.current || submission.current.fingerprint !== fingerprint) {
+          submission.current = { id: crypto.randomUUID(), fingerprint };
+        }
+      }
+      const request = isEnquiry && submission.current
+        ? { ...payload, submissionId: submission.current.id }
+        : payload;
+
       setPending(true);
       void (async () => {
         let result: LeadResult;
         try {
-          result = await send({ data: payload });
+          result = await send({ data: request });
         } catch {
           result = { status: "invalid", reason: options.failureMessage };
         }
 
         setPending(false);
         if (result.status === "saved") {
-          submissionId.current = null;
+          submission.current = null;
           setStatus("saved");
           setStatusMessage(options.successMessage);
           form.reset();
