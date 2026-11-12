@@ -273,7 +273,18 @@ function ShopPage() {
         </p>
       </section>
 
-      <div className="container-oasis pb-8">\n        <p className="rounded-sm border border-border bg-premium px-5 py-4 text-sm leading-relaxed text-muted-foreground" role="status">\n          Catalogue preview only. Displayed prices, availability and product selection are\n          illustrative, not verified live offers. Ordering remains unavailable until the\n          authoritative Oasis Core retail catalogue and checkout are connected.\n        </p>\n      </div>\n\n      <section className="container-oasis pb-20">
+      <div className="container-oasis pb-8">
+        <p
+          className="rounded-sm border border-border bg-premium px-5 py-4 text-sm leading-relaxed text-muted-foreground"
+          role="status"
+        >
+          Catalogue preview only. Displayed prices, availability and product selection are
+          illustrative, not verified live offers. Ordering remains unavailable until the
+          authoritative Oasis Core retail catalogue and checkout are connected.
+        </p>
+      </div>
+
+      <section className="container-oasis pb-20">
         <div className="scrollbar-none -mx-5 flex gap-2 overflow-x-auto px-5 pb-2 md:mx-0 md:px-0">
           <Chip active={categorySlug === null} onClick={() => setCategorySlug(null)}>
             All
