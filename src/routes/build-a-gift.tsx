@@ -75,7 +75,8 @@ function BuildAGiftPage() {
     setSelection((prev) => {
       const next = { ...prev };
       const value = (next[id] ?? 0) + delta;
-      if (delta > 0 && remaining <= 0) return prev;
+      const selectedCount = Object.values(prev).reduce((sum, count) => sum + count, 0);
+      if (delta > 0 && selectedCount + delta > format.capacity) return prev;
       if (value <= 0) delete next[id];
       else next[id] = value;
       return next;
