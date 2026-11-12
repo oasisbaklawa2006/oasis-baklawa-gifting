@@ -137,7 +137,12 @@ function BuildAGiftPage() {
                   <button
                     key={f.id}
                     type="button"
-                    onClick={() => setFormatId(f.id)}
+                    onClick={() => {
+                      if (f.capacity < used) {
+                        setSelection({});
+                      }
+                      setFormatId(f.id);
+                    }}
                     aria-pressed={f.id === formatId}
                     className={cn(
                       "rounded-sm border p-5 text-left transition-colors duration-200 ease-out",
