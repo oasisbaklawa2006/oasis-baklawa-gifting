@@ -231,11 +231,7 @@ export async function readCoreCatalogueSnapshot(
   const skus = new Set<string>();
   while (products.length < maxProducts) {
     const limit = Math.min(pageSize, maxProducts - products.length);
-    const page = await readCoreCataloguePage(
-      { limit, offset: products.length },
-      env,
-      transport,
-    );
+    const page = await readCoreCataloguePage({ limit, offset: products.length }, env, transport);
     if (page.status !== "available") return page;
     for (const product of page.products) {
       const sku = product.sku?.trim().toLowerCase();
