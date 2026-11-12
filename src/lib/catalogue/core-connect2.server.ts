@@ -202,3 +202,68 @@ export async function readCoreCataloguePage(
     return { status: "unavailable", reason: "Core catalogue projection is currently unavailable." };
   }
 }
+
+/**
+ * Fetch a bounded, consistent catalogue snapshot without exposing a partial
+ * catalogue when Core rejects any page. The last short page terminates paging.
+ * No commercial prices or stock are projected by this contract.
+ */
+export async function readCoreCatalogueSnapshot(
+  options: { pageSize?: number; maxProducts?: number } = {},
+  env: CoreEnv = process.env,
+  transport: typeof fetch = fetch,
+): Promise<CoreCataloguePage> {
+  const pageSize = options.pageSize ?? 50;
+  const maxProducts = options.maxProducts ?? 500;
+  if (
+    !Number.isInteger(pageSize) ||
+    pageSize < 1 ||
+    pageSize > MAX_LIMIT ||
+    !Number.isInteger(maxProducts) ||
+    maxProducts < 1 ||
+    maxProducts > 500
+  ) {
+    return { status: "unavailable", reason: "Invalid catalogue snapshot bounds." };
+  }
+
+  const products: CoreCatalogueProduct[] = [];
+  const ids = new Set<string>();
+  const skus = new Set<string>();
+  while (products.length < maxProducts) {
+    const limit = Math.min(pageSize, maxProducts - products.length);
+    const page = await readCoreCataloguePage(
+      { limit, offset: products.length },
+      env,
+      transport,
+    );
+    if (page.status !== "available") return page;
+    for (const product of page.products) {
+      const sku = product.sku?.trim().toLowerCase();
+      if (ids.has(product.productId) || (sku && skus.has(sku))) {
+        return {
+          status: "unavailable",
+          reason: "Core catalogue contains duplicate product identities.",
+        };
+      }
+      ids.add(product.productId);
+      if (sku) skus.add(sku);
+      products.push(product);
+    }
+    if (page.count < limit) {
+      return {
+        status: "available",
+        products,
+        count: products.length,
+        limit: maxProducts,
+        offset: 0,
+        source: "core-connect2",
+      };
+    }
+  }
+
+  // A full final page cannot prove that additional records do not exist.
+  return {
+    status: "unavailable",
+    reason: "Core catalogue exceeds the configured snapshot bound.",
+  };
+}
