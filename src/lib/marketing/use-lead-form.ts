@@ -64,9 +64,7 @@ export function useLeadForm(options: Options): LeadFormState {
         .map((field) => str(data.get(field)))
         .filter((value): value is string => Boolean(value));
 
-      const isEnquiry = ["corporate", "wedding", "contact", "partnership"].includes(
-        options.kind,
-      );
+      const isEnquiry = ["corporate", "wedding", "contact", "partnership"].includes(options.kind);
 
       const payload = {
         kind: options.kind,
