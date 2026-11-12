@@ -129,7 +129,11 @@ describe("Core CONNECT-2 bounded catalogue snapshot", () => {
     const transport: typeof fetch = async (_url, init) => {
       const request = JSON.parse(String(init?.body));
       offsets.push(request.p_params.offset);
-      return Response.json(envelope(request.p_params.offset === 0 ? [product] : request.p_params.offset === 1 ? [second] : []));
+      return Response.json(
+        envelope(
+          request.p_params.offset === 0 ? [product] : request.p_params.offset === 1 ? [second] : [],
+        ),
+      );
     };
     const result = await readCoreCatalogueSnapshot(
       { pageSize: 1, maxProducts: 3 },
@@ -147,9 +151,9 @@ describe("Core CONNECT-2 bounded catalogue snapshot", () => {
         ? Response.json(envelope([product]))
         : new Response(null, { status: 403 });
     };
-    expect(
-      await readCoreCatalogueSnapshot({ pageSize: 1 }, config, transport),
-    ).toMatchObject({ status: "unavailable" });
+    expect(await readCoreCatalogueSnapshot({ pageSize: 1 }, config, transport)).toMatchObject({
+      status: "unavailable",
+    });
   });
 
   it("rejects duplicate product IDs and case-insensitive SKUs across pages", async () => {
@@ -158,9 +162,7 @@ describe("Core CONNECT-2 bounded catalogue snapshot", () => {
         const request = JSON.parse(String(init?.body));
         return Response.json(envelope([request.p_params.offset === 0 ? product : duplicate]));
       };
-      expect(
-        await readCoreCatalogueSnapshot({ pageSize: 1 }, config, transport),
-      ).toMatchObject({
+      expect(await readCoreCatalogueSnapshot({ pageSize: 1 }, config, transport)).toMatchObject({
         status: "unavailable",
         reason: expect.stringContaining("duplicate"),
       });
@@ -179,9 +181,9 @@ describe("Core CONNECT-2 bounded catalogue snapshot", () => {
 
   it("rejects invalid bounds without contacting Core", async () => {
     const transport = vi.fn();
-    expect(
-      await readCoreCatalogueSnapshot({ pageSize: 101 }, config, transport),
-    ).toMatchObject({ status: "unavailable" });
+    expect(await readCoreCatalogueSnapshot({ pageSize: 101 }, config, transport)).toMatchObject({
+      status: "unavailable",
+    });
     expect(transport).not.toHaveBeenCalled();
   });
 });
