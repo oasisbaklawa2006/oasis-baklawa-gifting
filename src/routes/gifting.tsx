@@ -138,7 +138,11 @@ function GiftingPage() {
             </Button>
           }
         />
-        <p className="mt-6 text-sm leading-relaxed text-muted-foreground">\n          Catalogue preview only. The boxes, prices and availability shown below are illustrative\n          until the authoritative Oasis Core retail catalogue and checkout are connected.\n        </p>\n        <div className="mt-10 grid grid-cols-2 gap-x-5 gap-y-10 lg:grid-cols-3 xl:grid-cols-4">
+        <p className="mt-6 text-sm leading-relaxed text-muted-foreground">
+          Catalogue preview only. The boxes, prices and availability shown below are illustrative
+          until the authoritative Oasis Core retail catalogue and checkout are connected.
+        </p>
+        <div className="mt-10 grid grid-cols-2 gap-x-5 gap-y-10 lg:grid-cols-3 xl:grid-cols-4">
           {giftItems.slice(0, 8).map((product, i) => (
             <ProductCard key={product.id} product={product} priority={i < 4} />
           ))}
