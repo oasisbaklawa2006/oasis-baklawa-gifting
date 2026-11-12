@@ -247,8 +247,8 @@ function ProductPage() {
           ) : null}
 
           <p className="mt-4 text-sm text-muted-foreground">
-            Catalogue preview only. Prices and stock status are illustrative until verified by
-            Oasis Core retail checkout.
+            Catalogue preview only. Prices and stock status are illustrative until verified by Oasis
+            Core retail checkout.
           </p>
 
           <fieldset className="mt-8">
