@@ -1,7 +1,6 @@
 import { useMemo, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Check, Minus, Plus } from "lucide-react";
-import { toast } from "sonner";
 
 import { SectionHeading } from "@/components/oasis/section-heading";
 import { Breadcrumbs } from "@/components/oasis/breadcrumbs";
@@ -19,7 +18,6 @@ import {
   sealFinishes,
 } from "@/data/gifting";
 import { noImage } from "@/data/brand";
-import { useShop } from "@/lib/store";
 import { canonicalUrl, siteUrl } from "@/lib/site-url";
 
 export const Route = createFileRoute("/build-a-gift")({
@@ -47,7 +45,6 @@ export const Route = createFileRoute("/build-a-gift")({
 const steps = ["Format", "Confections", "Arrangement", "Finishing"] as const;
 
 function BuildAGiftPage() {
-  const { setGift } = useShop();
   const [step, setStep] = useState(0);
   const [formatId, setFormatId] = useState(giftBoxFormats[1]!.id);
   const [selection, setSelection] = useState<Record<string, number>>({});
@@ -348,18 +345,15 @@ function BuildAGiftPage() {
                 Continue
               </Button>
             ) : (
-              <Button
-                onClick={() => {
-                  setGift({ message, ribbonId, sealId, concealInvoice: conceal });
-                  toast.success("Gift configuration saved", {
-                    description: "Ordering opens once the gifting engine is connected.",
-                  });
-                }}
-              >
-                Save this gift
-              </Button>
+              <Button disabled>Gift ordering unavailable</Button>
             )}
           </div>
+          {step === steps.length - 1 ? (
+            <p className="mt-3 text-sm text-muted-foreground" role="status">
+              This is a composition preview only. Selections and finishing cannot be saved to an
+              order until the Core-authoritative gifting quotation contract is connected.
+            </p>
+          ) : null}
         </div>
 
         <aside className="lg:sticky lg:top-28 lg:self-start">
