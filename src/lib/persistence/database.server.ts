@@ -103,7 +103,7 @@ export const databaseLeadsRepository: LeadsRepository = {
       if (existing.error) return { ok: false as const, reason: existing.error.message };
 
       const previous = existing.data as LeadRow | null;
-      if (previous && draft.submissionId) {
+      if (previous && draft.submissionId && ["corporate", "wedding", "contact", "partnership"].includes(draft.kind)) {
         return { ok: true as const, record: toLead(previous), deduped: true };
       }
       const nowIso = new Date().toISOString();
@@ -135,7 +135,7 @@ export const databaseLeadsRepository: LeadsRepository = {
 
       // Enquiry UUIDs are insert-only: a concurrent retry must never overwrite
       // the original message, consent or an already-completed Central handoff.
-      if (draft.submissionId) {
+      if (draft.submissionId && ["corporate", "wedding", "contact", "partnership"].includes(draft.kind)) {
         const inserted = await supabaseAdmin
           .from("website_leads")
           .insert(payload)
