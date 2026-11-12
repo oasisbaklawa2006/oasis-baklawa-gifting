@@ -129,7 +129,7 @@ describe("Core CONNECT-2 bounded catalogue snapshot", () => {
     const transport: typeof fetch = async (_url, init) => {
       const request = JSON.parse(String(init?.body));
       offsets.push(request.p_params.offset);
-      return Response.json(envelope(request.p_params.offset === 0 ? [product] : [second]));
+      return Response.json(envelope(request.p_params.offset === 0 ? [product] : request.p_params.offset === 1 ? [second] : []));
     };
     const result = await readCoreCatalogueSnapshot(
       { pageSize: 1, maxProducts: 3 },
