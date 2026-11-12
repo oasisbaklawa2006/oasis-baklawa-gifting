@@ -246,6 +246,11 @@ function ProductPage() {
             />
           ) : null}
 
+          <p className="mt-4 text-sm text-muted-foreground">
+            Catalogue preview only. Prices and stock status are illustrative until verified by
+            Oasis Core retail checkout.
+          </p>
+
           <fieldset className="mt-8">
             <legend className="eyebrow">Weight / pack</legend>
             <div className="mt-3 flex flex-wrap gap-2">
