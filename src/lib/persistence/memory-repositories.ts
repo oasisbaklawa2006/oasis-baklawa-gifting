@@ -44,7 +44,11 @@ export function createMemoryLeadsRepository(): LeadsRepository & { reset(): void
       if (!key.split(":")[1]) return { ok: false as const, reason: "No contact detail supplied." };
       const now = new Date().toISOString();
       const existing = rows.get(key);
-      if (existing && draft.submissionId && ["corporate", "wedding", "contact", "partnership"].includes(draft.kind))
+      if (
+        existing &&
+        draft.submissionId &&
+        ["corporate", "wedding", "contact", "partnership"].includes(draft.kind)
+      )
         return { ok: true as const, record: existing, deduped: true };
       const record: LeadRecord = existing
         ? {
