@@ -63,7 +63,8 @@ export const submitLead = createServerFn({ method: "POST" })
 
     const outcome = await saveLead({
       kind: data.kind,
-      ...(["corporate", "wedding", "contact", "partnership"].includes(data.kind) && data.submissionId
+      ...(["corporate", "wedding", "contact", "partnership"].includes(data.kind) &&
+      data.submissionId
         ? { submissionId: data.submissionId }
         : {}),
       ...(data.email ? { email: data.email.trim().toLowerCase() } : {}),
