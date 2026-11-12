@@ -18,10 +18,19 @@ import type {
   RecoverySessionStatus,
 } from "./types";
 
-export function dedupeKey(kind: string, email?: string, phone?: string): string {
+export function dedupeKey(
+  kind: string,
+  email?: string,
+  phone?: string,
+  submissionId?: string,
+): string {
   const normalizedEmail = email?.trim().toLowerCase() || undefined;
   const normalizedPhone = phone?.replace(/[^0-9]/g, "") || undefined;
-  return `${kind}:${normalizedEmail ?? normalizedPhone ?? ""}`;
+  const contact = normalizedEmail ?? normalizedPhone ?? "";
+  if (["corporate", "wedding", "contact", "partnership"].includes(kind) && submissionId) {
+    return `${kind}:${contact}:${submissionId}`;
+  }
+  return `${kind}:${contact}`;
 }
 
 export function createMemoryLeadsRepository(): LeadsRepository & { reset(): void } {
@@ -31,10 +40,16 @@ export function createMemoryLeadsRepository(): LeadsRepository & { reset(): void
     provider: "memory",
     durability: "ephemeral",
     async save(draft: LeadDraft) {
-      const key = dedupeKey(draft.kind, draft.email, draft.phone);
+      const key = dedupeKey(draft.kind, draft.email, draft.phone, draft.submissionId);
       if (!key.split(":")[1]) return { ok: false as const, reason: "No contact detail supplied." };
       const now = new Date().toISOString();
       const existing = rows.get(key);
+      if (
+        existing &&
+        draft.submissionId &&
+        ["corporate", "wedding", "contact", "partnership"].includes(draft.kind)
+      )
+        return { ok: true as const, record: existing, deduped: true };
       const record: LeadRecord = existing
         ? {
             ...existing,

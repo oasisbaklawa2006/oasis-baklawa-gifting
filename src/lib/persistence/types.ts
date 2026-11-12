@@ -19,10 +19,12 @@ export type LeadSyncState = "pending_sync" | "synced" | "failed";
 export type LeadRecord = {
   id: string;
   kind: LeadKind;
-  /** Deterministic dedupe key: `${kind}:${lower-cased email | digits-only phone}`. */
+  /** Contact dedupe for subscriptions; submission-specific key for enquiries. */
   key: string;
   email?: string;
   phone?: string;
+  /** Stable client-generated idempotency token for individual enquiries. */
+  submissionId?: string;
   name?: string;
   company?: string;
   message?: string;

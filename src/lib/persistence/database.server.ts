@@ -88,7 +88,7 @@ export const databaseLeadsRepository: LeadsRepository = {
   durability: "durable",
 
   async save(draft: LeadDraft) {
-    const key = dedupeKey(draft.kind, draft.email, draft.phone);
+    const key = dedupeKey(draft.kind, draft.email, draft.phone, draft.submissionId);
     if (!key.split(":")[1]) return { ok: false as const, reason: "No contact detail supplied." };
 
     const email = draft.email?.trim().toLowerCase() ?? null;
@@ -103,6 +103,13 @@ export const databaseLeadsRepository: LeadsRepository = {
       if (existing.error) return { ok: false as const, reason: existing.error.message };
 
       const previous = existing.data as LeadRow | null;
+      if (
+        previous &&
+        draft.submissionId &&
+        ["corporate", "wedding", "contact", "partnership"].includes(draft.kind)
+      ) {
+        return { ok: true as const, record: toLead(previous), deduped: true };
+      }
       const nowIso = new Date().toISOString();
 
       // The first consent timestamp is the record of when permission was given.
@@ -130,8 +137,39 @@ export const databaseLeadsRepository: LeadsRepository = {
         last_submitted_at: nowIso,
       };
 
-      // Idempotent under retries and concurrent submissions: the unique dedupe
-      // key turns a racing insert into an update of the same row.
+      // Enquiry UUIDs are insert-only: a concurrent retry must never overwrite
+      // the original message, consent or an already-completed Central handoff.
+      if (
+        draft.submissionId &&
+        ["corporate", "wedding", "contact", "partnership"].includes(draft.kind)
+      ) {
+        const inserted = await supabaseAdmin
+          .from("website_leads")
+          .insert(payload)
+          .select("*")
+          .single();
+        if (!inserted.error) {
+          return { ok: true as const, record: toLead(inserted.data as LeadRow), deduped: false };
+        }
+        if (inserted.error.code !== "23505") {
+          return { ok: false as const, reason: inserted.error.message };
+        }
+        const winner = await supabaseAdmin
+          .from("website_leads")
+          .select("*")
+          .eq("dedupe_key", key)
+          .maybeSingle();
+        if (winner.error || !winner.data) {
+          return {
+            ok: false as const,
+            reason: winner.error?.message ?? "Enquiry retry unavailable.",
+          };
+        }
+        return { ok: true as const, record: toLead(winner.data as LeadRow), deduped: true };
+      }
+
+      // Subscription-style contact deduplication intentionally retains the
+      // existing update semantics for newsletter and rewards submissions.
       const upserted = await supabaseAdmin
         .from("website_leads")
         .upsert(payload, { onConflict: "dedupe_key" })

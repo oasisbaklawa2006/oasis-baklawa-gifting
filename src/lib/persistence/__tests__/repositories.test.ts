@@ -39,6 +39,58 @@ describe("leads repository", () => {
     expect(second.ok && second.record.id).toBe(first.ok ? first.record.id : "different");
   });
 
+  it("preserves two separate corporate enquiries from the same customer", async () => {
+    const repo = createMemoryLeadsRepository();
+    const first = await repo.save({
+      ...draft,
+      kind: "corporate",
+      submissionId: "11111111-1111-4111-8111-111111111111",
+      message: "First wholesale enquiry",
+    });
+    const second = await repo.save({
+      ...draft,
+      kind: "corporate",
+      submissionId: "22222222-2222-4222-8222-222222222222",
+      message: "Second corporate gifting enquiry",
+    });
+    expect(first.ok && first.record.message).toBe("First wholesale enquiry");
+    expect(second.ok && second.record.message).toBe("Second corporate gifting enquiry");
+    expect(first.ok && second.ok && first.record.id).not.toBe(second.ok ? second.record.id : "");
+    expect((await repo.pendingSync()).length).toBe(2);
+    expect(first.ok && first.record.key).not.toBe(second.ok ? second.record.key : "");
+  });
+
+  it("keeps the original enquiry and sync state on an identical retry", async () => {
+    const repo = createMemoryLeadsRepository();
+    const enquiry = {
+      ...draft,
+      kind: "corporate" as const,
+      submissionId: "33333333-3333-4333-8333-333333333333",
+      message: "Original requirement",
+    };
+    const first = await repo.save(enquiry);
+    if (!first.ok) throw new Error("Expected initial save");
+    await repo.markSync(first.record.key, "synced");
+    const retry = await repo.save({ ...enquiry, message: "Changed retry payload" });
+    expect(retry.ok && retry.deduped).toBe(true);
+    expect(retry.ok && retry.record.message).toBe("Original requirement");
+    expect(retry.ok && retry.record.syncState).toBe("synced");
+    expect((await repo.pendingSync()).length).toBe(0);
+  });
+
+  it("deduplicates simultaneous identical submissions in memory", async () => {
+    const repo = createMemoryLeadsRepository();
+    const enquiry = {
+      ...draft,
+      kind: "corporate" as const,
+      submissionId: "44444444-4444-4444-8444-444444444444",
+      message: "Single requirement",
+    };
+    const [first, retry] = await Promise.all([repo.save(enquiry), repo.save(enquiry)]);
+    expect(first.ok && retry.ok && first.record.id).toBe(retry.ok ? retry.record.id : "");
+    expect((await repo.pendingSync()).length).toBe(1);
+  });
+
   it("keeps the original consent timestamp on a later submission", async () => {
     const repo = createMemoryLeadsRepository();
     await repo.save(draft);
