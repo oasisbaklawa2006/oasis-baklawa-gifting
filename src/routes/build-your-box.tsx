@@ -76,7 +76,8 @@ function BuildYourBoxPage() {
   const adjust = (productId: string, delta: number) => {
     setSelection((current) => {
       const count = current[productId] ?? 0;
-      if (delta > 0 && filled >= box.slots) {
+      const selectedCount = Object.values(current).reduce((sum, quantity) => sum + quantity, 0);
+      if (delta > 0 && selectedCount + delta > box.slots) {
         toast("Box is full", { description: `The ${box.name} holds ${box.slots} selections.` });
         return current;
       }
@@ -95,7 +96,13 @@ function BuildYourBoxPage() {
 
   const changeBox = (id: string) => {
     const next = hamperBoxes.find((option) => option.id === id)!;
-    if (filled > next.slots) setSelection({});
+    if (filled > next.slots) {
+      const confirmed = window.confirm(
+        "This smaller box cannot fit your selected sweets. Changing boxes will clear your selection. Continue?",
+      );
+      if (!confirmed) return;
+      setSelection({});
+    }
     setBoxId(id);
   };
 
