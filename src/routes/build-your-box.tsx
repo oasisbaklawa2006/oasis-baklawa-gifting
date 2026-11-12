@@ -13,7 +13,6 @@ import { products } from "@/data/catalog";
 import { hamperBoxes, hamperExtras, inr, ribbonColours } from "@/data/checkout";
 import { formatMoney } from "@/lib/format";
 import { noImage } from "@/data/brand";
-import { useShop } from "@/lib/store";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/build-your-box")({
@@ -41,7 +40,6 @@ export const Route = createFileRoute("/build-your-box")({
 type Selection = Record<string, number>;
 
 function BuildYourBoxPage() {
-  const { addToCart, setCartOpen } = useShop();
   const [boxId, setBoxId] = useState(hamperBoxes[1]!.id);
   const [selection, setSelection] = useState<Selection>({});
   const [extras, setExtras] = useState<string[]>([]);
@@ -101,21 +99,6 @@ function BuildYourBoxPage() {
     setBoxId(id);
   };
 
-  const addHamper = () => {
-    if (filled === 0) {
-      toast("Add a few selections first", { description: "Pick at least one sweet for your box." });
-      return;
-    }
-    Object.entries(selection).forEach(([productId, count]) => {
-      const product = products.find((item) => item.id === productId);
-      const variant = product?.variants[0];
-      if (product && variant) addToCart(product.id, variant.id, count);
-    });
-    toast("Hamper added to your bag", {
-      description: `${box.name} · ${filled} selections. Packaging and extras are confirmed at checkout.`,
-    });
-    setCartOpen(true);
-  };
 
   return (
     <div className="container-oasis py-8 md:py-12">
@@ -358,12 +341,16 @@ function BuildYourBoxPage() {
           </dl>
           <Separator className="my-5 bg-border" />
           <div className="flex items-baseline justify-between">
-            <span className="eyebrow">Hamper total</span>
+            <span className="eyebrow">Illustrative hamper total</span>
             <span className="font-display text-xl tabular-nums">{formatMoney(inr(total))}</span>
           </div>
-          <Button size="lg" className="mt-6 w-full" onClick={addHamper}>
-            Add hamper to bag
+          <Button size="lg" className="mt-6 w-full" disabled>
+            Ordering available after final quotation integration
           </Button>
+          <p className="mt-3 text-sm text-muted-foreground" role="status">
+            This is a design preview. Packaging, extras, composition and prices are not yet
+            verified by the authoritative retail quotation service. No order or payment is created.
+          </p>
           <p className="mt-3 text-xs leading-relaxed text-muted-foreground">
             Packaging, ribbon and extras are recorded with your order and confirmed at checkout.
           </p>
