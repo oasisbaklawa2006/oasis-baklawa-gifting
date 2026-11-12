@@ -132,7 +132,7 @@ function BuildAGiftPage() {
           {step === 0 ? (
             <fieldset>
               <legend className="eyebrow">Step 1 — Box or chest</legend>
-              <p className="mt-3 text-sm text-muted-foreground">\n                Selections reset if they exceed the new box capacity.\n              </p>\n              <div className="mt-5 grid gap-4 sm:grid-cols-2">
+              <p className="mt-3 text-sm text-muted-foreground">Oversized selections reset.</p>\n              <div className="mt-5 grid gap-4 sm:grid-cols-2">
                 {giftBoxFormats.map((f) => (
                   <button
                     key={f.id}
