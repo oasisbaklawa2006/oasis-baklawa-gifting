@@ -132,7 +132,7 @@ function BuildAGiftPage() {
           {step === 0 ? (
             <fieldset>
               <legend className="eyebrow">Step 1 — Box or chest</legend>
-              <p className="mt-3 text-sm text-muted-foreground">\n                Switching to a smaller format clears the selected confections if they no longer fit.\n              </p>\n              <div className="mt-5 grid gap-4 sm:grid-cols-2">
+              <p className="mt-3 text-sm text-muted-foreground">\n                Switching to a smaller format clears the selected confections if they no longer\n                fit.\n              </p>\n              <div className="mt-5 grid gap-4 sm:grid-cols-2">
                 {giftBoxFormats.map((f) => (
                   <button
                     key={f.id}
