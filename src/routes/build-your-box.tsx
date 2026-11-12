@@ -344,7 +344,7 @@ function BuildYourBoxPage() {
             <span className="font-display text-xl tabular-nums">{formatMoney(inr(total))}</span>
           </div>
           <Button size="lg" className="mt-6 w-full" disabled>
-            Ordering available after final quotation integration
+            Ordering unavailable
           </Button>
           <p className="mt-3 text-sm text-muted-foreground" role="status">
             This is a design preview. Packaging, extras, composition and prices are not yet verified
