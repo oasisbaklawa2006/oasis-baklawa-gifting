@@ -139,6 +139,10 @@ function BuildAGiftPage() {
                     type="button"
                     onClick={() => {
                       if (f.capacity < used) {
+                        const confirmed = window.confirm(
+                          "This smaller box cannot fit your selected sweets. Changing formats will clear your selection. Continue?",
+                        );
+                        if (!confirmed) return;
                         setSelection({});
                       }
                       setFormatId(f.id);
