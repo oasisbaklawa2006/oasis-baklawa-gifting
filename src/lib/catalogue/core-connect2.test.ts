@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 
-import { readCoreCataloguePage } from "./core-connect2.server";
+import { readCoreCataloguePage, readCoreCatalogueSnapshot } from "./core-connect2.server";
 
 const product = {
   product_id: "a3eb2e01-8432-4f4d-83c5-96f8c652ab4a",
@@ -114,5 +114,74 @@ describe("Core CONNECT-2 public catalogue projection", () => {
     const result = await readCoreCataloguePage({}, config, transport);
     expect(result.status).toBe("unavailable");
     expect(JSON.stringify(result)).not.toContain(config.OASIS_CORE_CONNECT_TOKEN);
+  });
+});
+
+describe("Core CONNECT-2 bounded catalogue snapshot", () => {
+  const second = {
+    ...product,
+    product_id: "e34c7f5e-c85a-4f7d-9679-1ed728f5d602",
+    sku: "SYNTHETIC-SECOND",
+  };
+
+  it("assembles paginated pages using server-only projection", async () => {
+    const offsets: number[] = [];
+    const transport: typeof fetch = async (_url, init) => {
+      const request = JSON.parse(String(init?.body));
+      offsets.push(request.p_params.offset);
+      return Response.json(envelope(request.p_params.offset === 0 ? [product] : [second]));
+    };
+    const result = await readCoreCatalogueSnapshot(
+      { pageSize: 1, maxProducts: 3 },
+      config,
+      transport,
+    );
+    expect(result).toMatchObject({ status: "available", count: 2 });
+    expect(offsets).toEqual([0, 1, 2]);
+  });
+
+  it("fails closed if a later page is rejected, without partial results", async () => {
+    const transport: typeof fetch = async (_url, init) => {
+      const request = JSON.parse(String(init?.body));
+      return request.p_params.offset === 0
+        ? Response.json(envelope([product]))
+        : new Response(null, { status: 403 });
+    };
+    expect(
+      await readCoreCatalogueSnapshot({ pageSize: 1 }, config, transport),
+    ).toMatchObject({ status: "unavailable" });
+  });
+
+  it("rejects duplicate product IDs and case-insensitive SKUs across pages", async () => {
+    for (const duplicate of [product, { ...second, sku: product.sku.toLowerCase() }]) {
+      const transport: typeof fetch = async (_url, init) => {
+        const request = JSON.parse(String(init?.body));
+        return Response.json(envelope([request.p_params.offset === 0 ? product : duplicate]));
+      };
+      expect(
+        await readCoreCatalogueSnapshot({ pageSize: 1 }, config, transport),
+      ).toMatchObject({
+        status: "unavailable",
+        reason: expect.stringContaining("duplicate"),
+      });
+    }
+  });
+
+  it("refuses a saturated snapshot rather than claiming completeness", async () => {
+    const transport: typeof fetch = async () => Response.json(envelope([product]));
+    expect(
+      await readCoreCatalogueSnapshot({ pageSize: 1, maxProducts: 1 }, config, transport),
+    ).toMatchObject({
+      status: "unavailable",
+      reason: expect.stringContaining("bound"),
+    });
+  });
+
+  it("rejects invalid bounds without contacting Core", async () => {
+    const transport = vi.fn();
+    expect(
+      await readCoreCatalogueSnapshot({ pageSize: 101 }, config, transport),
+    ).toMatchObject({ status: "unavailable" });
+    expect(transport).not.toHaveBeenCalled();
   });
 });
