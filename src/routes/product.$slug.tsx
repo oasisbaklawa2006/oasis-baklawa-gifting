@@ -67,19 +67,6 @@ export const Route = createFileRoute("/product/$slug")({
             description: product.shortDescription,
             category: product.categoryCue,
             brand: { "@type": "Brand", name: "Oasis Baklawa" },
-            offers: variant
-              ? {
-                  "@type": "Offer",
-                  price: variant.price.amount,
-                  priceCurrency: variant.price.currency,
-                  availability:
-                    variant.availability === "in-stock"
-                      ? "https://schema.org/InStock"
-                      : variant.availability === "low-stock"
-                        ? "https://schema.org/LimitedAvailability"
-                        : "https://schema.org/PreOrder",
-                }
-              : undefined,
           }),
         },
         {
