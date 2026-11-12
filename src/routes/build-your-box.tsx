@@ -99,7 +99,6 @@ function BuildYourBoxPage() {
     setBoxId(id);
   };
 
-
   return (
     <div className="container-oasis py-8 md:py-12">
       <Breadcrumbs items={[{ label: "Home", to: "/" }, { label: "Build your own box" }]} />
@@ -348,11 +347,11 @@ function BuildYourBoxPage() {
             Ordering available after final quotation integration
           </Button>
           <p className="mt-3 text-sm text-muted-foreground" role="status">
-            This is a design preview. Packaging, extras, composition and prices are not yet
-            verified by the authoritative retail quotation service. No order or payment is created.
+            This is a design preview. Packaging, extras, composition and prices are not yet verified
+            by the authoritative retail quotation service. No order or payment is created.
           </p>
           <p className="mt-3 text-xs leading-relaxed text-muted-foreground">
-            Packaging, ribbon and extras are recorded with your order and confirmed at checkout.
+            Packaging, ribbon and extras require approval and a final quotation before ordering.
           </p>
           <Button variant="outline" className="mt-4 w-full" asChild>
             <Link to="/gifting">Gifting services</Link>
