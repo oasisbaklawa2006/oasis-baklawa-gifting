@@ -57,6 +57,7 @@ describe("leads repository", () => {
     expect(second.ok && second.record.message).toBe("Second corporate gifting enquiry");
     expect(first.ok && second.ok && first.record.id).not.toBe(second.ok ? second.record.id : "");
     expect((await repo.pendingSync()).length).toBe(2);
+    expect(first.ok && first.record.key).not.toBe(second.ok ? second.record.key : "");
   });
 
   it("keeps the original enquiry and sync state on an identical retry", async () => {
