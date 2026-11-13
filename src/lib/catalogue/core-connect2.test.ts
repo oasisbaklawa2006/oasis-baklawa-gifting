@@ -186,7 +186,7 @@ describe("Core CONNECT-2 bounded catalogue snapshot", () => {
   it("rejects a Core page larger than requested, without returning a partial snapshot", async () => {
     const transport: typeof fetch = async () => Response.json(envelope([product, second]));
     const result = await readCoreCatalogueSnapshot(
-      { pageSize: 1, maxProducts: 2 },
+      { pageSize: 1, maxProducts: 10 },
       config,
       transport,
     );
