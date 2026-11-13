@@ -178,7 +178,7 @@ export async function readCoreCataloguePage(
       };
     }
 
-    const products: CoreCatalogueProduct[] = [];
+    if (parsed.data.data.length > limit) {\n      return { status: "unavailable", reason: "Core catalogue page exceeds requested bounds." };\n    }\n\n    const products: CoreCatalogueProduct[] = [];
     for (const row of parsed.data.data) {
       const product = projectWebsiteProduct(row);
       if (!product) {
