@@ -235,13 +235,14 @@ export async function readCoreCatalogueSnapshot(
     if (page.status !== "available") return page;
     for (const product of page.products) {
       const sku = product.sku?.trim().toLowerCase();
-      if (ids.has(product.productId) || (sku && skus.has(sku))) {
+      const productKey = product.productId.toLowerCase();
+      if (ids.has(productKey) || (sku && skus.has(sku))) {
         return {
           status: "unavailable",
           reason: "Core catalogue contains duplicate product identities.",
         };
       }
-      ids.add(product.productId);
+      ids.add(productKey);
       if (sku) skus.add(sku);
       products.push(product);
     }
