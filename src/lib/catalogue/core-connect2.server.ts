@@ -178,6 +178,10 @@ export async function readCoreCataloguePage(
       };
     }
 
+    if (parsed.data.data.length > limit) {
+      return { status: "unavailable", reason: "Core catalogue page exceeds requested bounds." };
+    }
+
     const products: CoreCatalogueProduct[] = [];
     for (const row of parsed.data.data) {
       const product = projectWebsiteProduct(row);
@@ -204,8 +208,10 @@ export async function readCoreCataloguePage(
 }
 
 /**
- * Fetch a bounded, consistent catalogue snapshot without exposing a partial
+ * Fetch a bounded catalogue aggregation without exposing a partial
  * catalogue when Core rejects any page. The last short page terminates paging.
+ * Offset pagination does not guarantee a transactionally consistent Core snapshot;
+ * a future versioned Core projection contract is required for that guarantee.
  * No commercial prices or stock are projected by this contract.
  */
 export async function readCoreCatalogueSnapshot(
