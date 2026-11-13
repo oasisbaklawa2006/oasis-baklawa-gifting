@@ -204,8 +204,8 @@ export async function readCoreCataloguePage(
 }
 
 /**
- * Fetch a bounded, consistent catalogue snapshot without exposing a partial
- * catalogue when Core rejects any page. The last short page terminates paging.
+ * Fetch a bounded catalogue aggregation without exposing a partial
+ * catalogue when Core rejects any page. The last short page terminates paging.\n * Offset pagination does not guarantee a transactionally consistent Core snapshot;\n * a future versioned Core projection contract is required for that guarantee.
  * No commercial prices or stock are projected by this contract.
  */
 export async function readCoreCatalogueSnapshot(
