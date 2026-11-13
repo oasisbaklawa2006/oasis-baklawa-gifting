@@ -157,7 +157,11 @@ describe("Core CONNECT-2 bounded catalogue snapshot", () => {
   });
 
   it("rejects duplicate product IDs and case-insensitive SKUs across pages", async () => {
-    for (const duplicate of [product, { ...second, sku: product.sku.toLowerCase() }]) {
+    for (const duplicate of [
+      product,
+      { ...second, sku: product.sku.toLowerCase() },
+      { ...second, product_id: product.product_id.toUpperCase() },
+    ]) {
       const transport: typeof fetch = async (_url, init) => {
         const request = JSON.parse(String(init?.body));
         return Response.json(envelope([request.p_params.offset === 0 ? product : duplicate]));
