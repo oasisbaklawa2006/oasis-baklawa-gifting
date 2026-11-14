@@ -10,12 +10,10 @@ REVOKE ALL PRIVILEGES ON TABLE
   public.website_catalog_sync_runs
 FROM anon, authenticated;
 
--- Supabase's current default ACLs grant every privilege on new public tables
--- to anon and authenticated. Revoke that default for the roles observed as
--- owners of the current tables and for the Supabase admin migration role.
+-- Restrict future public tables created by postgres. Platform-owned
+-- supabase_admin defaults require a separate supported administrative process;
+-- changing them here would fail under the postgres migration role.
 ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA public
-  REVOKE ALL PRIVILEGES ON TABLES FROM anon, authenticated;
-ALTER DEFAULT PRIVILEGES FOR ROLE supabase_admin IN SCHEMA public
   REVOKE ALL PRIVILEGES ON TABLES FROM anon, authenticated;
 
 -- Fail the migration if any API role still has direct access, or if the
