@@ -15,11 +15,11 @@ jobs:
       contents: read
     steps:
       - name: Checkout exact commit
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           persist-credentials: false
       - name: Block high and critical vulnerable dependencies
-        uses: actions/dependency-review-action@v4
+        uses: actions/dependency-review-action@v5
         with:
           fail-on-severity: high
           comment-summary-in-pr: never
