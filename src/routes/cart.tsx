@@ -9,6 +9,7 @@ import { Separator } from "@/components/ui/separator";
 import { formatMoney } from "@/lib/format";
 import { cartSubtotal, resolveLines, useShop } from "@/lib/store";
 import { noImage } from "@/data/brand";
+import { paymentLaunchPolicy } from "@/payments/launch-policy";
 
 export const Route = createFileRoute("/cart")({
   head: () => ({
@@ -139,13 +140,15 @@ function CartPage() {
               <span className="eyebrow">Estimated total</span>
               <span className="font-display text-xl tabular-nums">{formatMoney(subtotal)}</span>
             </div>
-            <Button size="lg" className="mt-6 w-full" asChild>
-              <Link to="/checkout">Proceed to checkout</Link>
-            </Button>
-            <p className="mt-3 text-xs leading-relaxed text-muted-foreground">
-              Delivery speed, personalisation and payment method are chosen at checkout. No gateway
-              is connected yet, so nothing is charged.
-            </p>
+            {paymentLaunchPolicy.operational ? (
+              <Button size="lg" className="mt-6 w-full" asChild>
+                <Link to="/checkout">Proceed to checkout</Link>
+              </Button>
+            ) : (
+              <p className="mt-6 text-sm text-muted-foreground">
+                Online ordering is currently unavailable.
+              </p>
+            )}
             <Button variant="outline" className="mt-4 w-full" asChild>
               <Link to="/business">Corporate & bulk enquiry</Link>
             </Button>
