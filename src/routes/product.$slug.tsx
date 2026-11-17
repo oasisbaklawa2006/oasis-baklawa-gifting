@@ -29,6 +29,7 @@ import type { Product } from "@/data/types";
 import { cn } from "@/lib/utils";
 import { canonicalUrl, siteUrl } from "@/lib/site-url";
 import { noImage } from "@/data/brand";
+import { paymentLaunchPolicy } from "@/payments/launch-policy";
 
 export const Route = createFileRoute("/product/$slug")({
   loader: ({ params }): { product: Product } => {
@@ -269,14 +270,16 @@ function ProductPage() {
             <Button size="lg" className="min-w-40 flex-1 sm:flex-none" onClick={addToCart}>
               Add to cart
             </Button>
-            <Button
-              size="lg"
-              variant="outline"
-              className="min-w-40 flex-1 sm:flex-none"
-              onClick={addToCart}
-            >
-              Buy now
-            </Button>
+            {paymentLaunchPolicy.operational ? (
+              <Button
+                size="lg"
+                variant="outline"
+                className="min-w-40 flex-1 sm:flex-none"
+                onClick={addToCart}
+              >
+                Buy now
+              </Button>
+            ) : null}
             <WishlistButton productId={product.id} productName={product.name} />
           </div>
 

@@ -24,9 +24,9 @@ import { formatMoney } from "@/lib/format";
 import { track } from "@/lib/analytics";
 import { INDIAN_STATES, isValidGstin, loadAddresses, rememberOrderRef } from "@/lib/account";
 import { placeOrder, priceCart } from "@/lib/commerce.functions";
-import { paymentStatus } from "@/lib/payments.functions";
 import { cartSubtotal, resolveLines, useShop } from "@/lib/store";
 import { cn } from "@/lib/utils";
+import { paymentLaunchPolicy } from "@/payments/launch-policy";
 
 export const Route = createFileRoute("/checkout")({
   head: () => ({
@@ -34,11 +34,10 @@ export const Route = createFileRoute("/checkout")({
       { title: "Checkout — Oasis Baklawa" },
       {
         name: "description",
-        content:
-          "Choose delivery speed, personalise your gift and complete your Oasis Baklawa order securely.",
+        content: "Review checkout availability for your Oasis Baklawa order.",
       },
       { property: "og:title", content: "Checkout — Oasis Baklawa" },
-      { property: "og:description", content: "Delivery, personalisation and payment." },
+      { property: "og:description", content: "Check online ordering availability." },
       { name: "robots", content: "noindex" },
     ],
   }),
@@ -57,20 +56,43 @@ type FieldErrors = Record<string, string>;
 const FORM_ID = "checkout-form";
 
 function CheckoutPage() {
+  // Online checkout requires the certified Core order and payment handoff.
+  if (paymentLaunchPolicy.operational) return <CheckoutForm />;
+
+  return (
+    <div className="container-oasis py-8 md:py-12">
+      <Breadcrumbs
+        items={[{ label: "Home", to: "/" }, { label: "Bag", to: "/cart" }, { label: "Checkout" }]}
+      />
+      <h1 className="mt-6 text-3xl md:text-[2.5rem]">Checkout</h1>
+      <div className="mt-10">
+        <EmptyState
+          title="Online ordering is currently unavailable"
+          description="You can return to your bag and continue browsing."
+          action={
+            <Button asChild>
+              <Link to="/cart">Back to bag</Link>
+            </Button>
+          }
+        />
+      </div>
+    </div>
+  );
+}
+
+function CheckoutForm() {
   const { lines, gift, clearCart: clear } = useShop();
   const navigate = useNavigate();
   const resolved = resolveLines(lines);
   const subtotal = cartSubtotal(resolved);
   const submitOrder = useServerFn(placeOrder);
   const repriceCart = useServerFn(priceCart);
-  const readPaymentStatus = useServerFn(paymentStatus);
 
   const [deliveryId, setDeliveryId] = useState(deliveryOptions[0]!.id);
   const [extras, setExtras] = useState<string[]>([]);
   const [ribbon, setRibbon] = useState(gift.ribbonId || ribbonColours[0]!.id);
   const [region, setRegion] = useState<PaymentRegion>("india");
   const [methodId, setMethodId] = useState(paymentMethods[0]!.id);
-  const [paymentLive, setPaymentLive] = useState<boolean | null>(null);
 
   const [contact, setContact] = useState({ name: "", phone: "", email: "" });
   const [address, setAddress] = useState({
@@ -130,9 +152,6 @@ function CheckoutPage() {
         pincode: saved.pincode,
       });
     }
-    void readPaymentStatus()
-      .then((status) => setPaymentLive(status.live))
-      .catch(() => setPaymentLive(false));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -597,13 +616,6 @@ function CheckoutPage() {
                 );
               })}
             </div>
-
-            {paymentLive === false ? (
-              <p className="mt-5 border border-border bg-utility p-4 text-[0.8125rem] leading-relaxed text-muted-foreground">
-                Card and UPI payment is temporarily unavailable online. You can still complete this
-                form — our team will confirm your order and arrange payment with you directly.
-              </p>
-            ) : null}
 
             {region === "international" ? (
               <div className="mt-5 border border-border bg-utility p-4 text-[0.8125rem] leading-relaxed text-muted-foreground">
