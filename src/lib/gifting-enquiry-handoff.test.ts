@@ -48,14 +48,20 @@ describe("Gifting Enquiries handoff", () => {
   });
 
   it.each([
-    ["an HTML fallback", () => new Response("<html/>", { headers: { "content-type": "text/html" } })],
+    [
+      "an HTML fallback",
+      () => new Response("<html/>", { headers: { "content-type": "text/html" } }),
+    ],
     ["an empty 204", () => new Response(null, { status: 204 })],
     ["a different source ID", () => Response.json({ ...receipt, sourceLeadId: "another-lead" })],
     ["a different queue", () => Response.json({ ...receipt, queue: "another-queue" })],
     ["a provisional 202", () => Response.json(receipt, { status: 202 })],
     ["a rejection", () => Response.json(receipt, { status: 403 })],
   ] as const)("does not record sync on %s", async (_name, response) => {
-    vi.stubGlobal("fetch", vi.fn().mockImplementation(async () => response()));
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockImplementation(async () => response()),
+    );
     await expect(sendGiftingEnquiry(lead, config)).resolves.toMatchObject({ status: "failed" });
   });
 
