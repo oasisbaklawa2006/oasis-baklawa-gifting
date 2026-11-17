@@ -1,9 +1,7 @@
 import type { LeadRecord } from "./persistence/types";
 
 type EnquiryHandoff =
-  | { status: "skipped" }
-  | { status: "synced" }
-  | { status: "failed"; detail: string };
+  { status: "skipped" } | { status: "synced" } | { status: "failed"; detail: string };
 
 export async function sendGiftingEnquiry(
   record: LeadRecord,
@@ -55,7 +53,10 @@ export async function sendGiftingEnquiry(
       return { status: "failed", detail: `Gifting Enquiries returned HTTP ${response.status}.` };
     }
     const contentType = response.headers.get("content-type")?.split(";")[0]?.trim();
-    if ((response.status === 200 || response.status === 201) && contentType === "application/json") {
+    if (
+      (response.status === 200 || response.status === 201) &&
+      contentType === "application/json"
+    ) {
       const receipt: unknown = await response.json().catch(() => null);
       if (
         receipt &&
