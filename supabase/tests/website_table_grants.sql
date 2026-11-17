@@ -20,7 +20,7 @@ BEGIN
   LOOP
     FOREACH browser_role IN ARRAY ARRAY['anon', 'authenticated'] LOOP
       IF has_table_privilege(browser_role, format('public.%I', fixture.table_name),
-          'SELECT, INSERT, UPDATE, DELETE, TRUNCATE, REFERENCES, TRIGGER') THEN
+          'SELECT, INSERT, UPDATE, DELETE, TRUNCATE, REFERENCES, TRIGGER, MAINTAIN') THEN
         RAISE EXCEPTION '% retains table privileges on %', browser_role, fixture.table_name;
       END IF;
 
