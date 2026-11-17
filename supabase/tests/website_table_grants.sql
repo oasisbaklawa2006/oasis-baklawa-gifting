@@ -24,6 +24,11 @@ BEGIN
         RAISE EXCEPTION '% retains table privileges on %', browser_role, fixture.table_name;
       END IF;
 
+      IF has_any_column_privilege(browser_role, format('public.%I', fixture.table_name),
+          'SELECT, INSERT, UPDATE, REFERENCES') THEN
+        RAISE EXCEPTION '% retains column privileges on %', browser_role, fixture.table_name;
+      END IF;
+
       EXECUTE format('SET LOCAL ROLE %I', browser_role);
       BEGIN
         EXECUTE format('SELECT id FROM public.%I LIMIT 1', fixture.table_name);
