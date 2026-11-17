@@ -179,8 +179,14 @@ function RootComponent() {
       <MarketingProvider>
         <ShopProvider>
           <div className="flex min-h-dvh flex-col bg-background">
+            <a
+              href="#content"
+              className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:rounded-md focus:bg-background focus:px-4 focus:py-3 focus:text-foreground focus:outline-2 focus:outline-offset-2 focus:outline-ring"
+            >
+              Skip to main content
+            </a>
             <SiteHeader />
-            <main id="content" className="flex-1">
+            <main id="content" tabIndex={-1} className="flex-1">
               {/* Required: nested routes render here. */}
               <Outlet />
             </main>
