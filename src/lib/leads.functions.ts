@@ -90,7 +90,7 @@ export const submitLead = createServerFn({ method: "POST" })
     const record = outcome.record;
     const { databaseConfigured } = await import("./persistence/database.server");
     const { sendGiftingEnquiry } = await import("./gifting-enquiry-handoff.server");
-    // Only persisted website rows have a stable identity across redeploys.
+    // 1) Forward only durable enquiries with a stable identity across redeploys.
     const handoff = databaseConfigured()
       ? await sendGiftingEnquiry(record, {
           endpoint: process.env["GIFTING_ENQUIRIES_ENDPOINT"],
@@ -99,7 +99,7 @@ export const submitLead = createServerFn({ method: "POST" })
       : { status: "skipped" as const };
     const syncState = handoff.status === "skipped" ? record.syncState : handoff.status;
 
-    // Klaviyo profile, only with marketing consent.
+    // 2) Klaviyo profile, only with marketing consent.
     if (data.marketingConsent) {
       try {
         const { upsertKlaviyoProfile } = await import("./marketing/server-events.server");
