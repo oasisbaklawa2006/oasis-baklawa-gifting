@@ -7,7 +7,7 @@ type EnquiryHandoff =
 
 export async function sendGiftingEnquiry(
   record: LeadRecord,
-  config: { endpoint?: string; token?: string },
+  config: { endpoint?: string | undefined; token?: string | undefined },
 ): Promise<EnquiryHandoff> {
   if (!["contact", "corporate", "wedding", "partnership"].includes(record.kind)) {
     return { status: "skipped" };
@@ -54,7 +54,8 @@ export async function sendGiftingEnquiry(
     if (!response.ok) {
       return { status: "failed", detail: `Gifting Enquiries returned HTTP ${response.status}.` };
     }
-    if (response.headers.get("content-type")?.split(";")[0]?.trim() === "application/json") {
+    const contentType = response.headers.get("content-type")?.split(";")[0]?.trim();
+    if ((response.status === 200 || response.status === 201) && contentType === "application/json") {
       const receipt: unknown = await response.json().catch(() => null);
       if (
         receipt &&
