@@ -1,9 +1,9 @@
 /**
  * REPOSITORY SELECTION (server-only)
  *
- * The project database is the durable store. If it is not configured the
- * in-memory repositories are used and every surface reports the state
- * honestly as `ephemeral` — no code path pretends a lost record was kept.
+ * The project database is the durable store. Without it the shared health
+ * check reports ephemeral storage. Public lead submission requires a durable
+ * repository, while saved-basket recovery can still use memory.
  */
 
 import {
@@ -42,7 +42,7 @@ export async function persistenceHealth(): Promise<PersistenceHealth> {
     durability: leads.durability,
     note: durable
       ? "Enquiries and saved-basket links are stored in the project database and survive restarts and deploys. Records awaiting Oasis Central carry an explicit pending-sync state."
-      : "The project database is not configured, so enquiries and saved-basket links live in server memory and are LOST on restart. Not production-safe.",
+      : "The project database is not configured. Enquiry and subscription forms are unavailable. Saved-basket links use server memory and are lost on restart.",
     leads: await leads.counts(),
     recovery: await recovery.counts(),
   };
