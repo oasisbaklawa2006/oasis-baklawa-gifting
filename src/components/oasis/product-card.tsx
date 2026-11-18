@@ -12,10 +12,11 @@ import type { Product } from "@/data/types";
 type Props = {
   product: Product;
   priority?: boolean;
+  browseOnly?: boolean;
   className?: string;
 };
 
-export function ProductCard({ product, priority = false, className }: Props) {
+export function ProductCard({ product, priority = false, browseOnly = false, className }: Props) {
   const { addToCart, setCartOpen } = useShop();
   const variant = product.variants[0];
   const image = product.images[0];
@@ -62,20 +63,21 @@ export function ProductCard({ product, priority = false, className }: Props) {
           className="absolute right-3 top-3"
         />
 
-        <div className="absolute inset-x-3 bottom-3 opacity-100 transition-opacity duration-300 md:opacity-0 md:group-hover:opacity-100 md:group-focus-within:opacity-100">
-          <button
-            type="button"
-            onClick={() => {
-              if (!variant) return;
-              addToCart(product.id, variant.id, 1);
-              setCartOpen(true);
-              toast.success(`${product.name} added`, { description: variant.label });
-            }}
-            className="h-11 w-full rounded-sm border border-border bg-background/95 text-[0.8125rem] font-medium tracking-wide text-foreground backdrop-blur-[2px] transition-colors hover:bg-espresso hover:text-background"
-          >
-            Quick add
-          </button>
-        </div>
+        {!browseOnly && variant ? (
+          <div className="absolute inset-x-3 bottom-3 opacity-100 transition-opacity duration-300 md:opacity-0 md:group-hover:opacity-100 md:group-focus-within:opacity-100">
+            <button
+              type="button"
+              onClick={() => {
+                  addToCart(product.id, variant.id, 1);
+                setCartOpen(true);
+                toast.success(`${product.name} added`, { description: variant.label });
+              }}
+              className="h-11 w-full rounded-sm border border-border bg-background/95 text-[0.8125rem] font-medium tracking-wide text-foreground backdrop-blur-[2px] transition-colors hover:bg-espresso hover:text-background"
+            >
+              Quick add
+            </button>
+          </div>
+        ) : null}
       </div>
 
       <div className="mt-4 flex flex-1 flex-col gap-1.5">
@@ -90,7 +92,7 @@ export function ProductCard({ product, priority = false, className }: Props) {
           </Link>
         </h3>
         <p className="text-[0.8125rem] text-muted-foreground">{variant?.label}</p>
-        {variant ? (
+        {!browseOnly && variant ? (
           <PriceDisplay
             price={variant.price}
             {...(variant.compareAtPrice ? { compareAtPrice: variant.compareAtPrice } : {})}
