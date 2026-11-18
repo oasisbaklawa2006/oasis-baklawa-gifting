@@ -184,16 +184,25 @@ function RootComponent() {
             <a
               href="#content"
               onClick={() => {
-                if (headerRef.current && mainRef.current) {
-                  mainRef.current.style.scrollMarginTop = `${headerRef.current.offsetHeight}px`;
+                const main = mainRef.current;
+                if (!main) return;
+                if (headerRef.current) {
+                  main.style.scrollMarginTop = `${headerRef.current.offsetHeight}px`;
                 }
+                // Make <main> programmatically focusable only for this skip. A permanent
+                // tabindex="-1" can make iOS Safari restore the top of <main> after Back
+                // (WebKit 272624), so the attribute is removed again as soon as focus leaves.
+                main.setAttribute("tabindex", "-1");
+                main.addEventListener("blur", () => main.removeAttribute("tabindex"), {
+                  once: true,
+                });
               }}
               className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:rounded-md focus:bg-background focus:px-4 focus:py-3 focus:text-foreground focus:outline-2 focus:outline-offset-2 focus:outline-ring"
             >
               Skip to main content
             </a>
             <SiteHeader headerRef={headerRef} />
-            <main ref={mainRef} id="content" tabIndex={-1} className="flex-1 scroll-mt-48">
+            <main ref={mainRef} id="content" className="flex-1 scroll-mt-48">
               {/* Required: nested routes render here. */}
               <Outlet />
             </main>
