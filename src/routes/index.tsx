@@ -74,7 +74,10 @@ function HomePage() {
               </Button>
             }
           />
-          <div className="mt-12 grid grid-cols-2 gap-x-5 gap-y-10 lg:grid-cols-4">
+          <p className="mt-4 text-sm text-muted-foreground">
+            Catalogue preview. Prices are illustrative and ordering is currently unavailable.
+          </p>
+          <div className="mt-8 grid grid-cols-2 gap-x-5 gap-y-10 lg:grid-cols-4">
             {bestSellers.slice(0, 4).map((product) => (
               <ProductCard key={product.id} product={product} />
             ))}
@@ -151,7 +154,10 @@ function HomePage() {
                 </Button>
               }
             />
-            <div className="mt-12 grid grid-cols-2 gap-x-5 gap-y-10 lg:grid-cols-4">
+            <p className="mt-4 text-sm text-muted-foreground">
+              Catalogue preview. Prices are illustrative and ordering is currently unavailable.
+            </p>
+            <div className="mt-8 grid grid-cols-2 gap-x-5 gap-y-10 lg:grid-cols-4">
               {newArrivals.map((product) => (
                 <ProductCard key={product.id} product={product} />
               ))}
