@@ -75,7 +75,7 @@ function HomePage() {
             }
           />
           <p className="mt-4 text-sm text-muted-foreground">
-            Catalogue preview. Prices are illustrative and ordering is currently unavailable.
+            Browse a sample of the Oasis range. Live prices and online ordering are currently unavailable.
           </p>
           <div className="mt-8 grid grid-cols-2 gap-x-5 gap-y-10 lg:grid-cols-4">
             {bestSellers.slice(0, 4).map((product) => (
@@ -155,7 +155,7 @@ function HomePage() {
               }
             />
             <p className="mt-4 text-sm text-muted-foreground">
-              Catalogue preview. Prices are illustrative and ordering is currently unavailable.
+              Browse a sample of the Oasis range. Live prices and online ordering are currently unavailable.
             </p>
             <div className="mt-8 grid grid-cols-2 gap-x-5 gap-y-10 lg:grid-cols-4">
               {newArrivals.map((product) => (
