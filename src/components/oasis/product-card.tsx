@@ -68,7 +68,7 @@ export function ProductCard({ product, priority = false, browseOnly = false, cla
             <button
               type="button"
               onClick={() => {
-                  addToCart(product.id, variant.id, 1);
+                addToCart(product.id, variant.id, 1);
                 setCartOpen(true);
                 toast.success(`${product.name} added`, { description: variant.label });
               }}
