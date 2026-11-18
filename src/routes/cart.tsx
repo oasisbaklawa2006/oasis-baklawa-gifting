@@ -6,7 +6,10 @@ import { EmptyState } from "@/components/oasis/states";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { resolveLines, useShop } from "@/lib/store";
-import { canEnableRetailOrdering, fixtureRetailEvidence } from "@/lib/catalogue/retail-offer-policy";
+import {
+  canEnableRetailOrdering,
+  fixtureRetailEvidence,
+} from "@/lib/catalogue/retail-offer-policy";
 import { noImage } from "@/data/brand";
 import { paymentLaunchPolicy } from "@/payments/launch-policy";
 
@@ -119,13 +122,12 @@ function CartPage() {
           <aside className="h-fit border border-border bg-premium p-6 lg:sticky lg:top-28">
             <h2 className="font-display text-xl">Order summary</h2>
             <p className="mt-3 text-xs leading-relaxed text-muted-foreground">
-              Your saved selection refers to a sample catalogue. Current prices, stock and
-              shipping options have not been verified.
+              Your saved selection uses a sample catalogue. Prices, stock and shipping remain
+              unverified.
             </p>
             <Separator className="my-5 bg-border" />
             <p className="text-sm text-muted-foreground">
-              No subtotal or delivery charge can be shown until the Oasis Core retail quote
-              service has verified this selection.
+              Order totals require an authoritative Oasis Core retail quote.
             </p>
             {orderingAvailable ? (
               <Button size="lg" className="mt-6 w-full" asChild>
