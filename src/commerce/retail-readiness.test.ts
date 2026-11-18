@@ -165,7 +165,10 @@ describe("retail readiness (pending owner approval, not wired to checkout)", () 
     }
     const recent = new Date(NOW.getTime() - 30_000).toISOString();
     expect(
-      decideRetailAction("quote", readiness({ evaluatedAt: recent }), { now: NOW, maxAgeMs: 45_000 }),
+      decideRetailAction("quote", readiness({ evaluatedAt: recent }), {
+        now: NOW,
+        maxAgeMs: 45_000,
+      }),
     ).toEqual({ allowed: true });
   });
 
