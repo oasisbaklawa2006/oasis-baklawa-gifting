@@ -38,7 +38,7 @@ export const Route = createFileRoute("/shop")({
       { property: "og:title", content: "Shop — Oasis Baklawa" },
       {
         property: "og:description",
-        content: "The full Oasis Baklawa range, from signature baklawa to boxed gifting.",
+        content: "Explore Oasis Baklawa, from signature baklawa to boxed gifting.",
       },
     ],
   }),
@@ -209,8 +209,7 @@ function ShopPage() {
           Baklawa, Arabic sweets and gifting
         </h1>
         <p className="mt-5 max-w-xl text-[0.9375rem] leading-relaxed text-muted-foreground">
-          The full range, from the daily baklawa tray to Arabic dates, chocolates, fusion sweets,
-          nuts and boxed gifting.
+          Explore baklawa, Arabic dates, chocolates, fusion sweets, nuts and boxed gifting.
         </p>
       </section>
 
