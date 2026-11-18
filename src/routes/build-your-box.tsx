@@ -10,8 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
 import { products } from "@/data/catalog";
-import { hamperBoxes, hamperExtras, inr, ribbonColours } from "@/data/checkout";
-import { formatMoney } from "@/lib/format";
+import { hamperBoxes, hamperExtras, ribbonColours } from "@/data/checkout";
 import { noImage } from "@/data/brand";
 import { cn } from "@/lib/utils";
 
@@ -52,26 +51,6 @@ function BuildYourBoxPage() {
     [selection],
   );
   const remaining = Math.max(0, box.slots - filled);
-
-  const itemsTotal = useMemo(
-    () =>
-      Object.entries(selection).reduce((sum, [productId, count]) => {
-        const product = products.find((item) => item.id === productId);
-        const price = product?.variants[0]?.price.amount ?? 0;
-        return sum + price * count;
-      }, 0),
-    [selection],
-  );
-
-  const extrasTotal = useMemo(
-    () =>
-      hamperExtras
-        .filter((extra) => extras.includes(extra.id))
-        .reduce((sum, extra) => sum + extra.fee, 0),
-    [extras],
-  );
-
-  const total = box.fee + itemsTotal + extrasTotal;
 
   const adjust = (productId: string, delta: number) => {
     setSelection((current) => {
@@ -145,7 +124,7 @@ function BuildYourBoxPage() {
                       {option.description}
                     </span>
                     <span className="mt-3 text-[0.875rem] tabular-nums">
-                      Packaging {formatMoney(inr(option.fee))}
+                      Packaging quote pending
                     </span>
                   </button>
                 );
@@ -181,7 +160,7 @@ function BuildYourBoxPage() {
                       <p className="eyebrow">{product.categoryCue}</p>
                       <h3 className="mt-1 font-display text-base leading-snug">{product.name}</h3>
                       <p className="mt-1 text-[0.8125rem] text-muted-foreground">
-                        {variant.label} · {formatMoney(variant.price)}
+                        {variant.label} · price on request
                       </p>
                       <div className="mt-auto flex items-center gap-3 pt-3">
                         <button
@@ -246,7 +225,7 @@ function BuildYourBoxPage() {
                       <span className="flex flex-wrap items-baseline justify-between gap-2">
                         <span className="font-display text-base">{extra.name}</span>
                         <span className="text-[0.875rem] tabular-nums">
-                          + {formatMoney(inr(extra.fee))}
+                          Price on request
                         </span>
                       </span>
                       <span className="mt-1 block text-[0.8125rem] leading-relaxed text-muted-foreground">
@@ -324,9 +303,6 @@ function BuildYourBoxPage() {
                     <span className="min-w-0 truncate text-muted-foreground">
                       {count} × {product.name}
                     </span>
-                    <span className="tabular-nums">
-                      {formatMoney(inr((product.variants[0]?.price.amount ?? 0) * count))}
-                    </span>
                   </li>
                 );
               })}
@@ -336,20 +312,20 @@ function BuildYourBoxPage() {
           <dl className="space-y-3 text-[0.875rem]">
             <div className="flex justify-between gap-4">
               <dt className="text-muted-foreground">Packaging</dt>
-              <dd className="tabular-nums">{formatMoney(inr(box.fee))}</dd>
+              <dd className="text-muted-foreground">Quote pending</dd>
             </div>
             <div className="flex justify-between gap-4">
               <dt className="text-muted-foreground">Extras</dt>
-              <dd className="tabular-nums">
-                {extrasTotal === 0 ? "None" : formatMoney(inr(extrasTotal))}
+              <dd className="text-muted-foreground">
+                {extras.length === 0 ? "None" : "Quote pending"}
               </dd>
             </div>
           </dl>
           <Separator className="my-5 bg-border" />
-          <div className="flex items-baseline justify-between">
-            <span className="eyebrow">Illustrative hamper total</span>
-            <span className="font-display text-xl tabular-nums">{formatMoney(inr(total))}</span>
-          </div>
+          <p className="text-sm text-muted-foreground">
+            A verified hamper quote will be available after catalogue, packaging and fulfilment
+            approval.
+          </p>
           <Button size="lg" className="mt-6 w-full" disabled>
             Ordering unavailable
           </Button>
