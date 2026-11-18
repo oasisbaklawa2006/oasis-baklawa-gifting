@@ -157,7 +157,7 @@ function HomePage() {
             />
             <p className="mt-4 text-sm text-muted-foreground">
               Browse a sample of the Oasis range. Live prices and online ordering are currently
-            unavailable.
+              unavailable.
             </p>
             <div className="mt-8 grid grid-cols-2 gap-x-5 gap-y-10 lg:grid-cols-4">
               {newArrivals.map((product) => (
