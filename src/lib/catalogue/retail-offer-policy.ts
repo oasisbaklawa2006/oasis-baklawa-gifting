@@ -23,11 +23,7 @@ export const fixtureRetailEvidence: RetailOfferEvidence = {
 };
 
 export function canDisplayLiveRetailPrice(evidence: RetailOfferEvidence): boolean {
-  return (
-    evidence.source === "core" &&
-    evidence.publicationApproved &&
-    evidence.priceVerified
-  );
+  return evidence.source === "core" && evidence.publicationApproved && evidence.priceVerified;
 }
 
 export function canEnableRetailOrdering(evidence: RetailOfferEvidence): boolean {
