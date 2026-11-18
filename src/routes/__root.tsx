@@ -18,7 +18,7 @@ import { CartDrawer } from "@/components/layout/cart-drawer";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { Toaster } from "@/components/ui/sonner";
 import { Button } from "@/components/ui/button";
-import { siteUrl } from "@/lib/site-url";
+import { canonicalUrl, siteUrl } from "@/lib/site-url";
 import { analyticsConfig } from "@/config/integrations";
 import { track } from "@/lib/analytics";
 import { MarketingProvider } from "@/lib/marketing/runtime";
@@ -79,7 +79,7 @@ function ErrorComponent({ error, reset }: { error: unknown; reset: () => void })
 }
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
-  head: () => ({
+  head: ({ matches }) => ({
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
@@ -97,6 +97,9 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         : []),
     ],
     links: [
+      // Self-referencing canonical for every route (query strings and fragments excluded).
+      // Routes that declare their own canonical override this entry.
+      { rel: "canonical", href: canonicalUrl(matches[matches.length - 1]?.pathname ?? "/") },
       { rel: "stylesheet", href: appCss },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },

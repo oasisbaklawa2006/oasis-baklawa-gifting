@@ -8,7 +8,7 @@ import { EmptyState } from "@/components/oasis/states";
 import { NewsletterModule } from "@/components/oasis/newsletter";
 import { stores } from "@/data/site";
 import { brand, contact } from "@/data/brand";
-import { siteUrl } from "@/lib/site-url";
+import { canonicalUrl, siteUrl } from "@/lib/site-url";
 import { track } from "@/lib/analytics";
 import { useEffect } from "react";
 
@@ -24,7 +24,7 @@ export const Route = createFileRoute("/stores")({
       { property: "og:title", content: "Stores — Oasis Baklawa" },
       { property: "og:description", content: "Oasis Baklawa store locations and services." },
     ],
-    links: [{ rel: "canonical", href: "/stores" }],
+    links: [{ rel: "canonical", href: canonicalUrl("/stores") }],
     scripts: [
       {
         type: "application/ld+json",
