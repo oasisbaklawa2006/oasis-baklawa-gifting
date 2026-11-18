@@ -1,20 +1,15 @@
 import { Link } from "@tanstack/react-router";
 import { X } from "lucide-react";
 
-import { PriceDisplay } from "@/components/oasis/price-display";
 import { QuantityControl } from "@/components/oasis/quantity-control";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetFooter, SheetHeader, SheetTitle } from "@/components/ui/sheet";
-import { formatMoney } from "@/lib/format";
-import { cartSubtotal, resolveLines, useShop } from "@/lib/store";
+import { resolveLines, useShop } from "@/lib/store";
 import { noImage } from "@/data/brand";
 
 export function CartDrawer() {
   const { lines, cartOpen, setCartOpen, setQuantity, removeLine, gift } = useShop();
-  /** Demo threshold only — not a live shipping policy. */
-  const DEMO_FREE_SHIPPING_THRESHOLD = 2500;
   const resolved = resolveLines(lines);
-  const subtotal = cartSubtotal(resolved);
 
   return (
     <Sheet open={cartOpen} onOpenChange={setCartOpen}>
@@ -39,7 +34,7 @@ export function CartDrawer() {
         ) : (
           <>
             <ul className="flex-1 divide-y divide-border overflow-y-auto px-5">
-              {resolved.map(({ line, product, variant, lineTotal }) => (
+              {resolved.map(({ line, product, variant }) => (
                 <li key={`${line.productId}-${line.variantId}`} className="flex gap-4 py-5">
                   <Link
                     to="/product/$slug"
@@ -78,7 +73,7 @@ export function CartDrawer() {
                         onChange={(q) => setQuantity(line.productId, line.variantId, q)}
                         className="h-9"
                       />
-                      <PriceDisplay price={lineTotal} size="sm" />
+                      <span className="text-xs text-muted-foreground">Price unavailable</span>
                     </div>
                   </div>
                 </li>
@@ -103,39 +98,9 @@ export function CartDrawer() {
                   </div>
                 ) : null}
 
-                <div>
-                  <div className="flex items-baseline justify-between text-xs text-muted-foreground">
-                    <span>Demo free-delivery progress</span>
-                    <span className="tabular-nums">
-                      {Math.min(
-                        100,
-                        Math.round((subtotal.amount / DEMO_FREE_SHIPPING_THRESHOLD) * 100),
-                      )}
-                      %
-                    </span>
-                  </div>
-                  <div
-                    className="mt-2 h-1 w-full overflow-hidden rounded-full bg-border"
-                    role="progressbar"
-                    aria-label="Demo free-delivery progress"
-                    aria-valuemin={0}
-                    aria-valuemax={100}
-                    aria-valuenow={Math.min(
-                      100,
-                      Math.round((subtotal.amount / DEMO_FREE_SHIPPING_THRESHOLD) * 100),
-                    )}
-                  >
-                    <div
-                      className="h-full bg-gold transition-[width] duration-200 ease-out"
-                      style={{
-                        width: `${Math.min(100, (subtotal.amount / DEMO_FREE_SHIPPING_THRESHOLD) * 100)}%`,
-                      }}
-                    />
-                  </div>
-                  <p className="mt-1 text-xs text-muted-foreground">
-                    Demonstration threshold, configurable later. No delivery offer is in force.
-                  </p>
-                </div>
+                <p className="text-xs leading-relaxed text-muted-foreground">
+                  Live prices and delivery offers are not published for this sample catalogue.
+                </p>
 
                 <div className="rounded-sm border border-dashed border-border p-4 text-left">
                   <p className="eyebrow">Add to your gift</p>
@@ -144,13 +109,11 @@ export function CartDrawer() {
                   </p>
                 </div>
 
-                <div className="flex items-baseline justify-between">
-                  <span className="eyebrow">Subtotal</span>
-                  <span className="font-medium tabular-nums">{formatMoney(subtotal)}</span>
-                </div>
+                <p className="text-sm text-muted-foreground">
+                  Order totals will be shown only after authoritative Core retail pricing is available.
+                </p>
                 <p className="text-xs text-muted-foreground">
-                  Taxes and delivery are not calculated in this build. Checkout is not connected
-                  yet.
+                  Online ordering is currently unavailable.
                 </p>
                 <div className="grid gap-2">
                   <Button asChild size="lg" onClick={() => setCartOpen(false)}>
