@@ -485,7 +485,9 @@ function ProductPage() {
           <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3">
             <div className="min-w-0">
               <p className="truncate text-[0.8125rem]">{product.name}</p>
-              {livePricePublished && variant ? <PriceDisplay price={variant.price} size="sm" /> : null}
+              {livePricePublished && variant ? (
+                <PriceDisplay price={variant.price} size="sm" />
+              ) : null}
             </div>
             <Button onClick={addToCart} className="shrink-0">
               Add to cart
