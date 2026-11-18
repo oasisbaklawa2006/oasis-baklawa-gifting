@@ -224,9 +224,7 @@ function BuildYourBoxPage() {
                     <span className="min-w-0 flex-1">
                       <span className="flex flex-wrap items-baseline justify-between gap-2">
                         <span className="font-display text-base">{extra.name}</span>
-                        <span className="text-[0.875rem] tabular-nums">
-                          Price on request
-                        </span>
+                        <span className="text-[0.875rem] tabular-nums">Price on request</span>
                       </span>
                       <span className="mt-1 block text-[0.8125rem] leading-relaxed text-muted-foreground">
                         {extra.description}

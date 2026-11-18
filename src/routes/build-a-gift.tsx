@@ -9,12 +9,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 import { products } from "@/data/catalog";
-import {
-  GIFT_MESSAGE_MAX,
-  giftBoxFormats,
-  ribbonFinishes,
-  sealFinishes,
-} from "@/data/gifting";
+import { GIFT_MESSAGE_MAX, giftBoxFormats, ribbonFinishes, sealFinishes } from "@/data/gifting";
 import { noImage } from "@/data/brand";
 import { canonicalUrl, siteUrl } from "@/lib/site-url";
 
