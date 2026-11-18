@@ -8,7 +8,7 @@ import {
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
-import { useEffect, type ReactNode } from "react";
+import { useEffect, useRef, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
@@ -168,6 +168,8 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const headerRef = useRef<HTMLElement>(null);
+  const mainRef = useRef<HTMLElement>(null);
   const pathname = useRouterState({ select: (s) => s.location.pathname });
 
   useEffect(() => {
@@ -181,12 +183,17 @@ function RootComponent() {
           <div className="flex min-h-dvh flex-col bg-background">
             <a
               href="#content"
+              onClick={() => {
+                if (headerRef.current && mainRef.current) {
+                  mainRef.current.style.scrollMarginTop = `${headerRef.current.offsetHeight}px`;
+                }
+              }}
               className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:rounded-md focus:bg-background focus:px-4 focus:py-3 focus:text-foreground focus:outline-2 focus:outline-offset-2 focus:outline-ring"
             >
               Skip to main content
             </a>
-            <SiteHeader />
-            <main id="content" tabIndex={-1} className="flex-1">
+            <SiteHeader headerRef={headerRef} />
+            <main ref={mainRef} id="content" tabIndex={-1} className="flex-1 scroll-mt-48">
               {/* Required: nested routes render here. */}
               <Outlet />
             </main>
