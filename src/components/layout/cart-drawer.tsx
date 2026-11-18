@@ -110,7 +110,7 @@ export function CartDrawer() {
                 </div>
 
                 <p className="text-sm text-muted-foreground">
-                  Order totals will be shown only after authoritative Core retail pricing is available.
+                  Order totals require authoritative Core retail pricing.
                 </p>
                 <p className="text-xs text-muted-foreground">
                   Online ordering is currently unavailable.
