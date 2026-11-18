@@ -77,6 +77,8 @@ export function decideRetailAction(
   const evaluatedAt = Date.parse(readiness.evaluatedAt);
   const now = (options.now ?? new Date()).getTime();
   const maxAge = options.maxAgeMs ?? DEFAULT_MAX_READINESS_AGE_MS;
+  // An invalid clock or limit makes every comparison false, which would read as "fresh": block instead.
+  if (!Number.isFinite(now) || !Number.isFinite(maxAge) || maxAge < 0) return blocked("readiness_stale");
   if (!Number.isFinite(evaluatedAt) || evaluatedAt > now + 5_000 || now - evaluatedAt > maxAge) {
     return blocked("readiness_stale");
   }

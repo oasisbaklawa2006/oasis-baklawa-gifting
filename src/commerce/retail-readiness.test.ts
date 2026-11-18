@@ -153,6 +153,22 @@ describe("retail readiness (pending owner approval, not wired to checkout)", () 
     });
   });
 
+  it("blocks when the reference clock or the age limit is not a finite number", () => {
+    const stale = new Date(NOW.getTime() - 86_400_000).toISOString();
+    expect(
+      decideRetailAction("quote", readiness({ evaluatedAt: stale }), { now: new Date(Number.NaN) }),
+    ).toMatchObject({ allowed: false, reason: "readiness_stale" });
+    for (const maxAgeMs of [Number.NaN, Number.POSITIVE_INFINITY, -1]) {
+      expect(
+        decideRetailAction("quote", readiness({ evaluatedAt: stale }), { now: NOW, maxAgeMs }),
+      ).toMatchObject({ allowed: false, reason: "readiness_stale" });
+    }
+    const recent = new Date(NOW.getTime() - 30_000).toISOString();
+    expect(
+      decideRetailAction("quote", readiness({ evaluatedAt: recent }), { now: NOW, maxAgeMs: 45_000 }),
+    ).toEqual({ allowed: true });
+  });
+
   it("rejects unknown actions even when the answer is fully approved", () => {
     for (const action of ["refunds", "", "__proto__", "constructor", "teleport"]) {
       expect(decideRetailAction(action, readiness(), { now: NOW })).toMatchObject({
