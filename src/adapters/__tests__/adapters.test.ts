@@ -141,6 +141,22 @@ describe("shipping", () => {
     expect(normalizeCourierStatus("Cancelled by seller")).toBe("cancelled");
   });
 
+  it("keeps delivery after an earlier failure as delivered, and pending proof as not delivered", () => {
+    // CodeRabbit findings on #47: both were regressions introduced by the first version of this fix.
+    expect(normalizeCourierStatus("Delivered after failed attempt")).toBe("delivered");
+    expect(normalizeCourierStatus("Delivered after 2 failed attempts")).toBe("delivered");
+    expect(normalizeCourierStatus("Proof of delivery pending")).toBeNull();
+    expect(normalizeCourierStatus("POD awaited")).toBeNull();
+    expect(normalizeCourierStatus("Proof of delivery captured")).toBe("delivered");
+    expect(normalizeCourierStatus("POD received")).toBe("delivered");
+    // the negatives must still win
+    expect(normalizeCourierStatus("Not delivered")).toBe("failed");
+    expect(normalizeCourierStatus("Undelivered")).toBe("failed");
+    expect(normalizeCourierStatus("RTO Delivered")).toBe("failed");
+    expect(normalizeCourierStatus("Delivery failed")).toBe("failed");
+    expect(normalizeCourierStatus("Dispatch failed")).toBe("failed");
+  });
+
   it("still maps the genuine positive statuses", () => {
     expect(normalizeCourierStatus("Delivered")).toBe("delivered");
     expect(normalizeCourierStatus("Delivered to neighbour")).toBe("delivered");

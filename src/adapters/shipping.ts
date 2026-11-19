@@ -64,22 +64,27 @@ export interface ShippingAdapter {
 /* ---------------- Courier status normalisation ---------------- */
 
 /**
- * Courier text is free-form, so the order of these rules is part of the contract: problem states are
- * matched FIRST. Otherwise "Undelivered", "Not delivered" or "RTO Delivered" would read as "delivered"
- * and tell a customer that a failed or returned parcel arrived. Word boundaries stop substrings such as
- * "pod" inside another word from matching. Anything unrecognised returns null, never a guess.
+ * Courier text is free-form, so the order of these rules is part of the contract. Problem states that
+ * are definitively negative (RTO, undelivered, not delivered, lost, damaged) are matched FIRST, so
+ * "Undelivered", "Not delivered" or "RTO Delivered" can never read as "delivered". A status that LEADS
+ * with "Delivered" is affirmative even when it mentions an earlier failure ("Delivered after failed
+ * attempt"), so that rule runs before the bare "failed" rule. Proof of delivery counts only with
+ * completion wording: "Proof of delivery pending" is not a delivery. Word boundaries stop substrings
+ * from matching. Anything unrecognised returns null, never a guess.
  */
 const STATUS_MAP: Array<[RegExp, OrderStage | null]> = [
   [/\b(cancel(l?ed|lation)?)\b/i, "cancelled"],
-  [
-    /\b(rto|return(ed)?(\s+to\s+origin)?|undelivered|not\s+delivered|failed|lost|damaged)\b/i,
-    "failed",
-  ],
+  [/\b(rto|return(ed)?(\s+to\s+origin)?|undelivered|not\s+delivered|lost|damaged)\b/i, "failed"],
+  [/^\s*delivered\b/i, "delivered"],
+  [/\bfailed\b/i, "failed"],
   // "Not dispatched / shipped / picked up" is ambiguous ("not yet"), so it is neither a failure nor progress.
   [/\bnot\s+(yet\s+)?(dispatched|shipped|picked\s*up)\b/i, null],
   [/\bpickup\s*scheduled\b|\bawaiting\s*pickup\b|\bmanifest(ed)?\b/i, "packed"],
   [/\bout\s*for\s*delivery\b|\bofd\b/i, "out_for_delivery"],
-  [/\bdelivered\b|\bproof\s+of\s+delivery\b|\bpod\b/i, "delivered"],
+  [
+    /\bdelivered\b|\b(proof\s+of\s+delivery|pod)\s+(captured|received|obtained|uploaded|available)\b/i,
+    "delivered",
+  ],
   [/\bpicked\s*up\b|\bin\s*transit\b|\bshipped\b|\bdispatch(ed)?\b/i, "dispatched"],
 ];
 
