@@ -3,7 +3,7 @@
  *
  * Every capture surface (newsletter, contact, corporate, wedding, rewards,
  * partnership) calls this. The record is persisted durably first, then
- * forwarded to Appverse/Central and Klaviyo when those credentials exist. The
+ * handed off to Central for enquiries and to Klaviyo when consent is present. The
  * UI is told exactly what happened — a queued record is reported as queued,
  * never as "sent", and a failed write is never reported as success.
  */
@@ -88,40 +88,16 @@ export const submitLead = createServerFn({ method: "POST" })
     }
 
     const record = outcome.record;
-    let syncState: "pending_sync" | "synced" | "failed" = "pending_sync";
-    let syncDetail: string | undefined;
-
-    // 1) Appverse / Central is the operational authority for leads.
-    const baseUrl = (
-      process.env["APPVERSE_BASE_URL"] ??
-      process.env["VITE_APPVERSE_BASE_URL"] ??
-      ""
-    ).replace(/\/+$/, "");
-    if (baseUrl) {
-      try {
-        const response = await fetch(`${baseUrl}/v1/leads`, {
-          method: "POST",
-          // Stable per-record key: a retried handoff is never a second lead.
-          headers: { "content-type": "application/json", "idempotency-key": record.id },
-          body: JSON.stringify({
-            kind: record.kind,
-            email: record.email ?? null,
-            phone: record.phone ?? null,
-            name: record.name ?? null,
-            company: record.company ?? null,
-            message: record.message ?? null,
-            source: record.source,
-            consent: record.consent,
-            attribution: record.attribution,
-          }),
-        });
-        syncState = response.ok ? "synced" : "failed";
-        if (!response.ok) syncDetail = `Central responded ${response.status}`;
-      } catch (error) {
-        syncState = "failed";
-        syncDetail = (error as Error).message;
-      }
-    }
+    const { databaseConfigured } = await import("./persistence/database.server");
+    const { sendGiftingEnquiry } = await import("./gifting-enquiry-handoff.server");
+    // 1) Forward only durable enquiries with a stable identity across redeploys.
+    const handoff = databaseConfigured()
+      ? await sendGiftingEnquiry(record, {
+          endpoint: process.env["GIFTING_ENQUIRIES_ENDPOINT"],
+          token: process.env["GIFTING_ENQUIRIES_TOKEN"],
+        })
+      : { status: "skipped" as const };
+    const syncState = handoff.status === "skipped" ? record.syncState : handoff.status;
 
     // 2) Klaviyo profile, only with marketing consent.
     if (data.marketingConsent) {
@@ -151,7 +127,13 @@ export const submitLead = createServerFn({ method: "POST" })
       }
     }
 
-    await markSync(record.key, syncState, syncDetail);
+    if (handoff.status !== "skipped") {
+      await markSync(
+        record.key,
+        handoff.status,
+        handoff.status === "failed" ? handoff.detail : undefined,
+      );
+    }
     return { status: "saved", deduped: outcome.deduped, syncState };
   });
 
