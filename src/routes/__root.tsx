@@ -18,7 +18,7 @@ import { CartDrawer } from "@/components/layout/cart-drawer";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { Toaster } from "@/components/ui/sonner";
 import { Button } from "@/components/ui/button";
-import { canonicalUrl, siteUrl } from "@/lib/site-url";
+import { canonicalLinks, siteUrl } from "@/lib/site-url";
 import { analyticsConfig } from "@/config/integrations";
 import { track } from "@/lib/analytics";
 import { MarketingProvider } from "@/lib/marketing/runtime";
@@ -97,9 +97,9 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         : []),
     ],
     links: [
-      // Self-referencing canonical for every route (query strings and fragments excluded).
-      // Routes that declare their own canonical override this entry.
-      { rel: "canonical", href: canonicalUrl(matches[matches.length - 1]?.pathname ?? "/") },
+      // Self-referencing canonical for every route, only when an approved origin is configured at build time
+      // (see canonicalLinks). Routes that declare their own emit the identical tag, which the router merges.
+      ...canonicalLinks(matches[matches.length - 1]?.pathname ?? "/"),
       { rel: "stylesheet", href: appCss },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },

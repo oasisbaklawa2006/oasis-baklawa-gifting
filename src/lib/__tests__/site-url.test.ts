@@ -1,6 +1,6 @@
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { normalizePath, siteUrl } from "../site-url";
+import { canonicalLinks, normalizePath, siteUrl } from "../site-url";
 
 describe("normalizePath", () => {
   it("keeps the root path", () => {
@@ -23,5 +23,43 @@ describe("siteUrl", () => {
 
   it("uses the request origin when one is supplied", () => {
     expect(siteUrl("/about/", "https://example.test/anything")).toBe("https://example.test/about");
+  });
+});
+
+describe("canonicalLinks", () => {
+  afterEach(() => vi.unstubAllEnvs());
+
+  it("emits no canonical when no approved origin is configured at build time", () => {
+    vi.stubEnv("VITE_SITE_URL", "");
+    expect(canonicalLinks("/about")).toEqual([]);
+  });
+
+  it("never derives a canonical from a runtime-only SITE_URL (the client bundle cannot see it)", () => {
+    vi.stubEnv("VITE_SITE_URL", "");
+    vi.stubEnv("SITE_URL", "https://runtime-only.example.invalid");
+    expect(canonicalLinks("/about")).toEqual([]);
+  });
+
+  it("emits exactly one absolute canonical on the approved origin", () => {
+    vi.stubEnv("VITE_SITE_URL", "https://approved.example.invalid/");
+    expect(canonicalLinks("/about")).toEqual([
+      { rel: "canonical", href: "https://approved.example.invalid/about" },
+    ]);
+  });
+
+  it("normalises the path and excludes query strings and fragments", () => {
+    vi.stubEnv("VITE_SITE_URL", "https://approved.example.invalid");
+    expect(canonicalLinks("/shop//?q=baklawa#top")[0]?.href).toBe(
+      "https://approved.example.invalid/shop",
+    );
+    expect(canonicalLinks("/")[0]?.href).toBe("https://approved.example.invalid/");
+    expect(canonicalLinks("product/assorted-baklawa/")[0]?.href).toBe(
+      "https://approved.example.invalid/product/assorted-baklawa",
+    );
+  });
+
+  it("ignores an unparseable origin instead of emitting a broken canonical", () => {
+    vi.stubEnv("VITE_SITE_URL", "http://");
+    expect(canonicalLinks("/about")).toEqual([]);
   });
 });
