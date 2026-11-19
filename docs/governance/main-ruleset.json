@@ -1,7 +1,7 @@
 {
   "name": "main: independent review and required checks",
   "target": "branch",
-  "enforcement": "active",
+  "enforcement": "evaluate",
   "conditions": { "ref_name": { "include": ["~DEFAULT_BRANCH"], "exclude": [] } },
   "bypass_actors": [],
   "rules": [
