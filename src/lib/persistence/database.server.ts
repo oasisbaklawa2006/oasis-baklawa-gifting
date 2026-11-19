@@ -196,7 +196,8 @@ export const databaseLeadsRepository: LeadsRepository = {
           sync_detail: detail ?? null,
           synced_at: state === "synced" ? new Date().toISOString() : null,
         })
-        .eq("dedupe_key", key);
+        .eq("dedupe_key", key)
+        .neq("sync_state", "synced");
     } catch {
       /* the record is already stored; a sync-state write failure never loses it */
     }

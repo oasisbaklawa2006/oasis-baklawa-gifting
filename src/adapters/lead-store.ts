@@ -55,9 +55,9 @@ registerAdapter({
   id: "lead-store:appverse",
   domain: "lead-store",
   provider: "appverse",
-  label: "Oasis Central / Appverse queue (authoritative, future)",
-  capabilities: ["dedupe", "sync-state", "durable-persistence", "replay"],
-  requiredEnv: ["APPVERSE_BASE_URL", "APPVERSE_API_KEY"],
+  label: "Central Gifting Enquiries handoff",
+  capabilities: ["dedupe", "sync-state", "receipt-validation"],
+  requiredEnv: ["GIFTING_ENQUIRIES_ENDPOINT", "GIFTING_ENQUIRIES_TOKEN"],
   fallback: "Records stay in the project database with an explicit pending-sync state.",
 });
 
