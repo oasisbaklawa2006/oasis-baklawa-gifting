@@ -17,11 +17,45 @@ jobs:
     name: Typecheck, lint, tests, build and tracked-env boundary
     runs-on: ubuntu-24.04
     timeout-minutes: 30
+    services:
+      postgres:
+        image: postgres:17.6
+        env:
+          POSTGRES_HOST_AUTH_METHOD: trust
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 12
     steps:
       - name: Checkout exact commit
         uses: actions/checkout@v7
         with:
           persist-credentials: false
+      - name: Replay website database migrations and verify role access
+        env:
+          POSTGRES_CONTAINER: ${{ job.services.postgres.id }}
+        run: |
+          set -euo pipefail
+
+          db() {
+            docker exec -i "$POSTGRES_CONTAINER" psql -X -U postgres -v ON_ERROR_STOP=1 "$@"
+          }
+
+          db <<'SQL'
+          CREATE ROLE anon;
+          CREATE ROLE authenticated;
+          CREATE ROLE service_role BYPASSRLS;
+          ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA public
+            GRANT ALL ON TABLES TO anon, authenticated, service_role;
+          SQL
+
+          for migration in supabase/migrations/*.sql; do
+            echo "Replaying $migration"
+            db --single-transaction --file=- < "$migration"
+          done
+
+          db --single-transaction --file=- < supabase/tests/website_table_grants.sql
       - name: Set up Node
         uses: actions/setup-node@v7
         with:
