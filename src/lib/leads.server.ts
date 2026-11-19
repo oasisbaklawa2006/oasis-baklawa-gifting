@@ -27,7 +27,11 @@ export type { LeadDraft, LeadKind, LeadRecord, LeadSyncState, SaveLeadOutcome };
 export { dedupeKey };
 
 export async function saveLead(draft: LeadDraft): Promise<SaveLeadOutcome> {
-  return leadsRepository().save(draft);
+  const repository = leadsRepository();
+  if (repository.durability !== "durable") {
+    return { ok: false, reason: "Durable lead storage is not configured." };
+  }
+  return repository.save(draft);
 }
 
 export async function markSync(key: string, state: LeadSyncState, detail?: string): Promise<void> {
