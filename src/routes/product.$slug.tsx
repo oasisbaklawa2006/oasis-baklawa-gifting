@@ -305,7 +305,13 @@ function ProductPage() {
                 ? [{ icon: ShieldCheck, label: "Secure payments", detail: "Encrypted checkout" }]
                 : []),
               { icon: PackageCheck, label: "Careful packing", detail: "Rigid box with inner tray" },
-              { icon: Truck, label: "Delivery", detail: "Estimate by PIN code below" },
+              {
+                icon: Truck,
+                label: "Delivery",
+                detail: commerceOrderingAvailable
+                  ? "Estimate by PIN code below"
+                  : "Contact Oasis to confirm delivery availability",
+              },
             ].map(({ icon: Icon, label, detail }) => (
               <li key={label} className="flex gap-3">
                 <Icon className="mt-0.5 size-4 shrink-0 text-gold" aria-hidden="true" />
