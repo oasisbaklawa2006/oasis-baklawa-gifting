@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, type Ref } from "react";
 import { Link } from "@tanstack/react-router";
 import { Heart, Menu, Search, ShoppingBag, User, ChevronDown } from "lucide-react";
 
@@ -128,11 +128,14 @@ function MegaMenu({
   );
 }
 
-export function SiteHeader() {
+export function SiteHeader({ headerRef }: { headerRef?: Ref<HTMLElement> } = {}) {
   const [open, setOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-50 border-b border-border bg-background/95 backdrop-blur-[6px]">
+    <header
+      ref={headerRef}
+      className="sticky top-0 z-50 border-b border-border bg-background/95 backdrop-blur-[6px]"
+    >
       <AnnouncementBar />
 
       <div className="container-oasis grid h-16 grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 lg:hidden">

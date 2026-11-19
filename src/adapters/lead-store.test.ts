@@ -5,8 +5,8 @@ import { afterEach, describe, expect, it } from "vitest";
 import { databaseStoreConfigured, leadStoreDurability } from "./lead-store";
 
 const keys = [
-  "APPVERSE_BASE_URL",
-  "APPVERSE_API_KEY",
+  "GIFTING_ENQUIRIES_ENDPOINT",
+  "GIFTING_ENQUIRIES_TOKEN",
   "SUPABASE_URL",
   "SUPABASE_SERVICE_ROLE_KEY",
 ] as const;
@@ -22,8 +22,8 @@ afterEach(() => {
 
 describe("lead storage and operational sync truth", () => {
   it("never labels in-memory storage durable just because a Central adapter is configured", () => {
-    process.env["APPVERSE_BASE_URL"] = "https://example.invalid";
-    process.env["APPVERSE_API_KEY"] = "synthetic-only";
+    process.env["GIFTING_ENQUIRIES_ENDPOINT"] = "https://example.invalid";
+    process.env["GIFTING_ENQUIRIES_TOKEN"] = "synthetic-only";
     process.env["SUPABASE_URL"] = "https://example.invalid";
     delete process.env["SUPABASE_SERVICE_ROLE_KEY"];
 
