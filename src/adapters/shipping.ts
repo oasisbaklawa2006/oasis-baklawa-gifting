@@ -63,13 +63,24 @@ export interface ShippingAdapter {
 
 /* ---------------- Courier status normalisation ---------------- */
 
-const STATUS_MAP: Array<[RegExp, OrderStage]> = [
-  [/pickup\s*scheduled|awaiting\s*pickup|manifest/i, "packed"],
-  [/picked\s*up|in\s*transit|shipped|dispatch/i, "dispatched"],
-  [/out\s*for\s*delivery|ofd/i, "out_for_delivery"],
-  [/delivered|pod/i, "delivered"],
-  [/rto|returned|undelivered|failed/i, "failed"],
-  [/cancel/i, "cancelled"],
+/**
+ * Courier text is free-form, so the order of these rules is part of the contract: problem states are
+ * matched FIRST. Otherwise "Undelivered", "Not delivered" or "RTO Delivered" would read as "delivered"
+ * and tell a customer that a failed or returned parcel arrived. Word boundaries stop substrings such as
+ * "pod" inside another word from matching. Anything unrecognised returns null, never a guess.
+ */
+const STATUS_MAP: Array<[RegExp, OrderStage | null]> = [
+  [/\b(cancel(l?ed|lation)?)\b/i, "cancelled"],
+  [
+    /\b(rto|return(ed)?(\s+to\s+origin)?|undelivered|not\s+delivered|failed|lost|damaged)\b/i,
+    "failed",
+  ],
+  // "Not dispatched / shipped / picked up" is ambiguous ("not yet"), so it is neither a failure nor progress.
+  [/\bnot\s+(yet\s+)?(dispatched|shipped|picked\s*up)\b/i, null],
+  [/\bpickup\s*scheduled\b|\bawaiting\s*pickup\b|\bmanifest(ed)?\b/i, "packed"],
+  [/\bout\s*for\s*delivery\b|\bofd\b/i, "out_for_delivery"],
+  [/\bdelivered\b|\bproof\s+of\s+delivery\b|\bpod\b/i, "delivered"],
+  [/\bpicked\s*up\b|\bin\s*transit\b|\bshipped\b|\bdispatch(ed)?\b/i, "dispatched"],
 ];
 
 /** Maps any courier's free-text status onto the Oasis lifecycle, or null. */
@@ -116,14 +127,17 @@ export function normalizeShippingWebhook(payload: unknown): TrackingUpdate | nul
   if (typeof awb !== "string" || typeof rawStatus !== "string") return null;
   const stage = normalizeCourierStatus(rawStatus);
   if (!stage) return null;
+  // The courier's own event time is required. Substituting "now" would invent when something happened,
+  // and break ordering and de-duplication of replayed events, so an event without one is rejected.
   const occurredAt = record["timestamp"];
+  if (typeof occurredAt !== "string" || Number.isNaN(Date.parse(occurredAt))) return null;
   const location = record["location"];
   const pod = record["pod_url"];
   return {
     awb,
     rawStatus,
     stage,
-    occurredAt: typeof occurredAt === "string" ? occurredAt : new Date().toISOString(),
+    occurredAt,
     ...(typeof location === "string" ? { location } : {}),
     ...(typeof pod === "string" ? { proofOfDeliveryUrl: pod } : {}),
   };

@@ -124,9 +124,54 @@ describe("shipping", () => {
     expect(result.ok).toBe(false);
   });
 
-  it("normalises a courier webhook", () => {
-    const update = normalizeShippingWebhook({ awb: "123", status: "Delivered", pod_url: "u" });
+  it("never reads a failed, returned or negated status as progress", () => {
+    // Regression: these used to normalise to "delivered" / "dispatched" and mislead customers.
+    for (const raw of [
+      "Undelivered",
+      "Not delivered",
+      "RTO Delivered",
+      "Return to origin",
+      "Dispatch failed",
+    ]) {
+      expect(normalizeCourierStatus(raw), raw).toBe("failed");
+    }
+    for (const raw of ["Not dispatched", "Not yet shipped", "Delivery attempted", "Podcast"]) {
+      expect(normalizeCourierStatus(raw), raw).toBeNull();
+    }
+    expect(normalizeCourierStatus("Cancelled by seller")).toBe("cancelled");
+  });
+
+  it("still maps the genuine positive statuses", () => {
+    expect(normalizeCourierStatus("Delivered")).toBe("delivered");
+    expect(normalizeCourierStatus("Delivered to neighbour")).toBe("delivered");
+    expect(normalizeCourierStatus("Proof of delivery captured")).toBe("delivered");
+    expect(normalizeCourierStatus("Shipment picked up")).toBe("dispatched");
+    expect(normalizeCourierStatus("Pickup scheduled")).toBe("packed");
+    expect(normalizeCourierStatus("Out for delivery")).toBe("out_for_delivery");
+  });
+
+  it("normalises a courier webhook that carries the courier's own event time", () => {
+    const update = normalizeShippingWebhook({
+      awb: "123",
+      status: "Delivered",
+      pod_url: "u",
+      timestamp: "2026-11-19T10:00:00Z",
+    });
     expect(update?.stage).toBe("delivered");
+    expect(update?.occurredAt).toBe("2026-11-19T10:00:00Z");
+  });
+
+  it("rejects a webhook with no usable event time instead of inventing one", () => {
+    expect(normalizeShippingWebhook({ awb: "123", status: "Delivered" })).toBeNull();
+    expect(
+      normalizeShippingWebhook({ awb: "123", status: "Delivered", timestamp: "not-a-date" }),
+    ).toBeNull();
+  });
+
+  it("drops webhooks whose status it cannot classify", () => {
+    expect(
+      normalizeShippingWebhook({ awb: "1", status: "banana", timestamp: "2026-11-19T10:00:00Z" }),
+    ).toBeNull();
   });
 });
 
