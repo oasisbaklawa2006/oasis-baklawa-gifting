@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { canonicalLinks, normalizePath, siteUrl } from "../site-url";
+import { canonicalLinks, isIndexableSitePath, normalizePath, siteUrl } from "../site-url";
 
 describe("normalizePath", () => {
   it("keeps the root path", () => {
@@ -91,5 +91,31 @@ describe("canonicalLinks", () => {
     expect(canonicalLinks("/collections/signature")).toEqual([
       { rel: "canonical", href: "https://approved.example.invalid/collections/signature" },
     ]);
+  });
+});
+
+describe("shared SEO sitemap indexability", () => {
+  it("excludes existing noindex personal, search, order and fixture product routes", () => {
+    for (const path of [
+      "/account",
+      "/admin/status",
+      "/cart",
+      "/checkout",
+      "/restore-cart?token=private-synthetic-token",
+      "/search?q=gift",
+      "/track-order",
+      "/wishlist",
+      "/order/PRIVATE-ORDER",
+      "/order/PRIVATE-ORDER/",
+      "/product/fixture-baklawa",
+    ]) {
+      expect(isIndexableSitePath(path)).toBe(false);
+    }
+  });
+
+  it("retains publicly indexable shop, collections and editorial routes", () => {
+    for (const path of ["/", "/shop", "/collections/signature", "/journal", "/about"]) {
+      expect(isIndexableSitePath(path)).toBe(true);
+    }
   });
 });
