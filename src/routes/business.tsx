@@ -249,7 +249,7 @@ function BusinessPage() {
           />
           <div className="mt-12 grid grid-cols-2 gap-x-5 gap-y-10 lg:grid-cols-4">
             {range.map((product) => (
-              <ProductCard key={product.id} product={product} />
+              <ProductCard key={product.id} product={product} browseOnly />
             ))}
           </div>
         </div>
