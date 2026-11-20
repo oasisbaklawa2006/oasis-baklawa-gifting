@@ -9,7 +9,6 @@ export const paymentLaunchPolicy = {
     "Online payment is not available until the verified order and amount handoff is certified.",
 } as const;
 
-
 /**
  * Server-side order submission gate, independent of page visibility or provider quoting.
  * A future authoritative commerce adapter must never enable order creation by itself:
