@@ -10,7 +10,6 @@ import { NewsletterModule } from "@/components/oasis/newsletter";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
-import { Slider } from "@/components/ui/slider";
 import {
   Select,
   SelectContent,
@@ -20,7 +19,6 @@ import {
 } from "@/components/ui/select";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { categoriesAll as categories, dietaryOptions, occasions, products } from "@/data/catalog";
-import type { Product } from "@/data/types";
 
 type ShopSearch = { category?: string; collection?: string };
 
@@ -35,12 +33,12 @@ export const Route = createFileRoute("/shop")({
       {
         name: "description",
         content:
-          "Browse the Oasis Baklawa range: pistachio baklawa, Arabic sweets assortments and gift boxes, filtered by category, occasion and price.",
+          "Browse the Oasis Baklawa range: pistachio baklawa, Arabic sweets assortments and gift boxes, filtered by category and occasion.",
       },
       { property: "og:title", content: "Shop — Oasis Baklawa" },
       {
         property: "og:description",
-        content: "The full Oasis Baklawa range, from signature baklawa to boxed gifting.",
+        content: "Explore Oasis Baklawa, from signature baklawa to boxed gifting.",
       },
     ],
   }),
@@ -49,40 +47,26 @@ export const Route = createFileRoute("/shop")({
 
 const sortOptions = [
   { value: "featured", label: "Featured" },
-  { value: "price-asc", label: "Price: low to high" },
-  { value: "price-desc", label: "Price: high to low" },
   { value: "name", label: "Name: A–Z" },
 ];
 
 const PAGE_SIZE = 18;
 
-function priceOf(product: Product) {
-  return product.variants[0]?.price.amount ?? 0;
-}
-
 function FilterPanel({
   categorySlug,
   setCategorySlug,
-  maxPrice,
-  setMaxPrice,
   selectedOccasions,
   toggleOccasion,
   selectedDietary,
   toggleDietary,
-  inStockOnly,
-  setInStockOnly,
   onReset,
 }: {
   categorySlug: string | null;
   setCategorySlug: (v: string | null) => void;
-  maxPrice: number;
-  setMaxPrice: (v: number) => void;
   selectedOccasions: string[];
   toggleOccasion: (v: string) => void;
   selectedDietary: string[];
   toggleDietary: (v: string) => void;
-  inStockOnly: boolean;
-  setInStockOnly: (v: boolean) => void;
   onReset: () => void;
 }) {
   return (
@@ -113,23 +97,6 @@ function FilterPanel({
             </li>
           ))}
         </ul>
-      </fieldset>
-
-      <fieldset>
-        <legend className="eyebrow">Price up to</legend>
-        <div className="mt-5">
-          <Slider
-            value={[maxPrice]}
-            min={500}
-            max={3500}
-            step={50}
-            onValueChange={(v) => setMaxPrice(v[0] ?? 3500)}
-            aria-label="Maximum price"
-          />
-          <p className="mt-3 text-[0.8125rem] tabular-nums text-muted-foreground">
-            ₹{maxPrice.toLocaleString("en-IN")}
-          </p>
-        </div>
       </fieldset>
 
       <fieldset>
@@ -171,20 +138,6 @@ function FilterPanel({
         </ul>
       </fieldset>
 
-      <fieldset>
-        <legend className="eyebrow">Availability</legend>
-        <div className="mt-4 flex items-center gap-3">
-          <Checkbox
-            id="in-stock"
-            checked={inStockOnly}
-            onCheckedChange={(v) => setInStockOnly(Boolean(v))}
-          />
-          <Label htmlFor="in-stock" className="text-[0.875rem] font-normal">
-            In stock only
-          </Label>
-        </div>
-      </fieldset>
-
       <Button
         variant="ghost"
         onClick={onReset}
@@ -199,10 +152,8 @@ function FilterPanel({
 function ShopPage() {
   const search = Route.useSearch();
   const [categorySlug, setCategorySlug] = useState<string | null>(search.category ?? null);
-  const [maxPrice, setMaxPrice] = useState(3500);
   const [selectedOccasions, setSelectedOccasions] = useState<string[]>([]);
   const [selectedDietary, setSelectedDietary] = useState<string[]>([]);
-  const [inStockOnly, setInStockOnly] = useState(false);
   const [sort, setSort] = useState("featured");
   const [visible, setVisible] = useState(PAGE_SIZE);
 
@@ -214,42 +165,32 @@ function ShopPage() {
 
     const filtered = products.filter((product) => {
       if (categoryId && product.categoryId !== categoryId) return false;
-      if (priceOf(product) > maxPrice) return false;
       if (selectedOccasions.length && !selectedOccasions.some((o) => product.occasions.includes(o)))
         return false;
       if (selectedDietary.length && !selectedDietary.every((d) => product.dietary.includes(d)))
         return false;
-      if (inStockOnly && !product.variants.some((v) => v.availability === "in-stock")) return false;
       return true;
     });
 
     const sorted = [...filtered];
-    if (sort === "price-asc") sorted.sort((a, b) => priceOf(a) - priceOf(b));
-    if (sort === "price-desc") sorted.sort((a, b) => priceOf(b) - priceOf(a));
     if (sort === "name") sorted.sort((a, b) => a.name.localeCompare(b.name));
     return sorted;
-  }, [categorySlug, maxPrice, selectedOccasions, selectedDietary, inStockOnly, sort]);
+  }, [categorySlug, selectedOccasions, selectedDietary, sort]);
 
   const reset = () => {
     setCategorySlug(null);
-    setMaxPrice(3500);
     setSelectedOccasions([]);
     setSelectedDietary([]);
-    setInStockOnly(false);
     setVisible(PAGE_SIZE);
   };
 
   const panelProps = {
     categorySlug,
     setCategorySlug,
-    maxPrice,
-    setMaxPrice,
     selectedOccasions,
     toggleOccasion: (v: string) => toggle(selectedOccasions, setSelectedOccasions, v),
     selectedDietary,
     toggleDietary: (v: string) => toggle(selectedDietary, setSelectedDietary, v),
-    inStockOnly,
-    setInStockOnly,
     onReset: reset,
   };
 
@@ -268,8 +209,7 @@ function ShopPage() {
           Baklawa, Arabic sweets and gifting
         </h1>
         <p className="mt-5 max-w-xl text-[0.9375rem] leading-relaxed text-muted-foreground">
-          The full range, from the daily baklawa tray to Arabic dates, chocolates, fusion sweets,
-          nuts and boxed gifting.
+          Explore baklawa, Arabic dates, chocolates, fusion sweets, nuts and boxed gifting.
         </p>
       </section>
 
@@ -278,9 +218,7 @@ function ShopPage() {
           className="rounded-sm border border-border bg-premium px-5 py-4 text-sm leading-relaxed text-muted-foreground"
           role="status"
         >
-          Catalogue preview only. Displayed prices, availability and product selection are
-          illustrative, not verified live offers. Ordering remains unavailable until the
-          authoritative Oasis Core retail catalogue and checkout are connected.
+          Browse a sample of our range. Online ordering is currently unavailable.
         </p>
       </div>
 
@@ -350,7 +288,7 @@ function ShopPage() {
               <div className="mt-10">
                 <EmptyState
                   title="Nothing matches those filters"
-                  description="Try widening the price range or clearing a filter to see more of the range."
+                  description="Clear a filter to see more of the range."
                   action={<Button onClick={reset}>Reset filters</Button>}
                 />
               </div>
@@ -358,7 +296,7 @@ function ShopPage() {
               <>
                 <div className="mt-10 grid grid-cols-2 gap-x-5 gap-y-12 xl:grid-cols-3">
                   {results.slice(0, visible).map((product, i) => (
-                    <ProductCard key={product.id} product={product} priority={i < 3} />
+                    <ProductCard key={product.id} product={product} priority={i < 3} browseOnly />
                   ))}
                 </div>
 
