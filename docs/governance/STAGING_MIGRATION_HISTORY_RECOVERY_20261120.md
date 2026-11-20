@@ -27,6 +27,20 @@ Pre-operation staging row counts: website_leads **1**, cart_recovery_sessions **
 
 Post-operation `list_migrations` confirms the four repository version identifiers are present in the staging ledger, retaining their original remote names. At first subsequent `list_branches`, the **existing** Git-integrated branch status still showed `MIGRATIONS_FAILED` (last update 19 Nov); that status is **not proof the new history failed**. A fresh provider run is required.
 
+## Approved paid branch acceptance — 20 Nov 2026 (completed)
+
+Owner expressly approved the temporary branch at the provider-quoted **US$0.01344 per hour**. The approved Supabase cost confirmation was used once to create the **nonpersistent, isolated** branch `gft100-history-replay-20261120` (`atdefogwadzkqbeycosk`, branch ID `b51f06e9-5491-41da-ac94-ee2378136c76`) from staging `ypeoiobkqvlalxgugtgm`, with **with_data=false**. It did not create a new permanent project or change Core production.
+
+**Branch acceptance evidence (read-only queries; provider branch reported `FUNCTIONS_DEPLOYED` and its preview database `ACTIVE_HEALTHY`):**
+
+- **4/4 expected migration version identifiers** `20260910142418`, `20260910142431`, `20260910144810`, and `20261114173000` applied and recorded on the fresh branch. No additional version rows. The branch's `statements` column contains the individual executed statements (25/4/17/3), unlike the parent staging ledger's one imported SQL-body statement per version; thus per-statement MD5s on the branch are **not directly comparable** to the original whole-file MD5s above. This is not a mismatch in version identifiers.
+- All **six tables exist**, have RLS enabled, and expose **0 of 4** CRUD privileges to each of `anon` and `authenticated` while exposing **4 of 4** to `service_role`. Six `rls_enabled_no_policy` INFO notices are expected given the explicit server-only role grants and absent public policies; no other security advisor findings. Health advisors returned no findings.
+- Protected maintenance functions `expire_cart_recovery_sessions()` and `purge_stale_persistence(integer)` exist; direct relevant public/authenticated function execution is denied and service_role maintenance execution is granted.
+- Seeded branch rows: 16 catalogue products, 16 catalogue variants and 1 sync run. No leads, carts or webhook events copied from parent staging (as intended with `with_data=false`). Parent staging preserved its existing 1 lead and all other row counts from the earlier receipt.
+- Supabase **delete_branch returned success** for the exact isolated branch ID after acceptance. A new `list_branches` confirmed that only the parent `main` remains; the temporary branch **no longer exists**. No ongoing hourly compute for that branch should accrue after deletion (billing metering/rounding remains provider-controlled).
+
+**Remaining caveat:** The parent project's historic Git-integrated `main` branch retains an old `MIGRATIONS_FAILED` status despite the ledger repair. The GitHub `Supabase Preview` check on documentation PR #50 returned **SKIPPED** (`This git branch is not associated with any Supabase Branch`), so the separate **Git-integrated Preview check is not certified green**. A new properly associated preview check and deployment target verification are still required. The fresh paid branch's successful migration replay and RLS/security checks are verified evidence, but do not substitute for a Git-integrated check, production deploy, hosted runtime UAT or launch approval.
+
 ## Safe validation and release gates
 
 1. Confirm the exact current Git source migration filenames and SQL bodies remain unchanged and the linked provider project is the intended isolated website staging project, **not Core production**.
