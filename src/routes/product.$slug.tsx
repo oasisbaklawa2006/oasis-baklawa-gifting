@@ -27,7 +27,7 @@ import {
 import { getProductBySlug, products } from "@/data/catalog";
 import type { Product } from "@/data/types";
 import { cn } from "@/lib/utils";
-import { canonicalUrl, siteUrl } from "@/lib/site-url";
+import { siteUrl } from "@/lib/site-url";
 import { noImage } from "@/data/brand";
 import { paymentLaunchPolicy } from "@/payments/launch-policy";
 
@@ -57,7 +57,6 @@ export const Route = createFileRoute("/product/$slug")({
         { property: "og:type", content: "product" },
         { property: "og:url", content: siteUrl(`/product/${product.slug}`) },
       ],
-      links: [{ rel: "canonical", href: canonicalUrl(`/product/${product.slug}`) }],
       scripts: [
         {
           type: "application/ld+json",

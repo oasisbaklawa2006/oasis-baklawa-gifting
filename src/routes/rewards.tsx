@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { brandMedia, contact } from "@/data/brand";
-import { canonicalUrl, siteUrl } from "@/lib/site-url";
+import { siteUrl } from "@/lib/site-url";
 
 export const Route = createFileRoute("/rewards")({
   head: () => ({
@@ -29,7 +29,6 @@ export const Route = createFileRoute("/rewards")({
       { property: "og:image", content: brandMedia.giftBanner.src },
       { name: "twitter:image", content: brandMedia.giftBanner.src },
     ],
-    links: [{ rel: "canonical", href: canonicalUrl("/rewards") }],
   }),
   component: RewardsPage,
 });

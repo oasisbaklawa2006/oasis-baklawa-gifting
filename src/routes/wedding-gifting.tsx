@@ -11,7 +11,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { brandMedia, contact, productMedia } from "@/data/brand";
 import { products } from "@/data/catalog";
-import { canonicalUrl, siteUrl } from "@/lib/site-url";
+import { siteUrl } from "@/lib/site-url";
 
 export const Route = createFileRoute("/wedding-gifting")({
   head: () => ({
@@ -33,7 +33,6 @@ export const Route = createFileRoute("/wedding-gifting")({
       { property: "og:image", content: productMedia["rosello-25"]!.src },
       { name: "twitter:image", content: productMedia["rosello-25"]!.src },
     ],
-    links: [{ rel: "canonical", href: canonicalUrl("/wedding-gifting") }],
   }),
   component: WeddingGiftingPage,
 });

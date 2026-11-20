@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { brand, brandMedia, brandStory } from "@/data/brand";
 import { articlesByDate } from "@/data/journal";
 import { stores } from "@/data/site";
-import { canonicalUrl, siteUrl } from "@/lib/site-url";
+import { siteUrl } from "@/lib/site-url";
 
 export const Route = createFileRoute("/world-of-oasis")({
   head: () => ({
@@ -30,7 +30,6 @@ export const Route = createFileRoute("/world-of-oasis")({
       { property: "og:image", content: brandMedia.factory.src },
       { name: "twitter:image", content: brandMedia.factory.src },
     ],
-    links: [{ rel: "canonical", href: canonicalUrl("/world-of-oasis") }],
   }),
   component: WorldOfOasisPage,
 });

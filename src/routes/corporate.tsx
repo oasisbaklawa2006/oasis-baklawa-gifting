@@ -16,7 +16,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { canonicalUrl, siteUrl } from "@/lib/site-url";
+import { siteUrl } from "@/lib/site-url";
 
 export const Route = createFileRoute("/corporate")({
   head: () => ({
@@ -35,7 +35,6 @@ export const Route = createFileRoute("/corporate")({
       { property: "og:type", content: "website" },
       { property: "og:url", content: siteUrl("/corporate") },
     ],
-    links: [{ rel: "canonical", href: canonicalUrl("/corporate") }],
   }),
   component: CorporatePage,
 });

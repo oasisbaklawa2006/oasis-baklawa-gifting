@@ -98,7 +98,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     ],
     links: [
       // Self-referencing canonical for every route, only when an approved origin is configured at build time
-      // (see canonicalLinks). Routes that declare their own emit the identical tag, which the router merges.
+      // (see canonicalLinks). Leaf routes deliberately do not emit canonical links, avoiding duplicates.
       ...canonicalLinks(matches[matches.length - 1]?.pathname ?? "/"),
       { rel: "stylesheet", href: appCss },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
