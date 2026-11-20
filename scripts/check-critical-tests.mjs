@@ -13,6 +13,7 @@ const required = new Map([
   ["src/payments/webhook-body.test.ts", 4],
   ["src/lib/__tests__/payment-signatures.test.ts", 7],
   ["src/lib/__tests__/commerce.test.ts", 4],
+  ["src/components/oasis/delivery-estimator.test.ts", 2],
   ["src/lib/persistence/__tests__/repositories.test.ts", 10],
   ["src/lib/__tests__/marketing.test.ts", 11],
 ]);
