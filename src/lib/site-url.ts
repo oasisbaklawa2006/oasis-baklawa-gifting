@@ -111,11 +111,7 @@ const nonCanonicalPaths = new Set([
 ]);
 
 function isNonCanonicalRoute(path: string): boolean {
-  return (
-    nonCanonicalPaths.has(path) ||
-    path.startsWith("/order/") ||
-    path.startsWith("/product/")
-  );
+  return nonCanonicalPaths.has(path) || path.startsWith("/order/") || path.startsWith("/product/");
 }
 
 /**
