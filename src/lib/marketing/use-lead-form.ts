@@ -12,6 +12,7 @@ import { toast } from "sonner";
 
 import { submitLead, type LeadResult, type LEAD_KINDS } from "@/lib/leads.functions";
 import { approvedAttributionFields, readAttribution } from "./attribution";
+import { leadConfirmation } from "./lead-confirmation";
 import { track } from "./dispatch";
 import type { EventName } from "./events";
 
@@ -104,11 +105,26 @@ export function useLeadForm(options: Options): LeadFormState {
 
         setPending(false);
         if (result.status === "saved") {
+          const confirmation = leadConfirmation(
+            options.kind,
+            result.syncState,
+            options.successMessage,
+          );
           submission.current = null;
           setStatus("saved");
-          setStatusMessage(options.successMessage);
+          setStatusMessage(confirmation.message);
           form.reset();
-          toast.success("Thank you", { description: options.successMessage });
+          if (confirmation.delivery === "unconfirmed") {
+            toast.warning("Enquiry saved — delivery unconfirmed", {
+              description: confirmation.message,
+            });
+          } else if (confirmation.delivery === "queued") {
+            toast.message("Enquiry saved — delivery pending", {
+              description: confirmation.message,
+            });
+          } else {
+            toast.success("Thank you", { description: confirmation.message });
+          }
           track({ name: options.event, params: { source: options.source } });
         } else {
           setStatus("error");
