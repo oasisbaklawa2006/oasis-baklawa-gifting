@@ -3,7 +3,7 @@ import type {} from "@tanstack/react-start";
 
 import { articles } from "@/data/journal";
 
-import { siteUrl } from "@/lib/site-url";
+import { isIndexableSitePath, siteUrl } from "@/lib/site-url";
 
 interface SitemapEntry {
   path: string;
@@ -37,7 +37,6 @@ export const Route = createFileRoute("/sitemap.xml")({
           { path: "/stores", changefreq: "monthly", priority: "0.6" },
           { path: "/contact", changefreq: "monthly", priority: "0.6" },
           { path: "/faq", changefreq: "monthly", priority: "0.5" },
-          { path: "/search", changefreq: "monthly", priority: "0.3" },
           // Product and collection URLs require approved Core publication.
           // Local catalogue entries are presentation fixtures, not SEO authority.
           ...articles.map((article) => ({
@@ -47,7 +46,8 @@ export const Route = createFileRoute("/sitemap.xml")({
           })),
         ];
 
-        const urls = entries.map((e) =>
+        // Exclude noindex/personal paths even if accidentally added above later.
+        const urls = entries.filter((entry) => isIndexableSitePath(entry.path)).map((e) =>
           [
             `  <url>`,
             `    <loc>${siteUrl(e.path, request.url)}</loc>`,
