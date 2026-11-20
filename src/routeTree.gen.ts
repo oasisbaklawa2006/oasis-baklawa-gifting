@@ -30,6 +30,7 @@ import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as RestoreCartRouteImport } from './routes/restore-cart'
 import { Route as ReturnsRouteImport } from './routes/returns'
 import { Route as RewardsRouteImport } from './routes/rewards'
+import { Route as RobotsDottxtRouteImport } from './routes/robots[.]txt'
 import { Route as SearchRouteImport } from './routes/search'
 import { Route as ShippingRouteImport } from './routes/shipping'
 import { Route as ShopRouteImport } from './routes/shop'
@@ -156,6 +157,11 @@ const ReturnsRoute = ReturnsRouteImport.update({
 const RewardsRoute = RewardsRouteImport.update({
   id: '/rewards',
   path: '/rewards',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RobotsDottxtRoute = RobotsDottxtRouteImport.update({
+  id: '/robots.txt',
+  path: '/robots.txt',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SearchRoute = SearchRouteImport.update({
@@ -293,6 +299,7 @@ export interface FileRoutesByFullPath {
   '/restore-cart': typeof RestoreCartRoute
   '/returns': typeof ReturnsRoute
   '/rewards': typeof RewardsRoute
+  '/robots.txt': typeof RobotsDottxtRoute
   '/search': typeof SearchRoute
   '/shipping': typeof ShippingRoute
   '/shop': typeof ShopRoute
@@ -338,6 +345,7 @@ export interface FileRoutesByTo {
   '/restore-cart': typeof RestoreCartRoute
   '/returns': typeof ReturnsRoute
   '/rewards': typeof RewardsRoute
+  '/robots.txt': typeof RobotsDottxtRoute
   '/search': typeof SearchRoute
   '/shipping': typeof ShippingRoute
   '/shop': typeof ShopRoute
@@ -384,6 +392,7 @@ export interface FileRoutesById {
   '/restore-cart': typeof RestoreCartRoute
   '/returns': typeof ReturnsRoute
   '/rewards': typeof RewardsRoute
+  '/robots.txt': typeof RobotsDottxtRoute
   '/search': typeof SearchRoute
   '/shipping': typeof ShippingRoute
   '/shop': typeof ShopRoute
@@ -431,6 +440,7 @@ export interface FileRouteTypes {
     | '/restore-cart'
     | '/returns'
     | '/rewards'
+    | '/robots.txt'
     | '/search'
     | '/shipping'
     | '/shop'
@@ -476,6 +486,7 @@ export interface FileRouteTypes {
     | '/restore-cart'
     | '/returns'
     | '/rewards'
+    | '/robots.txt'
     | '/search'
     | '/shipping'
     | '/shop'
@@ -521,6 +532,7 @@ export interface FileRouteTypes {
     | '/restore-cart'
     | '/returns'
     | '/rewards'
+    | '/robots.txt'
     | '/search'
     | '/shipping'
     | '/shop'
@@ -567,6 +579,7 @@ export interface RootRouteChildren {
   RestoreCartRoute: typeof RestoreCartRoute
   ReturnsRoute: typeof ReturnsRoute
   RewardsRoute: typeof RewardsRoute
+  RobotsDottxtRoute: typeof RobotsDottxtRoute
   SearchRoute: typeof SearchRoute
   ShippingRoute: typeof ShippingRoute
   ShopRoute: typeof ShopRoute
@@ -738,6 +751,13 @@ declare module '@tanstack/react-router' {
       path: '/rewards'
       fullPath: '/rewards'
       preLoaderRoute: typeof RewardsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/robots.txt': {
+      id: '/robots.txt'
+      path: '/robots.txt'
+      fullPath: '/robots.txt'
+      preLoaderRoute: typeof RobotsDottxtRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/search': {
@@ -919,6 +939,7 @@ const rootRouteChildren: RootRouteChildren = {
   RestoreCartRoute: RestoreCartRoute,
   ReturnsRoute: ReturnsRoute,
   RewardsRoute: RewardsRoute,
+  RobotsDottxtRoute: RobotsDottxtRoute,
   SearchRoute: SearchRoute,
   ShippingRoute: ShippingRoute,
   ShopRoute: ShopRoute,

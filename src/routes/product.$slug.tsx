@@ -61,6 +61,10 @@ export const Route = createFileRoute("/product/$slug")({
         { property: "og:description", content: product.shortDescription },
         { property: "og:type", content: "product" },
         { property: "og:url", content: siteUrl(`/product/${product.slug}`) },
+        // GFT-100: local catalogue entries are presentation fixtures, not an approved publication source,
+        // and the sitemap and merchant feed already withhold them. Keep the page out of search indexes
+        // until a governed Core publication authority exists, so it is never indexed as a saleable product.
+        { name: "robots", content: "noindex" },
       ],
       links: [{ rel: "canonical", href: canonicalUrl(`/product/${product.slug}`) }],
       scripts: [
