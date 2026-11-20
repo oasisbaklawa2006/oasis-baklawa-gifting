@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, type Ref } from "react";
 import { Link } from "@tanstack/react-router";
 import { Heart, Menu, Search, ShoppingBag, User, ChevronDown } from "lucide-react";
 
@@ -81,7 +81,13 @@ function UtilityIcons({ className }: { className?: string }) {
   );
 }
 
-function MegaMenu({ item }: { item: (typeof primaryNav)[number] }) {
+function MegaMenu({
+  item,
+  alignEnd = false,
+}: {
+  item: (typeof primaryNav)[number];
+  alignEnd?: boolean;
+}) {
   return (
     <div className="group relative">
       <Link
@@ -93,7 +99,9 @@ function MegaMenu({ item }: { item: (typeof primaryNav)[number] }) {
         <ChevronDown className="size-3.5 text-driftwood transition-transform duration-300 group-hover:rotate-180" />
       </Link>
 
-      <div className="invisible absolute left-1/2 top-full z-40 w-[46rem] -translate-x-1/2 opacity-0 transition-[opacity,visibility] duration-200 group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100">
+      <div
+        className={`invisible absolute top-full z-40 w-[46rem] ${alignEnd ? "right-0" : "left-1/2 -translate-x-1/2"} opacity-0 transition-[opacity,visibility] duration-200 group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100`}
+      >
         <div className="mt-0 border border-border bg-background p-8 shadow-lifted">
           <div className="grid grid-cols-3 gap-8">
             {item.columns?.map((column) => (
@@ -120,11 +128,14 @@ function MegaMenu({ item }: { item: (typeof primaryNav)[number] }) {
   );
 }
 
-export function SiteHeader() {
+export function SiteHeader({ headerRef }: { headerRef?: Ref<HTMLElement> } = {}) {
   const [open, setOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-50 border-b border-border bg-background/95 backdrop-blur-[6px]">
+    <header
+      ref={headerRef}
+      className="sticky top-0 z-50 border-b border-border bg-background/95 backdrop-blur-[6px]"
+    >
       <AnnouncementBar />
 
       <div className="container-oasis grid h-16 grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 lg:hidden">
@@ -229,9 +240,10 @@ export function SiteHeader() {
           aria-label="Primary"
           className="container-oasis flex flex-wrap items-center justify-center gap-x-3 gap-y-0 border-t border-border xl:gap-x-7"
         >
-          {primaryNav.map((item) =>
+          {primaryNav.map((item, index) =>
             item.columns ? (
-              <MegaMenu key={item.label} item={item} />
+              // Panels of the trailing items open right-aligned so they stay inside the viewport.
+              <MegaMenu key={item.label} item={item} alignEnd={index >= primaryNav.length - 3} />
             ) : (
               <Link
                 key={item.label}
