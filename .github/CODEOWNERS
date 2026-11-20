@@ -1,0 +1,13 @@
+# GFT-100 governance. Takes effect only when the main ruleset sets "require review from Code Owners"
+# (see docs/governance/MAIN_PROTECTION.md). Until then this file changes nothing.
+#
+# Every path needs the owner. Money, auth, database and CI paths are listed explicitly so they stay
+# reviewed even if the catch-all is ever narrowed.
+*                       @oasisbaklawa2006
+/.github/               @oasisbaklawa2006
+/supabase/              @oasisbaklawa2006
+/src/commerce/          @oasisbaklawa2006
+/src/payments/          @oasisbaklawa2006
+/src/adapters/          @oasisbaklawa2006
+/src/lib/*.server.ts    @oasisbaklawa2006
+/docs/governance/       @oasisbaklawa2006
