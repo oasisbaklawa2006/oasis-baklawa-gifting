@@ -75,6 +75,23 @@ describe("governed commerce quote policy", () => {
       },
       {
         ...validQuote,
+        total: { amount: 199, currency: "INR" },
+      },
+      {
+        ...validQuote,
+        delivery: { amount: 25, currency: "INR" },
+        total: { amount: 220, currency: "INR" },
+      },
+      {
+        ...validQuote,
+        personalisation: { amount: 5, currency: "USD" },
+      },
+      {
+        ...validQuote,
+        tax: { amount: 2.001, currency: "INR" },
+      },
+      {
+        ...validQuote,
         total: { amount: Number.MAX_SAFE_INTEGER, currency: "INR" },
       },
     ];
@@ -97,6 +114,13 @@ describe("governed commerce quote policy", () => {
       total: { amount: 199.9, currency: "INR" },
     };
     expect(isAuthoritativeOrderQuote(requested, quote)).toBe(true);
+    expect(
+      isAuthoritativeOrderQuote(requested, {
+        ...quote,
+        delivery: { amount: 25, currency: "INR" },
+        total: { amount: 224.9, currency: "INR" },
+      }),
+    ).toBe(true);
   });
 
   it("does not upgrade a native snapshot or Shopify's unverified local subtotal", async () => {
