@@ -44,7 +44,7 @@ export function GovernedShopBrowse({ products }: { products: CoreCatalogueProduc
     return products
       .filter(
         (item) =>
-          (category === "all" || item.category === category) &&
+          (category === "all" || item.category?.trim() === category) &&
           (!term ||
             [item.name, item.sku, item.shortDescription, item.category]
               .filter((field): field is string => typeof field === "string")
