@@ -103,6 +103,28 @@ describe("retail checkout client (sandbox, not wired)", () => {
     expect(await api.priceDisplay([UUID])).toMatchObject({ ok: true });
   });
 
+  it("never fetches prices without fresh and approved quote readiness", async () => {
+    for (const unavailable of [
+      undefined,
+      null,
+      "oops",
+      readiness({ activated: false }),
+      readiness({ architectureStatus: "pending_owner_approval" }),
+      readiness({
+        actions: {
+          quote: { ...allowedActions, allowed: false, missing: ["tax.price_display_mode"] },
+          order: allowedActions,
+          payment: allowedActions,
+          refund: allowedActions,
+        },
+      }),
+    ]) {
+      const { api, fetchImpl } = client({ readiness: unavailable });
+      expect(await api.priceDisplay([UUID])).toMatchObject({ ok: false, kind: "blocked" });
+      expect(fetchImpl).not.toHaveBeenCalled();
+    }
+  });
+
   it("posts the request with the guest session as bearer and validates the quote", async () => {
     const { api, fetchImpl } = client();
     const result = await api.quote(TOKEN, { idempotencyKey: UUID });
