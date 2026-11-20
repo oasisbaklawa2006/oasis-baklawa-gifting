@@ -38,6 +38,27 @@ export function isAuthoritativeOrderQuote(
     return false;
   }
 
+  // There is no discount field in this contract. Any delivery or
+  // personalisation fee must therefore be covered by the provider total.
+  let minimumTotalCents = subtotalCents;
+  for (const charge of [quote.delivery, quote.personalisation]) {
+    if (!charge) continue;
+    const cents = toMinorUnits(charge.amount);
+    if (cents === null || charge.currency !== quote.total.currency) return false;
+    minimumTotalCents += cents;
+  }
+  if (!Number.isSafeInteger(minimumTotalCents) || totalCents < minimumTotalCents) {
+    return false;
+  }
+  // Tax may already be included in unit prices, but its amount and currency
+  // still require contract validation when the provider reports it.
+  if (
+    quote.tax &&
+    (toMinorUnits(quote.tax.amount) === null || quote.tax.currency !== quote.total.currency)
+  ) {
+    return false;
+  }
+
   const requestedLines = new Map<string, number>();
   for (const line of requested) {
     if (
