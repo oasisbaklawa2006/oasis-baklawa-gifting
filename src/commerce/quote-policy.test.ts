@@ -123,6 +123,42 @@ describe("governed commerce quote policy", () => {
     ).toBe(true);
   });
 
+  it("accepts minor-unit precision for INR, AED and USD despite floating-point noise", () => {
+    for (const currency of ["INR", "AED", "USD"] as const) {
+      const unitPrice = 0.1 + 0.2;
+      const quote: PricedCart = {
+        authoritative: true,
+        lines: [
+          {
+            productId: "p1",
+            variantId: "v1",
+            quantity: 2,
+            unitPrice: { amount: unitPrice, currency },
+            lineTotal: { amount: 0.6, currency },
+          },
+        ],
+        subtotal: { amount: 0.6, currency },
+        total: { amount: 0.6, currency },
+      };
+      expect(isAuthoritativeOrderQuote(requested, quote)).toBe(true);
+    }
+  });
+
+  it("rejects negative fees and a foreign-currency tax field", () => {
+    expect(
+      isAuthoritativeOrderQuote(requested, {
+        ...validQuote,
+        delivery: { amount: -1, currency: "INR" },
+      }),
+    ).toBe(false);
+    expect(
+      isAuthoritativeOrderQuote(requested, {
+        ...validQuote,
+        tax: { amount: 5, currency: "USD" },
+      }),
+    ).toBe(false);
+  });
+
   it("does not upgrade a native snapshot or Shopify's unverified local subtotal", async () => {
     const product = products.find((candidate) => candidate.variants.length > 0);
     expect(product).toBeDefined();
