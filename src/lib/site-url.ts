@@ -18,6 +18,7 @@ function parseOrigin(raw: string): string {
   if (!trimmed) return "";
   try {
     const url = new URL(trimmed.includes("://") ? trimmed : `https://${trimmed}`);
+    if (!["https:", "http:"].includes(url.protocol) || url.origin === "null") return "";
     return trimTrailingSlashes(url.origin);
   } catch {
     return "";
