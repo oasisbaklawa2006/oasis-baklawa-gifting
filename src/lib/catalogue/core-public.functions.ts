@@ -16,3 +16,13 @@ export const readGovernedPublicCatalogue = createServerFn({ method: "GET" })
     const { readCoreCataloguePage } = await import("./core-connect2.server");
     return await readCoreCataloguePage(data);
   });
+
+
+// Full, bounded browse-only projection. Never returns price, stock, cart or
+// checkout authority; an incomplete Core page makes the whole snapshot unavailable.
+export const readGovernedPublicCatalogueSnapshot = createServerFn({ method: "GET" }).handler(
+  async () => {
+    const { readCoreCatalogueSnapshot } = await import("./core-connect2.server");
+    return await readCoreCatalogueSnapshot();
+  },
+);
