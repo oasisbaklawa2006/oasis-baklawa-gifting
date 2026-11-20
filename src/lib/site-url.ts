@@ -106,6 +106,7 @@ const nonCanonicalPaths = new Set([
   "/checkout",
   "/restore-cart",
   "/search",
+  "/shipping",
   "/track-order",
   "/wishlist",
 ]);
