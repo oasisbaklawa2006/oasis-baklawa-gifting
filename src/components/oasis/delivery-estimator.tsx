@@ -30,9 +30,9 @@ export function DeliveryEstimator({ compact = false, className }: Props) {
             Confirm delivery availability
           </h3>
           <p className="mt-2 text-[0.8125rem] leading-relaxed text-muted-foreground" role="status">
-            Live PIN-code eligibility, delivery dates, dispatch cut-offs and shipping charges
-            are not yet available online. Please contact the Oasis team to confirm the
-            destination and terms before placing an order.
+            Live PIN-code eligibility, delivery dates, dispatch cut-offs and shipping charges are
+            not yet available online. Please contact the Oasis team to confirm the destination and
+            terms before placing an order.
           </p>
           <a
             href="/contact"
