@@ -2,7 +2,7 @@
  * Typed client for Core's retail (B2C) checkout (`retail-checkout` edge function).
  *
  * STATUS: pending owner approval of the remaining retail settings, SANDBOX payments only, NOT WIRED to the checkout
- * route (the launch hold stays). Every commercial call is refused locally unless a fresh, fully approved Core
+ * route (the launch hold stays). Every commercial call, including price display, is refused locally unless a fresh, approved Core
  * readiness answer allows that action (see `decideRetailAction`); Core re-checks everything server-side regardless.
  *
  * The client holds no price, tax rate, fee or policy value: GST-inclusive amounts come only from Core responses.
@@ -154,7 +154,7 @@ export function createRetailCheckoutClient(options: RetailCheckoutClientOptions)
     /** `accessToken` is the MSG91 widget access token; the phone itself never reaches this client. */
     startSession: (accessToken: string) => send("session", { accessToken }, sessionSchema, "order"),
     priceDisplay: (productIds: string[]) =>
-      send("price-display", { productIds }, priceDisplaySchema, null),
+      send("price-display", { productIds }, priceDisplaySchema, "quote"),
     quote: (sessionToken: string, request: unknown) =>
       send("quote", request, quoteSchema, "quote", sessionToken),
     order: (sessionToken: string, quoteId: string, idempotencyKey: string) =>
