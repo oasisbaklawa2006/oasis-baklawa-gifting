@@ -54,6 +54,112 @@ describe("governed commerce quote policy", () => {
     ).toBe(false);
   });
 
+  it("rejects line multiplication and subtotal drift despite an authority flag", () => {
+    const baseLine = validQuote.lines[0]!;
+    const inconsistentQuotes: PricedCart[] = [
+      {
+        ...validQuote,
+        lines: [{ ...baseLine, lineTotal: { amount: 199, currency: "INR" } }],
+      },
+      {
+        ...validQuote,
+        subtotal: { amount: 201, currency: "INR" },
+        total: { amount: 201, currency: "INR" },
+      },
+      {
+        ...validQuote,
+        lines: [{ ...baseLine, lineTotal: { amount: 199.995, currency: "INR" } }],
+      },
+      {
+        ...validQuote,
+        lines: [{ ...baseLine, unitPrice: { amount: 100.001, currency: "INR" } }],
+      },
+      {
+        ...validQuote,
+        total: { amount: 199, currency: "INR" },
+      },
+      {
+        ...validQuote,
+        delivery: { amount: 25, currency: "INR" },
+        total: { amount: 220, currency: "INR" },
+      },
+      {
+        ...validQuote,
+        personalisation: { amount: 5, currency: "USD" },
+      },
+      {
+        ...validQuote,
+        tax: { amount: 2.001, currency: "INR" },
+      },
+      {
+        ...validQuote,
+        total: { amount: Number.MAX_SAFE_INTEGER, currency: "INR" },
+      },
+    ];
+    for (const quote of inconsistentQuotes) {
+      expect(isAuthoritativeOrderQuote(requested, quote)).toBe(false);
+    }
+  });
+
+  it("accepts exactly reconciled two-decimal fractional INR prices", () => {
+    const quote: PricedCart = {
+      ...validQuote,
+      lines: [
+        {
+          ...validQuote.lines[0]!,
+          unitPrice: { amount: 99.95, currency: "INR" },
+          lineTotal: { amount: 199.9, currency: "INR" },
+        },
+      ],
+      subtotal: { amount: 199.9, currency: "INR" },
+      total: { amount: 199.9, currency: "INR" },
+    };
+    expect(isAuthoritativeOrderQuote(requested, quote)).toBe(true);
+    expect(
+      isAuthoritativeOrderQuote(requested, {
+        ...quote,
+        delivery: { amount: 25, currency: "INR" },
+        total: { amount: 224.9, currency: "INR" },
+      }),
+    ).toBe(true);
+  });
+
+  it("accepts minor-unit precision for INR, AED and USD despite floating-point noise", () => {
+    for (const currency of ["INR", "AED", "USD"] as const) {
+      const unitPrice = 0.1 + 0.2;
+      const quote: PricedCart = {
+        authoritative: true,
+        lines: [
+          {
+            productId: "p1",
+            variantId: "v1",
+            quantity: 2,
+            unitPrice: { amount: unitPrice, currency },
+            lineTotal: { amount: 0.6, currency },
+          },
+        ],
+        subtotal: { amount: 0.6, currency },
+        total: { amount: 0.6, currency },
+      };
+      expect(isAuthoritativeOrderQuote(requested, quote)).toBe(true);
+    }
+  });
+
+  it("rejects negative fees and a foreign-currency tax field", () => {
+    expect(
+      isAuthoritativeOrderQuote(requested, {
+        ...validQuote,
+        delivery: { amount: -1, currency: "INR" },
+      }),
+    ).toBe(false);
+    expect(
+      isAuthoritativeOrderQuote(requested, {
+        ...validQuote,
+        tax: { amount: 5, currency: "USD" },
+      }),
+    ).toBe(false);
+  });
+
   it("does not upgrade a native snapshot or Shopify's unverified local subtotal", async () => {
     const product = products.find((candidate) => candidate.variants.length > 0);
     expect(product).toBeDefined();
