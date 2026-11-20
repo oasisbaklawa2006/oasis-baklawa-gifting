@@ -7,16 +7,9 @@ import { Breadcrumbs } from "@/components/oasis/breadcrumbs";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Textarea } from "@/components/ui/textarea";
-import { formatMoney } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import { products } from "@/data/catalog";
-import {
-  GIFT_MESSAGE_MAX,
-  giftBoxFormats,
-  perPiecePrice,
-  ribbonFinishes,
-  sealFinishes,
-} from "@/data/gifting";
+import { GIFT_MESSAGE_MAX, giftBoxFormats, ribbonFinishes, sealFinishes } from "@/data/gifting";
 import { noImage } from "@/data/brand";
 import { canonicalUrl, siteUrl } from "@/lib/site-url";
 
@@ -64,12 +57,6 @@ function BuildAGiftPage() {
 
   const ribbon = ribbonFinishes.find((r) => r.id === ribbonId)!;
   const seal = sealFinishes.find((s) => s.id === sealId)!;
-
-  const total = {
-    amount:
-      format.basePrice.amount + used * perPiecePrice.amount + ribbon.surcharge + seal.surcharge,
-    currency: format.basePrice.currency,
-  };
 
   const adjust = (id: string, delta: number) => {
     setSelection((prev) => {
@@ -160,7 +147,7 @@ function BuildAGiftPage() {
                     <p className="mt-2 font-display text-xl">{f.name}</p>
                     <p className="mt-1 text-[0.8125rem] text-muted-foreground">{f.description}</p>
                     <p className="mt-4 text-[0.875rem] tabular-nums">
-                      {f.capacity} compartments · from {formatMoney(f.basePrice)}
+                      {f.capacity} compartments · design preview
                     </p>
                   </button>
                 ))}
@@ -392,13 +379,9 @@ function BuildAGiftPage() {
                 <dd className="text-right">{conceal ? "Concealed" : "Included"}</dd>
               </div>
             </dl>
-            <div className="mt-5 flex items-baseline justify-between border-t border-border pt-4">
-              <span className="eyebrow">Indicative total</span>
-              <span className="font-medium tabular-nums">{formatMoney(total)}</span>
-            </div>
-            <p className="mt-3 text-xs text-muted-foreground">
-              Illustrative pricing only. Final pricing will come from the governed catalogue and
-              bill of materials.
+            <p className="mt-5 border-t border-border pt-4 text-sm text-muted-foreground">
+              Live pricing is unavailable. A final quote requires approved Core retail products,
+              packaging and a verified bill of materials.
             </p>
             <Button asChild variant="outline" className="mt-5 w-full">
               <Link to="/gifting">Browse ready-made gifts</Link>
