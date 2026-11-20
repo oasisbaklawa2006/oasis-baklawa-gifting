@@ -1,7 +1,7 @@
 import { createHmac } from "node:crypto";
 import { describe, expect, it } from "vitest";
 
-import { paymentLaunchPolicy } from "./launch-policy";
+import { orderSubmissionHold, paymentLaunchPolicy } from "./launch-policy";
 import { verifyIncomingWebhook } from "./webhook-verification.server";
 
 const body = JSON.stringify({ id: "evt_synthetic_1", event: "payment.captured" });
@@ -10,6 +10,13 @@ const secret = "synthetic-test-only-key";
 describe("payment launch safety", () => {
   it("never activates public payments merely because gateway credentials exist", () => {
     expect(paymentLaunchPolicy.operational).toBe(false);
+  });
+
+  it("refuses server-side order submission even if an adapter later becomes authoritative", () => {
+    expect(orderSubmissionHold()).toEqual({
+      status: "unavailable",
+      reason: paymentLaunchPolicy.reason,
+    });
   });
 
   it("checks Razorpay raw-body HMAC only through its own header", () => {
