@@ -30,8 +30,13 @@ export function GovernedShopBrowse({ products }: { products: CoreCatalogueProduc
 
   const categories = useMemo(
     () =>
-      [...new Set(products.map((item) => item.category?.trim()).filter((value): value is string => Boolean(value)))]
-        .sort((a, b) => a.localeCompare(b)),
+      [
+        ...new Set(
+          products
+            .map((item) => item.category?.trim())
+            .filter((value): value is string => Boolean(value)),
+        ),
+      ].sort((a, b) => a.localeCompare(b)),
     [products],
   );
   const results = useMemo(() => {
@@ -42,8 +47,8 @@ export function GovernedShopBrowse({ products }: { products: CoreCatalogueProduc
           (category === "all" || item.category === category) &&
           (!term ||
             [item.name, item.sku, item.shortDescription, item.category]
-              .filter(Boolean)
-              .some((field) => field!.toLocaleLowerCase().includes(term))),
+              .filter((field): field is string => typeof field === "string")
+              .some((field) => field.toLocaleLowerCase().includes(term))),
       )
       .sort((a, b) => a.name.localeCompare(b.name));
   }, [products, query, category]);
@@ -64,10 +69,13 @@ export function GovernedShopBrowse({ products }: { products: CoreCatalogueProduc
         <p className="mt-5 max-w-2xl text-[0.9375rem] leading-relaxed text-muted-foreground">
           Product information supplied by the Oasis Core catalogue.
         </p>
-        <p role="status" className="mt-6 rounded-sm border border-border bg-premium px-5 py-4 text-sm leading-relaxed text-muted-foreground">
-          Browse-only catalogue. Prices, availability and delivery promises are not
-          verified retail offers. Online ordering remains unavailable until Core
-          checkout and payments are independently certified.
+        <p
+          role="status"
+          className="mt-6 rounded-sm border border-border bg-premium px-5 py-4 text-sm leading-relaxed text-muted-foreground"
+        >
+          Browse-only catalogue. Prices, availability and delivery promises are not verified retail
+          offers. Online ordering remains unavailable until Core checkout and payments are
+          independently certified.
         </p>
       </section>
 
@@ -94,7 +102,10 @@ export function GovernedShopBrowse({ products }: { products: CoreCatalogueProduc
             <button
               type="button"
               aria-pressed={category === "all"}
-              onClick={() => { setCategory("all"); setVisible(PAGE_SIZE); }}
+              onClick={() => {
+                setCategory("all");
+                setVisible(PAGE_SIZE);
+              }}
               className="min-h-9 rounded-sm border border-border px-4 text-sm aria-pressed:bg-premium"
             >
               All products
@@ -104,7 +115,10 @@ export function GovernedShopBrowse({ products }: { products: CoreCatalogueProduc
                 type="button"
                 key={name}
                 aria-pressed={category === name}
-                onClick={() => { setCategory(name); setVisible(PAGE_SIZE); }}
+                onClick={() => {
+                  setCategory(name);
+                  setVisible(PAGE_SIZE);
+                }}
                 className="min-h-9 rounded-sm border border-border px-4 text-sm aria-pressed:bg-premium"
               >
                 {name}
@@ -113,7 +127,10 @@ export function GovernedShopBrowse({ products }: { products: CoreCatalogueProduc
           </div>
         ) : null}
 
-        <p className="mt-8 border-b border-border pb-4 text-sm text-muted-foreground" aria-live="polite">
+        <p
+          className="mt-8 border-b border-border pb-4 text-sm text-muted-foreground"
+          aria-live="polite"
+        >
           {results.length} {results.length === 1 ? "product" : "products"}
         </p>
         {results.length ? (
@@ -176,8 +193,8 @@ export function GovernedShopBrowse({ products }: { products: CoreCatalogueProduc
         <p className="mt-10 text-sm text-muted-foreground">
           For product specifications and purchase enquiries, please{" "}
           <Link to="/contact" className="underline underline-offset-4">
-            contact our team
-          </Link>.
+            contact our team.
+          </Link>
         </p>
       </section>
       <NewsletterModule />
