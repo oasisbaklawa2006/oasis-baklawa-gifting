@@ -64,6 +64,7 @@ describe("governed commerce quote policy", () => {
       {
         ...validQuote,
         subtotal: { amount: 201, currency: "INR" },
+        total: { amount: 201, currency: "INR" },
       },
       {
         ...validQuote,
