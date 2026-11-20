@@ -10,6 +10,7 @@ import { commerce } from "@/commerce";
 import { isAuthoritativeOrderQuote } from "@/commerce/quote-policy";
 import { readinessReport } from "@/config/integrations";
 import { staffStatusMiddleware } from "@/lib/staff-access-middleware";
+import { orderSubmissionHold } from "@/payments/launch-policy";
 
 const lineSchema = z.object({
   productId: z.string().min(1),
@@ -68,6 +69,10 @@ export const priceCart = createServerFn({ method: "POST" })
 export const placeOrder = createServerFn({ method: "POST" })
   .validator((input: unknown) => orderSchema.parse(input))
   .handler(async ({ data }) => {
+    // The public checkout page being disabled is not a server authorization boundary.
+    // Refuse even a future provider-owned quote while the audited launch policy is held.
+    const hold = orderSubmissionHold();
+    if (hold) return hold;
     try {
       // Reprice on the server and refuse handoff unless a genuine provider-owned quote
       // covers every requested line. A locally rendered catalogue is not price authority.
