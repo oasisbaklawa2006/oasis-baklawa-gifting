@@ -53,8 +53,8 @@ describe("canonicalLinks", () => {
       "https://approved.example.invalid/shop",
     );
     expect(canonicalLinks("/")[0]?.href).toBe("https://approved.example.invalid/");
-    expect(canonicalLinks("product/assorted-baklawa/")[0]?.href).toBe(
-      "https://approved.example.invalid/product/assorted-baklawa",
+    expect(canonicalLinks("collections/signature/")[0]?.href).toBe(
+      "https://approved.example.invalid/collections/signature",
     );
   });
 
