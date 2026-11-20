@@ -47,17 +47,19 @@ export const Route = createFileRoute("/sitemap.xml")({
         ];
 
         // Exclude noindex/personal paths even if accidentally added above later.
-        const urls = entries.filter((entry) => isIndexableSitePath(entry.path)).map((e) =>
-          [
-            `  <url>`,
-            `    <loc>${siteUrl(e.path, request.url)}</loc>`,
-            e.changefreq ? `    <changefreq>${e.changefreq}</changefreq>` : null,
-            e.priority ? `    <priority>${e.priority}</priority>` : null,
-            `  </url>`,
-          ]
-            .filter(Boolean)
-            .join("\n"),
-        );
+        const urls = entries
+          .filter((entry) => isIndexableSitePath(entry.path))
+          .map((e) =>
+            [
+              `  <url>`,
+              `    <loc>${siteUrl(e.path, request.url)}</loc>`,
+              e.changefreq ? `    <changefreq>${e.changefreq}</changefreq>` : null,
+              e.priority ? `    <priority>${e.priority}</priority>` : null,
+              `  </url>`,
+            ]
+              .filter(Boolean)
+              .join("\n"),
+          );
 
         const xml = [
           `<?xml version="1.0" encoding="UTF-8"?>`,
