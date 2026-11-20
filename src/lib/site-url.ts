@@ -110,8 +110,17 @@ const nonCanonicalPaths = new Set([
   "/wishlist",
 ]);
 
-function isNonCanonicalRoute(path: string): boolean {
-  return nonCanonicalPaths.has(path) || path.startsWith("/order/") || path.startsWith("/product/");
+/**
+ * Indexability boundary shared by root canonical URLs and the public sitemap.
+ * This is an SEO publication rule, never a substitute for authorization.
+ */
+export function isIndexableSitePath(path: string): boolean {
+  const pathname = normalizePath(path).split(/[?#]/)[0] || "/";
+  return (
+    !nonCanonicalPaths.has(pathname) &&
+    !pathname.startsWith("/order/") &&
+    !pathname.startsWith("/product/")
+  );
 }
 
 /**
@@ -129,6 +138,6 @@ export function canonicalLinks(path: string): { rel: "canonical"; href: string }
   const origin = buildTimeOrigin();
   if (!origin) return [];
   const pathname = normalizePath(path).split(/[?#]/)[0] || "/";
-  if (isNonCanonicalRoute(pathname)) return [];
+  if (!isIndexableSitePath(pathname)) return [];
   return [{ rel: "canonical", href: `${origin}${pathname}` }];
 }
