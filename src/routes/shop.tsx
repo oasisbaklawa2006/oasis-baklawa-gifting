@@ -5,6 +5,8 @@ import { SlidersHorizontal } from "lucide-react";
 import { Breadcrumbs } from "@/components/oasis/breadcrumbs";
 import { Chip } from "@/components/oasis/chips";
 import { ProductCard } from "@/components/oasis/product-card";
+import { GovernedShopBrowse } from "@/components/oasis/governed-shop-browse";
+import { readGovernedPublicCatalogueSnapshot } from "@/lib/catalogue/core-public.functions";
 import { EmptyState } from "@/components/oasis/states";
 import { NewsletterModule } from "@/components/oasis/newsletter";
 import { Button } from "@/components/ui/button";
@@ -23,6 +25,14 @@ import { categoriesAll as categories, dietaryOptions, occasions, products } from
 type ShopSearch = { category?: string; collection?: string };
 
 export const Route = createFileRoute("/shop")({
+  loader: async () => {
+    try {
+      return await readGovernedPublicCatalogueSnapshot();
+    } catch {
+      // Never promote fixture data to Core authority on a transport/runtime failure.
+      return { status: "unavailable" as const, reason: "Core catalogue unavailable." };
+    }
+  },
   validateSearch: (search: Record<string, unknown>): ShopSearch => ({
     ...(typeof search["category"] === "string" ? { category: search["category"] } : {}),
     ...(typeof search["collection"] === "string" ? { collection: search["collection"] } : {}),
@@ -150,6 +160,7 @@ function FilterPanel({
 }
 
 function ShopPage() {
+  const catalogue = Route.useLoaderData();
   const search = Route.useSearch();
   const [categorySlug, setCategorySlug] = useState<string | null>(search.category ?? null);
   const [selectedOccasions, setSelectedOccasions] = useState<string[]>([]);
@@ -193,6 +204,10 @@ function ShopPage() {
     toggleDietary: (v: string) => toggle(selectedDietary, setSelectedDietary, v),
     onReset: reset,
   };
+
+  if (catalogue.status === "available") {
+    return <GovernedShopBrowse products={catalogue.products} />;
+  }
 
   return (
     <>
