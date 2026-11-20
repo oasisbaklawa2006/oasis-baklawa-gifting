@@ -62,4 +62,9 @@ describe("canonicalLinks", () => {
     vi.stubEnv("VITE_SITE_URL", "http://");
     expect(canonicalLinks("/about")).toEqual([]);
   });
+
+  it("rejects non-HTTP origins instead of generating a null canonical", () => {
+    vi.stubEnv("VITE_SITE_URL", "file:///tmp/site");
+    expect(canonicalLinks("/about")).toEqual([]);
+  });
 });
