@@ -2,6 +2,10 @@ import { useEffect, useMemo, useState } from "react";
 import { SlidersHorizontal } from "lucide-react";
 
 import { ProductCard } from "@/components/oasis/product-card";
+import {
+  canDisplayLiveRetailPrice,
+  fixtureRetailEvidence,
+} from "@/lib/catalogue/retail-offer-policy";
 import { EmptyState } from "@/components/oasis/states";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -86,7 +90,14 @@ export function CatalogBrowser({
   showGiftFacets = true,
   columns = 3,
 }: Props) {
-  const results = useMemo(() => filterProducts(products, search), [products, search]);
+  // This catalogue is fixture data, so its prices are neither shown nor usable as a filter,
+  // including a `maxPrice` carried in a shared URL.
+  const priceFilterAllowed = canDisplayLiveRetailPrice(fixtureRetailEvidence);
+  const results = useMemo(
+    () =>
+      filterProducts(products, priceFilterAllowed ? search : { ...search, maxPrice: undefined }),
+    [products, search, priceFilterAllowed],
+  );
   const ceiling = useMemo(() => priceCeiling(products), [products]);
   const occasions = useMemo(() => availableOccasions(products), [products]);
   const recipients = useMemo(() => availableRecipients(products), [products]);
@@ -179,22 +190,24 @@ export function CatalogBrowser({
         onSelect={(ingredient) => onChange({ ingredient })}
       />
 
-      <fieldset>
-        <legend className="eyebrow">Price up to</legend>
-        <div className="mt-5">
-          <Slider
-            value={[search.maxPrice ?? ceiling]}
-            min={250}
-            max={ceiling}
-            step={50}
-            onValueChange={(v) => onChange({ maxPrice: v[0] ?? ceiling })}
-            aria-label="Maximum price"
-          />
-          <p className="mt-3 text-[0.8125rem] tabular-nums text-muted-foreground">
-            ₹{(search.maxPrice ?? ceiling).toLocaleString("en-IN")}
-          </p>
-        </div>
-      </fieldset>
+      {priceFilterAllowed ? (
+        <fieldset>
+          <legend className="eyebrow">Price up to</legend>
+          <div className="mt-5">
+            <Slider
+              value={[search.maxPrice ?? ceiling]}
+              min={250}
+              max={ceiling}
+              step={50}
+              onValueChange={(v) => onChange({ maxPrice: v[0] ?? ceiling })}
+              aria-label="Maximum price"
+            />
+            <p className="mt-3 text-[0.8125rem] tabular-nums text-muted-foreground">
+              ₹{(search.maxPrice ?? ceiling).toLocaleString("en-IN")}
+            </p>
+          </div>
+        </fieldset>
+      ) : null}
 
       <Button
         variant="ghost"
