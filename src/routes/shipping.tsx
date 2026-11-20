@@ -48,9 +48,9 @@ function ShippingPage() {
         <article className="border border-border bg-premium p-6">
           <h2 className="font-display text-xl">Individual and gift orders</h2>
           <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-            Share the destination PIN code, desired date and the products you are
-            considering. Our team will confirm whether the order can be delivered
-            and provide applicable terms before an order is accepted.
+            Share the destination PIN code, desired date and the products you are considering. Our
+            team will confirm whether the order can be delivered and provide applicable terms before
+            an order is accepted.
           </p>
           <Button asChild variant="outline" className="mt-5">
             <Link to="/contact">Contact the team</Link>
@@ -60,9 +60,9 @@ function ShippingPage() {
         <article className="border border-border bg-premium p-6">
           <h2 className="font-display text-xl">Corporate and multi-address gifting</h2>
           <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-            Bulk dispatch, multi-recipient delivery and event dates require a
-            quotation and operational confirmation. No automated delivery window
-            or shipping fee shown elsewhere on the preview site is an accepted offer.
+            Bulk dispatch, multi-recipient delivery and event dates require a quotation and
+            operational confirmation. No automated delivery window or shipping fee shown elsewhere
+            on the preview site is an accepted offer.
           </p>
           <Button asChild variant="outline" className="mt-5">
             <Link to="/business">Make a business enquiry</Link>
