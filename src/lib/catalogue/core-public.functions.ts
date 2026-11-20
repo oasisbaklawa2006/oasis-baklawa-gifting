@@ -17,7 +17,6 @@ export const readGovernedPublicCatalogue = createServerFn({ method: "GET" })
     return await readCoreCataloguePage(data);
   });
 
-
 // Full, bounded browse-only projection. Never returns price, stock, cart or
 // checkout authority; an incomplete Core page makes the whole snapshot unavailable.
 export const readGovernedPublicCatalogueSnapshot = createServerFn({ method: "GET" }).handler(
