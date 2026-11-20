@@ -27,7 +27,7 @@ import {
 import { getProductBySlug, products } from "@/data/catalog";
 import type { Product } from "@/data/types";
 import { cn } from "@/lib/utils";
-import { canonicalUrl, siteUrl } from "@/lib/site-url";
+import { siteUrl } from "@/lib/site-url";
 import { noImage } from "@/data/brand";
 import { paymentLaunchPolicy } from "@/payments/launch-policy";
 import {
@@ -66,7 +66,6 @@ export const Route = createFileRoute("/product/$slug")({
         // until a governed Core publication authority exists, so it is never indexed as a saleable product.
         { name: "robots", content: "noindex" },
       ],
-      links: [{ rel: "canonical", href: canonicalUrl(`/product/${product.slug}`) }],
       scripts: [
         {
           type: "application/ld+json",

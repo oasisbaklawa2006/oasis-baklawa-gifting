@@ -24,7 +24,6 @@ export const Route = createFileRoute("/stores")({
       { property: "og:title", content: "Stores — Oasis Baklawa" },
       { property: "og:description", content: "Oasis Baklawa store locations and services." },
     ],
-    links: [{ rel: "canonical", href: "/stores" }],
     scripts: [
       {
         type: "application/ld+json",

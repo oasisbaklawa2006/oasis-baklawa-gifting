@@ -11,7 +11,7 @@ import { cn } from "@/lib/utils";
 import { products } from "@/data/catalog";
 import { GIFT_MESSAGE_MAX, giftBoxFormats, ribbonFinishes, sealFinishes } from "@/data/gifting";
 import { noImage } from "@/data/brand";
-import { canonicalUrl, siteUrl } from "@/lib/site-url";
+import { siteUrl } from "@/lib/site-url";
 
 export const Route = createFileRoute("/build-a-gift")({
   head: () => ({
@@ -30,7 +30,6 @@ export const Route = createFileRoute("/build-a-gift")({
       { property: "og:type", content: "website" },
       { property: "og:url", content: siteUrl("/build-a-gift") },
     ],
-    links: [{ rel: "canonical", href: canonicalUrl("/build-a-gift") }],
   }),
   component: BuildAGiftPage,
 });
