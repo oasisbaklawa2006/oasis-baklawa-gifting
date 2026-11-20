@@ -95,6 +95,26 @@ export function siteUrl(path: string, requestUrl?: string): string {
 export const canonicalUrl = siteUrl;
 
 /**
+ * Personal routes and unapproved product fixtures are intentionally noindex.
+ * Do not publish their paths as canonical URLs from the root head. A real
+ * approved Core product publication must establish its own SEO release gate.
+ */
+const nonCanonicalPaths = new Set([
+  "/account",
+  "/admin/status",
+  "/cart",
+  "/checkout",
+  "/restore-cart",
+  "/search",
+  "/track-order",
+  "/wishlist",
+]);
+
+function isNonCanonicalRoute(path: string): boolean {
+  return nonCanonicalPaths.has(path) || path.startsWith("/order/") || path.startsWith("/product/");
+}
+
+/**
  * Canonical `<link>` entries for a route, or NONE.
  *
  * A canonical is emitted only when an approved origin is baked in at build time (`VITE_SITE_URL`):
@@ -109,5 +129,6 @@ export function canonicalLinks(path: string): { rel: "canonical"; href: string }
   const origin = buildTimeOrigin();
   if (!origin) return [];
   const pathname = normalizePath(path).split(/[?#]/)[0] || "/";
+  if (isNonCanonicalRoute(pathname)) return [];
   return [{ rel: "canonical", href: `${origin}${pathname}` }];
 }

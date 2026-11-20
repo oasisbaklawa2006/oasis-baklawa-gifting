@@ -53,8 +53,8 @@ describe("canonicalLinks", () => {
       "https://approved.example.invalid/shop",
     );
     expect(canonicalLinks("/")[0]?.href).toBe("https://approved.example.invalid/");
-    expect(canonicalLinks("product/assorted-baklawa/")[0]?.href).toBe(
-      "https://approved.example.invalid/product/assorted-baklawa",
+    expect(canonicalLinks("collections/signature/")[0]?.href).toBe(
+      "https://approved.example.invalid/collections/signature",
     );
   });
 
@@ -66,5 +66,30 @@ describe("canonicalLinks", () => {
   it("rejects non-HTTP origins instead of generating a null canonical", () => {
     vi.stubEnv("VITE_SITE_URL", "file:///tmp/site");
     expect(canonicalLinks("/about")).toEqual([]);
+  });
+
+  it("does not generate canonicals for personal, noindex or unapproved product routes", () => {
+    vi.stubEnv("VITE_SITE_URL", "https://approved.example.invalid");
+    for (const route of [
+      "/account",
+      "/admin/status",
+      "/cart",
+      "/checkout",
+      "/restore-cart?token=synthetic-private-token",
+      "/search?q=synthetic-query",
+      "/track-order",
+      "/wishlist",
+      "/order/SYNTHETIC-PRIVATE-REFERENCE",
+      "/order/SYNTHETIC-PRIVATE-REFERENCE/",
+      "/product/unapproved-fixture",
+    ]) {
+      expect(canonicalLinks(route)).toEqual([]);
+    }
+    expect(canonicalLinks("/shop")).toEqual([
+      { rel: "canonical", href: "https://approved.example.invalid/shop" },
+    ]);
+    expect(canonicalLinks("/collections/signature")).toEqual([
+      { rel: "canonical", href: "https://approved.example.invalid/collections/signature" },
+    ]);
   });
 });
