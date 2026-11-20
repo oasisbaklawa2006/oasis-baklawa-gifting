@@ -124,9 +124,70 @@ describe("shipping", () => {
     expect(result.ok).toBe(false);
   });
 
-  it("normalises a courier webhook", () => {
-    const update = normalizeShippingWebhook({ awb: "123", status: "Delivered", pod_url: "u" });
+  it("never reads a failed, returned or negated status as progress", () => {
+    // Regression: these used to normalise to "delivered" / "dispatched" and mislead customers.
+    for (const raw of [
+      "Undelivered",
+      "Not delivered",
+      "RTO Delivered",
+      "Return to origin",
+      "Dispatch failed",
+    ]) {
+      expect(normalizeCourierStatus(raw), raw).toBe("failed");
+    }
+    for (const raw of ["Not dispatched", "Not yet shipped", "Delivery attempted", "Podcast"]) {
+      expect(normalizeCourierStatus(raw), raw).toBeNull();
+    }
+    expect(normalizeCourierStatus("Cancelled by seller")).toBe("cancelled");
+  });
+
+  it("keeps delivery after an earlier failure as delivered, and pending proof as not delivered", () => {
+    // CodeRabbit findings on #47: both were regressions introduced by the first version of this fix.
+    expect(normalizeCourierStatus("Delivered after failed attempt")).toBe("delivered");
+    expect(normalizeCourierStatus("Delivered after 2 failed attempts")).toBe("delivered");
+    expect(normalizeCourierStatus("Proof of delivery pending")).toBeNull();
+    expect(normalizeCourierStatus("POD awaited")).toBeNull();
+    expect(normalizeCourierStatus("Proof of delivery captured")).toBe("delivered");
+    expect(normalizeCourierStatus("POD received")).toBe("delivered");
+    // the negatives must still win
+    expect(normalizeCourierStatus("Not delivered")).toBe("failed");
+    expect(normalizeCourierStatus("Undelivered")).toBe("failed");
+    expect(normalizeCourierStatus("RTO Delivered")).toBe("failed");
+    expect(normalizeCourierStatus("Delivery failed")).toBe("failed");
+    expect(normalizeCourierStatus("Dispatch failed")).toBe("failed");
+  });
+
+  it("still maps the genuine positive statuses", () => {
+    expect(normalizeCourierStatus("Delivered")).toBe("delivered");
+    expect(normalizeCourierStatus("Delivered to neighbour")).toBe("delivered");
+    expect(normalizeCourierStatus("Proof of delivery captured")).toBe("delivered");
+    expect(normalizeCourierStatus("Shipment picked up")).toBe("dispatched");
+    expect(normalizeCourierStatus("Pickup scheduled")).toBe("packed");
+    expect(normalizeCourierStatus("Out for delivery")).toBe("out_for_delivery");
+  });
+
+  it("normalises a courier webhook that carries the courier's own event time", () => {
+    const update = normalizeShippingWebhook({
+      awb: "123",
+      status: "Delivered",
+      pod_url: "u",
+      timestamp: "2026-11-19T10:00:00Z",
+    });
     expect(update?.stage).toBe("delivered");
+    expect(update?.occurredAt).toBe("2026-11-19T10:00:00Z");
+  });
+
+  it("rejects a webhook with no usable event time instead of inventing one", () => {
+    expect(normalizeShippingWebhook({ awb: "123", status: "Delivered" })).toBeNull();
+    expect(
+      normalizeShippingWebhook({ awb: "123", status: "Delivered", timestamp: "not-a-date" }),
+    ).toBeNull();
+  });
+
+  it("drops webhooks whose status it cannot classify", () => {
+    expect(
+      normalizeShippingWebhook({ awb: "1", status: "banana", timestamp: "2026-11-19T10:00:00Z" }),
+    ).toBeNull();
   });
 });
 
