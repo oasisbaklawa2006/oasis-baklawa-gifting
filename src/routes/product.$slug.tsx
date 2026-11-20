@@ -30,6 +30,11 @@ import { cn } from "@/lib/utils";
 import { canonicalUrl, siteUrl } from "@/lib/site-url";
 import { noImage } from "@/data/brand";
 import { paymentLaunchPolicy } from "@/payments/launch-policy";
+import {
+  canDisplayLiveRetailPrice,
+  canEnableRetailOrdering,
+  fixtureRetailEvidence,
+} from "@/lib/catalogue/retail-offer-policy";
 
 export const Route = createFileRoute("/product/$slug")({
   loader: ({ params }): { product: Product } => {
@@ -120,9 +125,16 @@ function ProductPage() {
     .slice(0, 4);
 
   const { addToCart: addLine, setCartOpen, setGift } = useShop();
+  // This route still resolves data/catalog.ts fixtures. Gateway enablement alone
+  // must never make those fixtures look like authorized prices or inventory.
+  const livePricePublished = canDisplayLiveRetailPrice(fixtureRetailEvidence);
+  const commerceOrderingAvailable = canEnableRetailOrdering({
+    ...fixtureRetailEvidence,
+    checkoutCertified: paymentLaunchPolicy.operational,
+  });
 
   const addToCart = () => {
-    if (!variant) return;
+    if (!variant || !commerceOrderingAvailable) return;
     addLine(product.id, variant.id, quantity);
     if (giftMessage || conceal) setGift({ message: giftMessage, concealInvoice: conceal });
     setCartOpen(true);
@@ -229,7 +241,7 @@ function ProductPage() {
             {product.description}
           </p>
 
-          {variant ? (
+          {livePricePublished && variant ? (
             <PriceDisplay
               price={variant.price}
               {...(variant.compareAtPrice ? { compareAtPrice: variant.compareAtPrice } : {})}
@@ -238,9 +250,9 @@ function ProductPage() {
             />
           ) : null}
 
-          <p className="mt-4 text-sm text-muted-foreground">
-            Catalogue preview only. Prices and stock status are illustrative until verified by Oasis
-            Core retail checkout.
+          <p className="mt-4 text-sm text-muted-foreground" role="status">
+            Browse a sample of our range. Live prices, availability and online ordering are
+            currently unavailable.
           </p>
 
           <fieldset className="mt-8">
@@ -265,33 +277,45 @@ function ProductPage() {
             </div>
           </fieldset>
 
-          <p className="mt-4 text-[0.8125rem] text-muted-foreground">
-            {variant ? availabilityLabel[variant.availability] : ""} · {product.leadTime}
-          </p>
+          {commerceOrderingAvailable ? (
+            <p className="mt-4 text-[0.8125rem] text-muted-foreground">
+              {variant ? availabilityLabel[variant.availability] : ""} · {product.leadTime}
+            </p>
+          ) : null}
 
           <div className="mt-7 flex flex-wrap items-center gap-3">
-            <QuantityControl value={quantity} onChange={setQuantity} />
-            <Button size="lg" className="min-w-40 flex-1 sm:flex-none" onClick={addToCart}>
-              Add to cart
-            </Button>
-            {paymentLaunchPolicy.operational ? (
-              <Button
-                size="lg"
-                variant="outline"
-                className="min-w-40 flex-1 sm:flex-none"
-                onClick={addToCart}
-              >
-                Buy now
-              </Button>
+            {commerceOrderingAvailable ? (
+              <>
+                <QuantityControl value={quantity} onChange={setQuantity} />
+                <Button size="lg" className="min-w-40 flex-1 sm:flex-none" onClick={addToCart}>
+                  Add to cart
+                </Button>
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="min-w-40 flex-1 sm:flex-none"
+                  onClick={addToCart}
+                >
+                  Buy now
+                </Button>
+              </>
             ) : null}
             <WishlistButton productId={product.id} productName={product.name} />
           </div>
 
           <ul className="mt-9 grid gap-4 border-y border-border py-6 sm:grid-cols-3">
             {[
-              { icon: ShieldCheck, label: "Secure payments", detail: "Encrypted checkout" },
+              ...(commerceOrderingAvailable
+                ? [{ icon: ShieldCheck, label: "Secure payments", detail: "Encrypted checkout" }]
+                : []),
               { icon: PackageCheck, label: "Careful packing", detail: "Rigid box with inner tray" },
-              { icon: Truck, label: "Delivery", detail: "Estimate by PIN code below" },
+              {
+                icon: Truck,
+                label: "Delivery",
+                detail: commerceOrderingAvailable
+                  ? "Estimate by PIN code below"
+                  : "Contact Oasis to confirm delivery availability",
+              },
             ].map(({ icon: Icon, label, detail }) => (
               <li key={label} className="flex gap-3">
                 <Icon className="mt-0.5 size-4 shrink-0 text-gold" aria-hidden="true" />
@@ -359,7 +383,13 @@ function ProductPage() {
             )}
           </div>
 
-          <DeliveryEstimator compact className="mt-6" />
+          {commerceOrderingAvailable ? (
+            <DeliveryEstimator compact className="mt-6" />
+          ) : (
+            <p className="mt-6 text-sm text-muted-foreground">
+              Delivery coverage and timelines are confirmed by our team when you enquire.
+            </p>
+          )}
 
           <Accordion type="single" collapsible className="mt-4" defaultValue="description">
             <AccordionItem value="description" className="border-border">
@@ -459,18 +489,22 @@ function ProductPage() {
         </section>
       ) : null}
 
-      {/* Mobile sticky add to cart */}
-      <div className="sticky bottom-0 z-40 border-t border-border bg-background/95 p-3 backdrop-blur-[6px] lg:hidden">
-        <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3">
-          <div className="min-w-0">
-            <p className="truncate text-[0.8125rem]">{product.name}</p>
-            {variant ? <PriceDisplay price={variant.price} size="sm" /> : null}
+      {/* The mobile purchase bar must also fail closed for fixture data. */}
+      {commerceOrderingAvailable ? (
+        <div className="sticky bottom-0 z-40 border-t border-border bg-background/95 p-3 backdrop-blur-[6px] lg:hidden">
+          <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3">
+            <div className="min-w-0">
+              <p className="truncate text-[0.8125rem]">{product.name}</p>
+              {livePricePublished && variant ? (
+                <PriceDisplay price={variant.price} size="sm" />
+              ) : null}
+            </div>
+            <Button onClick={addToCart} className="shrink-0">
+              Add to cart
+            </Button>
           </div>
-          <Button onClick={addToCart} className="shrink-0">
-            Add to cart
-          </Button>
         </div>
-      </div>
+      ) : null}
     </>
   );
 }

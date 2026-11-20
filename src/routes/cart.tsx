@@ -1,13 +1,15 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 
 import { Breadcrumbs } from "@/components/oasis/breadcrumbs";
-import { PriceDisplay } from "@/components/oasis/price-display";
 import { QuantityControl } from "@/components/oasis/quantity-control";
 import { EmptyState } from "@/components/oasis/states";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { formatMoney } from "@/lib/format";
-import { cartSubtotal, resolveLines, useShop } from "@/lib/store";
+import { resolveLines, useShop } from "@/lib/store";
+import {
+  canEnableRetailOrdering,
+  fixtureRetailEvidence,
+} from "@/lib/catalogue/retail-offer-policy";
 import { noImage } from "@/data/brand";
 import { paymentLaunchPolicy } from "@/payments/launch-policy";
 
@@ -31,7 +33,10 @@ export const Route = createFileRoute("/cart")({
 function CartPage() {
   const { lines, setQuantity, removeLine, clearCart } = useShop();
   const resolved = resolveLines(lines);
-  const subtotal = cartSubtotal(resolved);
+  const orderingAvailable = canEnableRetailOrdering({
+    ...fixtureRetailEvidence,
+    checkoutCertified: paymentLaunchPolicy.operational,
+  });
 
   return (
     <div className="container-oasis py-8 md:py-12">
@@ -42,7 +47,7 @@ function CartPage() {
         <div className="mt-10">
           <EmptyState
             title="Nothing in your bag yet"
-            description="Browse the range and add a tray, box or hamper to get started."
+            description="Browse a sample of our range. Online ordering is not available yet."
             action={
               <Button asChild>
                 <Link to="/shop">Browse the range</Link>
@@ -54,7 +59,7 @@ function CartPage() {
         <div className="mt-10 grid gap-12 lg:grid-cols-[minmax(0,1fr)_22rem] lg:gap-16">
           <div>
             <ul className="divide-y divide-border border-y border-border">
-              {resolved.map(({ line, product, variant, lineTotal }) => (
+              {resolved.map(({ line, product, variant }) => (
                 <li
                   key={`${line.productId}-${line.variantId}`}
                   className="flex gap-4 py-6 sm:gap-6"
@@ -91,7 +96,7 @@ function CartPage() {
                         min={0}
                         onChange={(q) => setQuantity(line.productId, line.variantId, q)}
                       />
-                      <PriceDisplay price={lineTotal} />
+                      <span className="text-xs text-muted-foreground">Price unavailable</span>
                     </div>
                     <button
                       type="button"
@@ -117,30 +122,14 @@ function CartPage() {
           <aside className="h-fit border border-border bg-premium p-6 lg:sticky lg:top-28">
             <h2 className="font-display text-xl">Order summary</h2>
             <p className="mt-3 text-xs leading-relaxed text-muted-foreground">
-              Preview estimates only. Product prices and availability are illustrative until
-              verified by Oasis Core retail checkout.
+              Your saved selection uses a sample catalogue. Prices, stock and shipping remain
+              unverified.
             </p>
             <Separator className="my-5 bg-border" />
-            <dl className="space-y-3 text-[0.875rem]">
-              <div className="flex justify-between">
-                <dt className="text-muted-foreground">Subtotal</dt>
-                <dd className="tabular-nums">{formatMoney(subtotal)}</dd>
-              </div>
-              <div className="flex justify-between">
-                <dt className="text-muted-foreground">Delivery</dt>
-                <dd className="text-muted-foreground">Calculated later</dd>
-              </div>
-              <div className="flex justify-between">
-                <dt className="text-muted-foreground">Taxes</dt>
-                <dd className="text-muted-foreground">Calculated later</dd>
-              </div>
-            </dl>
-            <Separator className="my-5 bg-border" />
-            <div className="flex items-baseline justify-between">
-              <span className="eyebrow">Estimated total</span>
-              <span className="font-display text-xl tabular-nums">{formatMoney(subtotal)}</span>
-            </div>
-            {paymentLaunchPolicy.operational ? (
+            <p className="text-sm text-muted-foreground">
+              Order totals require an authoritative Oasis Core retail quote.
+            </p>
+            {orderingAvailable ? (
               <Button size="lg" className="mt-6 w-full" asChild>
                 <Link to="/checkout">Proceed to checkout</Link>
               </Button>
