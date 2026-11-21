@@ -74,9 +74,17 @@ function resolveFlags(): Record<string, boolean> | null {
   return Object.values(flags).every((v) => typeof v === "boolean") ? flags : null;
 }
 
-function resolveSupabase(env: Env): { ref: string | null; demoMode: boolean } | null {
+function resolveSupabase(
+  env: Env,
+  environment: AttestationEnvironment,
+): { ref: string | null; demoMode: boolean } | null {
   const config = readSupabaseServerConfig(env);
-  if (config.status === "absent") return { ref: null, demoMode: true };
+  // Absent config is a bootable in-memory demo only outside production
+  // (persistence and catalogue guard on these vars and fall back to memory).
+  // In production the website database is required, so absence is unbootable.
+  if (config.status === "absent") {
+    return environment === "production" ? null : { ref: null, demoMode: true };
+  }
   if (config.status !== "configured") return null;
   if (!config.serviceRoleKey.trim()) return null;
   try {
@@ -108,7 +116,7 @@ export function buildRuntimeAttestation(
 
   const gitSha = resolveGitSha(env);
   const environment = resolveEnvironment(env);
-  const supabase = resolveSupabase(env);
+  const supabase = environment ? resolveSupabase(env, environment) : null;
   const activeFeatureFlags = resolveFlags();
   if (!gitSha || !environment || !supabase || !activeFeatureFlags) {
     return { status: 503, body: null };

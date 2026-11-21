@@ -1,4 +1,4 @@
-import { readdirSync, readFileSync, statSync } from "node:fs";
+import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -71,10 +71,16 @@ function findAttestationManifests(directory: string): string[] {
 
   return entries.flatMap((entry) => {
     const path = join(directory, entry);
-    if (statSync(path).isDirectory()) return findAttestationManifests(path);
+    const subdirectory = findAttestationManifests(path);
+    if (subdirectory.length > 0) return subdirectory;
     if (!/\.(json|webmanifest)$/i.test(entry)) return [];
 
-    const content = readFileSync(path, "utf8");
+    let content: string;
+    try {
+      content = readFileSync(path, "utf8");
+    } catch {
+      return [];
+    }
     return /attestation|torch.*(?:manifest|config)|runtime.*manifest/i.test(entry) ||
       (content.includes('"supabaseProjectRef"') && content.includes('"activeFeatureFlags"'))
       ? [path]
@@ -142,17 +148,62 @@ describe("GET /api/runtime-attestation", () => {
     expect(text).not.toContain(SERVICE_ROLE_KEY);
   });
 
-  it("supports bootable demo mode without Supabase credentials", async () => {
+  it.each(["preview", "development"])(
+    "supports bootable demo mode in %s without Supabase credentials",
+    async (environment) => {
+      process.env["TORCH_ATTEST_TOKEN"] = TOKEN;
+      process.env["GIT_SHA"] = GIT_SHA;
+      process.env["APP_ENVIRONMENT"] = environment;
+
+      const response = await request("GET", TOKEN);
+      expect(response.status).toBe(200);
+      expect(response.headers.get("Cache-Control")).toBe("private, no-store");
+      expect(await response.json()).toEqual({
+        app: "gifting",
+        gitSha: GIT_SHA,
+        environment,
+        supabaseProjectRef: null,
+        activeFeatureFlags: { paymentLaunchOperational: false },
+        demoMode: true,
+      });
+    },
+  );
+
+  it("returns an empty 503 in production when Supabase config is missing", async () => {
     process.env["TORCH_ATTEST_TOKEN"] = TOKEN;
     process.env["GIT_SHA"] = GIT_SHA;
-    process.env["APP_ENVIRONMENT"] = "development";
+    process.env["APP_ENVIRONMENT"] = "production";
+    await expectNoMetadata(await request("GET", TOKEN), 503);
+  });
 
+  it("still returns 401 (not 503) without a valid token when production config is missing", async () => {
+    process.env["TORCH_ATTEST_TOKEN"] = TOKEN;
+    process.env["GIT_SHA"] = GIT_SHA;
+    process.env["APP_ENVIRONMENT"] = "production";
+    await expectNoMetadata(await request("GET"), 401);
+  });
+
+  it("returns the exact six-key live contract in preview", async () => {
+    configureLiveEnvironment();
+    process.env["APP_ENVIRONMENT"] = "preview";
     const response = await request("GET", TOKEN);
     expect(response.status).toBe(200);
     expect(response.headers.get("Cache-Control")).toBe("private, no-store");
-    expect(await response.json()).toMatchObject({
-      supabaseProjectRef: null,
-      demoMode: true,
+    const body = (await response.json()) as Record<string, unknown>;
+    expect(Object.keys(body).sort()).toEqual(
+      [
+        "activeFeatureFlags",
+        "app",
+        "demoMode",
+        "environment",
+        "gitSha",
+        "supabaseProjectRef",
+      ].sort(),
+    );
+    expect(body).toMatchObject({
+      environment: "preview",
+      supabaseProjectRef: PROJECT_REF,
+      demoMode: false,
     });
   });
 
