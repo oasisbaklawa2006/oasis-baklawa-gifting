@@ -46,7 +46,7 @@ export function readSupabaseServerConfig(
   env: Record<string, string | undefined> = process.env,
 ): SupabaseServerConfig {
   const url = env["SUPABASE_URL"];
-  const serviceRoleKey = env["SUPABASE_SERVICE_ROLE_KEY"];
+  const serviceRoleKey = env["SUPABASE_SERVICE_ROLE_KEY"]?.trim();
   if (url && serviceRoleKey) return { status: "configured", url, serviceRoleKey };
   const missing = [
     ...(!url ? ["SUPABASE_URL"] : []),

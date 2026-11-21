@@ -1,4 +1,13 @@
-import { readdirSync, readFileSync } from "node:fs";
+import {
+  existsSync,
+  mkdirSync,
+  mkdtempSync,
+  readdirSync,
+  readFileSync,
+  rmSync,
+  writeFileSync,
+} from "node:fs";
+import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -8,6 +17,7 @@ vi.mock("@tanstack/react-router", () => ({
   createFileRoute: () => (options: unknown) => ({ options }),
 }));
 
+import { readSupabaseServerConfig } from "../../src/integrations/supabase/client.server";
 import { Route } from "../../src/routes/api/runtime-attestation";
 
 const TOKEN = "test-runtime-attestation-token-0123456789";
@@ -209,6 +219,7 @@ describe("GET /api/runtime-attestation", () => {
 
   it.each([
     ["incomplete Supabase configuration", { SUPABASE_URL: "" }],
+    ["whitespace-only service role key", { SUPABASE_SERVICE_ROLE_KEY: "   " }],
     ["malformed Supabase URL", { SUPABASE_URL: "https://not-a-supabase-project.example" }],
     ["invalid git SHA", { GIT_SHA: "not-a-commit" }],
     ["unknown environment", { APP_ENVIRONMENT: "test" }],
@@ -220,12 +231,42 @@ describe("GET /api/runtime-attestation", () => {
     await expectNoMetadata(await request("GET", TOKEN), 503);
   });
 
-  it("does not publish an attestation manifest in public or dist static assets", () => {
-    const staticDirectories = [
-      join(repoRoot, "public"),
-      join(repoRoot, "dist"),
-      join(repoRoot, ".output/public"),
-    ];
+  it("classifies a whitespace-only service role key as missing in the shared resolver", () => {
+    expect(
+      readSupabaseServerConfig({
+        SUPABASE_URL: `https://${PROJECT_REF}.supabase.co`,
+        SUPABASE_SERVICE_ROLE_KEY: "   ",
+      }),
+    ).toEqual({ status: "incomplete", missing: ["SUPABASE_SERVICE_ROLE_KEY"] });
+    expect(readSupabaseServerConfig({ SUPABASE_URL: "", SUPABASE_SERVICE_ROLE_KEY: "  " })).toEqual(
+      { status: "absent" },
+    );
+  });
+
+  it("manifest scan detects attestation manifests (positive control)", () => {
+    const fixture = mkdtempSync(join(tmpdir(), "attest-fixture-"));
+    try {
+      mkdirSync(join(fixture, "nested"));
+      writeFileSync(join(fixture, "nested", "runtime-attestation.json"), "{}");
+      writeFileSync(
+        join(fixture, "other.json"),
+        '{"supabaseProjectRef":"x","activeFeatureFlags":{}}',
+      );
+      writeFileSync(join(fixture, "unrelated.json"), "{}");
+      expect(
+        findAttestationManifests(fixture)
+          .map((p) => p.slice(fixture.length))
+          .sort(),
+      ).toEqual([join("/", "nested", "runtime-attestation.json"), join("/", "other.json")].sort());
+    } finally {
+      rmSync(fixture, { recursive: true, force: true });
+    }
+  });
+
+  it("does not publish an attestation manifest in public or built static assets", () => {
+    const publicDir = join(repoRoot, "public");
+    expect(existsSync(publicDir)).toBe(true);
+    const staticDirectories = [publicDir, join(repoRoot, "dist"), join(repoRoot, ".output/public")];
     const manifests = staticDirectories.flatMap(findAttestationManifests);
     expect(manifests).toEqual([]);
   });
