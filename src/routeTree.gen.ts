@@ -43,6 +43,7 @@ import { Route as WeddingGiftingRouteImport } from './routes/wedding-gifting'
 import { Route as WishlistRouteImport } from './routes/wishlist'
 import { Route as WorldOfOasisRouteImport } from './routes/world-of-oasis'
 import { Route as AdminStatusRouteImport } from './routes/admin.status'
+import { Route as ApiRuntimeAttestationRouteImport } from './routes/api/runtime-attestation'
 import { Route as CollectionsIndexRouteImport } from './routes/collections.index'
 import { Route as CollectionsSlugRouteImport } from './routes/collections.$slug'
 import { Route as FeedProductsDottsvRouteImport } from './routes/feed.products[.]tsv'
@@ -224,6 +225,11 @@ const AdminStatusRoute = AdminStatusRouteImport.update({
   path: '/admin/status',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiRuntimeAttestationRoute = ApiRuntimeAttestationRouteImport.update({
+  id: '/api/runtime-attestation',
+  path: '/api/runtime-attestation',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const CollectionsIndexRoute = CollectionsIndexRouteImport.update({
   id: '/collections/',
   path: '/collections/',
@@ -312,6 +318,7 @@ export interface FileRoutesByFullPath {
   '/wishlist': typeof WishlistRoute
   '/world-of-oasis': typeof WorldOfOasisRoute
   '/admin/status': typeof AdminStatusRoute
+  '/api/runtime-attestation': typeof ApiRuntimeAttestationRoute
   '/collections/$slug': typeof CollectionsSlugRoute
   '/feed/products.tsv': typeof FeedProductsDottsvRoute
   '/feed/products.xml': typeof FeedProductsDotxmlRoute
@@ -358,6 +365,7 @@ export interface FileRoutesByTo {
   '/wishlist': typeof WishlistRoute
   '/world-of-oasis': typeof WorldOfOasisRoute
   '/admin/status': typeof AdminStatusRoute
+  '/api/runtime-attestation': typeof ApiRuntimeAttestationRoute
   '/collections/$slug': typeof CollectionsSlugRoute
   '/feed/products.tsv': typeof FeedProductsDottsvRoute
   '/feed/products.xml': typeof FeedProductsDotxmlRoute
@@ -405,6 +413,7 @@ export interface FileRoutesById {
   '/wishlist': typeof WishlistRoute
   '/world-of-oasis': typeof WorldOfOasisRoute
   '/admin/status': typeof AdminStatusRoute
+  '/api/runtime-attestation': typeof ApiRuntimeAttestationRoute
   '/collections/$slug': typeof CollectionsSlugRoute
   '/feed/products.tsv': typeof FeedProductsDottsvRoute
   '/feed/products.xml': typeof FeedProductsDotxmlRoute
@@ -453,6 +462,7 @@ export interface FileRouteTypes {
     | '/wishlist'
     | '/world-of-oasis'
     | '/admin/status'
+    | '/api/runtime-attestation'
     | '/collections/$slug'
     | '/feed/products.tsv'
     | '/feed/products.xml'
@@ -499,6 +509,7 @@ export interface FileRouteTypes {
     | '/wishlist'
     | '/world-of-oasis'
     | '/admin/status'
+    | '/api/runtime-attestation'
     | '/collections/$slug'
     | '/feed/products.tsv'
     | '/feed/products.xml'
@@ -545,6 +556,7 @@ export interface FileRouteTypes {
     | '/wishlist'
     | '/world-of-oasis'
     | '/admin/status'
+    | '/api/runtime-attestation'
     | '/collections/$slug'
     | '/feed/products.tsv'
     | '/feed/products.xml'
@@ -592,6 +604,7 @@ export interface RootRouteChildren {
   WishlistRoute: typeof WishlistRoute
   WorldOfOasisRoute: typeof WorldOfOasisRoute
   AdminStatusRoute: typeof AdminStatusRoute
+  ApiRuntimeAttestationRoute: typeof ApiRuntimeAttestationRoute
   CollectionsSlugRoute: typeof CollectionsSlugRoute
   FeedProductsDottsvRoute: typeof FeedProductsDottsvRoute
   FeedProductsDotxmlRoute: typeof FeedProductsDotxmlRoute
@@ -844,6 +857,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminStatusRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/runtime-attestation': {
+      id: '/api/runtime-attestation'
+      path: '/api/runtime-attestation'
+      fullPath: '/api/runtime-attestation'
+      preLoaderRoute: typeof ApiRuntimeAttestationRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/collections/': {
       id: '/collections/'
       path: '/collections'
@@ -952,6 +972,7 @@ const rootRouteChildren: RootRouteChildren = {
   WishlistRoute: WishlistRoute,
   WorldOfOasisRoute: WorldOfOasisRoute,
   AdminStatusRoute: AdminStatusRoute,
+  ApiRuntimeAttestationRoute: ApiRuntimeAttestationRoute,
   CollectionsSlugRoute: CollectionsSlugRoute,
   FeedProductsDottsvRoute: FeedProductsDottsvRoute,
   FeedProductsDotxmlRoute: FeedProductsDotxmlRoute,
