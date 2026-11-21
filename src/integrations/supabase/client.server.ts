@@ -32,19 +32,44 @@ function createSupabaseFetch(supabaseKey: string): typeof fetch {
   };
 }
 
-function createSupabaseAdminClient() {
-  const SUPABASE_URL = process.env["SUPABASE_URL"];
-  const SUPABASE_SERVICE_ROLE_KEY = process.env["SUPABASE_SERVICE_ROLE_KEY"];
+export type SupabaseServerConfig =
+  | { status: "configured"; url: string; serviceRoleKey: string }
+  | { status: "absent" }
+  | { status: "incomplete"; missing: string[] };
 
-  if (!SUPABASE_URL || !SUPABASE_SERVICE_ROLE_KEY) {
-    const missing = [
-      ...(!SUPABASE_URL ? ["SUPABASE_URL"] : []),
-      ...(!SUPABASE_SERVICE_ROLE_KEY ? ["SUPABASE_SERVICE_ROLE_KEY"] : []),
-    ];
+/**
+ * Single server-side configuration authority for the admin client. The runtime
+ * attestation route reads this same resolver, so it can never disagree with
+ * the database the server actually talks to.
+ */
+export function readSupabaseServerConfig(
+  env: Record<string, string | undefined> = process.env,
+): SupabaseServerConfig {
+  const url = env["SUPABASE_URL"];
+  const serviceRoleKey = env["SUPABASE_SERVICE_ROLE_KEY"];
+  if (url && serviceRoleKey) return { status: "configured", url, serviceRoleKey };
+  const missing = [
+    ...(!url ? ["SUPABASE_URL"] : []),
+    ...(!serviceRoleKey ? ["SUPABASE_SERVICE_ROLE_KEY"] : []),
+  ];
+  return missing.length === 2 ? { status: "absent" } : { status: "incomplete", missing };
+}
+
+function createSupabaseAdminClient() {
+  const config = readSupabaseServerConfig();
+
+  if (config.status !== "configured") {
+    const missing =
+      config.status === "incomplete"
+        ? config.missing
+        : ["SUPABASE_URL", "SUPABASE_SERVICE_ROLE_KEY"];
     const message = `Missing Supabase environment variable(s): ${missing.join(", ")}. Connect Supabase in Lovable Cloud.`;
     console.error(`[Supabase] ${message}`);
     throw new Error(message);
   }
+
+  const SUPABASE_URL = config.url;
+  const SUPABASE_SERVICE_ROLE_KEY = config.serviceRoleKey;
 
   return createClient<Database>(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, {
     global: {
