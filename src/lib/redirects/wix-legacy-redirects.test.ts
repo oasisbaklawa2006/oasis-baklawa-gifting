@@ -23,25 +23,33 @@ const NON_REDIRECTING = new Set(["SAME_PATH", "KEPT_LIVE", "PENDING_CONFIRMATION
 /** Concrete request path for a documented source (`{title}` is a template placeholder). */
 const concrete = (from: string) => from.replace("{title}", "sample-title");
 
-/** Live Gifting routes derived from src/routes file names (TanStack file-based routing). */
-function liveRoutePatterns(): RegExp[] {
+/** Live Gifting routes as segment lists, derived from src/routes file names (TanStack file-based routing). */
+function liveRouteSegments(): string[][] {
   const dir = join(process.cwd(), "src/routes");
   const files = readdirSync(dir).filter((f) => /\.(tsx|ts)$/.test(f) && !f.startsWith("__"));
-  const patterns: RegExp[] = [];
-  for (const file of files) {
+  return files.map((file) => {
     const base = file.replace(/\.(tsx|ts)$/, "");
-    const segments = base.split(".").filter((s) => s !== "index" && s !== "");
-    const path =
-      "/" + segments.map((s) => (s.startsWith("$") ? "[^/]+" : s.replace(/\[|\]/g, ""))).join("/");
-    patterns.push(new RegExp("^" + (segments.length ? path : "/") + "$"));
-  }
-  // Root index route is "/".
-  if (!patterns.some((p) => p.test("/"))) patterns.push(/^\/$/);
-  return patterns;
+    return base
+      .split(".")
+      .filter((s) => s !== "index" && s !== "")
+      .map((s) => s.replace(/\[|\]/g, ""));
+  });
 }
 
-const routes = liveRoutePatterns();
-const isLiveRoute = (path: string) => routes.some((p) => p.test(path));
+const routes = liveRouteSegments();
+
+/** `$param` route segments match any single non-empty path segment; others must match exactly. */
+function matchesRoute(routeSegments: string[], pathSegments: string[]): boolean {
+  if (routeSegments.length !== pathSegments.length) return false;
+  return routeSegments.every((seg, i) =>
+    seg.startsWith("$") ? pathSegments[i] !== "" : seg === pathSegments[i],
+  );
+}
+
+const isLiveRoute = (path: string) => {
+  const pathSegments = path.split("/").filter((s) => s !== "");
+  return pathSegments.length === 0 ? true : routes.some((r) => matchesRoute(r, pathSegments));
+};
 
 describe("Wix legacy redirect map (docs/website/wix-legacy-redirect-map.json)", () => {
   it("covers all 159 audited legacy rows exactly once", () => {
