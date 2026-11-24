@@ -1,0 +1,956 @@
+[
+  {
+    "from": "/questions",
+    "to": "/faq",
+    "status": "MAPPED",
+    "note": "Confirmed High/Medium proposal"
+  },
+  {
+    "from": "/copy-of-new-landing",
+    "to": "/",
+    "status": "OVERRIDE",
+    "note": "Owner decision"
+  },
+  {
+    "from": "/you-are-invited-you-for-aahar-by-oasis-baklawa",
+    "to": "/business",
+    "status": "OVERRIDE",
+    "note": "Owner decision"
+  },
+  {
+    "from": "/new-corporate",
+    "to": "/corporate",
+    "status": "MAPPED",
+    "note": "Confirmed High/Medium proposal"
+  },
+  {
+    "from": "/blank-7",
+    "to": "/",
+    "status": "OVERRIDE",
+    "note": "Owner decision"
+  },
+  {
+    "from": "/copy-of-aboutus",
+    "to": "/about",
+    "status": "MAPPED",
+    "note": "Confirmed High/Medium proposal"
+  },
+  {
+    "from": "/loyalty",
+    "to": "/rewards",
+    "status": "MAPPED",
+    "note": "Confirmed High/Medium proposal"
+  },
+  {
+    "from": "/offers-scheme",
+    "to": "/shop",
+    "status": "OVERRIDE",
+    "note": "Owner decision"
+  },
+  {
+    "from": "/copy-of-corporate-gifting",
+    "to": "/corporate",
+    "status": "MAPPED",
+    "note": "Confirmed High/Medium proposal"
+  },
+  {
+    "from": "/blank",
+    "to": "/",
+    "status": "OVERRIDE",
+    "note": "Owner decision"
+  },
+  {
+    "from": "/weddings",
+    "to": "/wedding-gifting",
+    "status": "MAPPED",
+    "note": "Confirmed High/Medium proposal"
+  },
+  {
+    "from": "/copy-of-fusion-sweets",
+    "to": null,
+    "status": "PENDING_CONFIRMATION",
+    "note": "Low confidence, not confirmed: proposed /gourmet-food"
+  },
+  {
+    "from": "/recipes",
+    "to": "/journal",
+    "status": "OVERRIDE",
+    "note": "Owner decision"
+  },
+  {
+    "from": "/home",
+    "to": "/",
+    "status": "EXACT",
+    "note": "Exact"
+  },
+  {
+    "from": "/blank-6",
+    "to": "/",
+    "status": "OVERRIDE",
+    "note": "Owner decision"
+  },
+  {
+    "from": "/items",
+    "to": "/shop",
+    "status": "MAPPED",
+    "note": "Confirmed High/Medium proposal"
+  },
+  {
+    "from": "/quick-shop/{title}",
+    "to": "/shop",
+    "status": "PREFIX_MAPPED",
+    "note": "Template: {title} dropped"
+  },
+  {
+    "from": "/online-ordering",
+    "to": "/shop",
+    "status": "MAPPED",
+    "note": "Confirmed High/Medium proposal"
+  },
+  {
+    "from": "/blank-3",
+    "to": "/support",
+    "status": "MAPPED",
+    "note": "Confirmed High/Medium proposal"
+  },
+  {
+    "from": "/all-products",
+    "to": "/shop",
+    "status": "MAPPED",
+    "note": "Confirmed High/Medium proposal"
+  },
+  {
+    "from": "/gifting",
+    "to": null,
+    "status": "KEPT_LIVE",
+    "note": "Live route; gifting.tsx is a full page, not a stub"
+  },
+  {
+    "from": "/about-3",
+    "to": "/about",
+    "status": "OVERRIDE",
+    "note": "Owner decision"
+  },
+  {
+    "from": "/refer-friends",
+    "to": "/rewards",
+    "status": "MAPPED",
+    "note": "Confirmed High/Medium proposal"
+  },
+  {
+    "from": "/services-5",
+    "to": "/business",
+    "status": "OVERRIDE",
+    "note": "Owner decision"
+  },
+  {
+    "from": "/weddinggifting",
+    "to": "/wedding-gifting",
+    "status": "MAPPED",
+    "note": "Confirmed High/Medium proposal"
+  },
+  {
+    "from": "/locateus",
+    "to": "/stores",
+    "status": "OVERRIDE",
+    "note": "Owner decision"
+  },
+  {
+    "from": "/blank-5",
+    "to": "/stores",
+    "status": "OVERRIDE",
+    "note": "Owner decision"
+  },
+  {
+    "from": "/projects-7-1",
+    "to": "/shop",
+    "status": "OVERRIDE",
+    "note": "Owner decision"
+  },
+  {
+    "from": "/blank-1",
+    "to": "/faq",
+    "status": "MAPPED",
+    "note": "Confirmed High/Medium proposal"
+  },
+  {
+    "from": "/services",
+    "to": "/corporate",
+    "status": "MAPPED",
+    "note": "Confirmed High/Medium proposal"
+  },
+  {
+    "from": "/recipes-1",
+    "to": "/journal",
+    "status": "OVERRIDE",
+    "note": "Owner decision"
+  },
+  {
+    "from": "/turkish-baklava",
+    "to": "/baklawa",
+    "status": "MAPPED",
+    "note": "Confirmed High/Medium proposal"
+  },
+  {
+    "from": "/portfolio",
+    "to": "/luxury-gifts",
+    "status": "OVERRIDE",
+    "note": "Owner decision"
+  },
+  {
+    "from": "/coming-soon-01",
+    "to": null,
+    "status": "PENDING_CONFIRMATION",
+    "note": "Low confidence, not confirmed: proposed /collections"
+  },
+  {
+    "from": "/copy-of-contact-us",
+    "to": "/contact",
+    "status": "MAPPED",
+    "note": "Confirmed High/Medium proposal"
+  },
+  {
+    "from": "/corporates",
+    "to": "/corporate",
+    "status": "MAPPED",
+    "note": "Confirmed High/Medium proposal"
+  },
+  {
+    "from": "/you-are-invited-to-join-aahar-by-oasis-baklawa",
+    "to": "/business",
+    "status": "OVERRIDE",
+    "note": "Owner decision"
+  },
+  {
+    "from": "/everyday",
+    "to": "/shop",
+    "status": "MAPPED",
+    "note": "Confirmed High/Medium proposal"
+  },
+  {
+    "from": "/refer-terms-conditions",
+    "to": "/terms",
+    "status": "OVERRIDE",
+    "note": "Owner decision"
+  },
+  {
+    "from": "/blank-4",
+    "to": "/about",
+    "status": "MAPPED",
+    "note": "Confirmed High/Medium proposal"
+  },
+  {
+    "from": "/aahar",
+    "to": "/business",
+    "status": "OVERRIDE",
+    "note": "Owner decision"
+  },
+  {
+    "from": "/about",
+    "to": null,
+    "status": "SAME_PATH",
+    "note": "No redirect needed"
+  },
+  {
+    "from": "/baklawa",
+    "to": null,
+    "status": "SAME_PATH",
+    "note": "No redirect needed"
+  },
+  {
+    "from": "/cart",
+    "to": null,
+    "status": "SAME_PATH",
+    "note": "No redirect needed"
+  },
+  {
+    "from": "/checkout",
+    "to": null,
+    "status": "SAME_PATH",
+    "note": "No redirect needed"
+  },
+  {
+    "from": "/contact",
+    "to": null,
+    "status": "SAME_PATH",
+    "note": "No redirect needed"
+  },
+  {
+    "from": "/faq",
+    "to": null,
+    "status": "SAME_PATH",
+    "note": "No redirect needed"
+  },
+  {
+    "from": "/journal",
+    "to": null,
+    "status": "SAME_PATH",
+    "note": "No redirect needed"
+  },
+  {
+    "from": "/luxury-gifts",
+    "to": null,
+    "status": "SAME_PATH",
+    "note": "No redirect needed"
+  },
+  {
+    "from": "/privacy",
+    "to": null,
+    "status": "SAME_PATH",
+    "note": "No redirect needed"
+  },
+  {
+    "from": "/shipping",
+    "to": null,
+    "status": "SAME_PATH",
+    "note": "No redirect needed"
+  },
+  {
+    "from": "/shop",
+    "to": null,
+    "status": "SAME_PATH",
+    "note": "No redirect needed"
+  },
+  {
+    "from": "/terms",
+    "to": null,
+    "status": "SAME_PATH",
+    "note": "No redirect needed"
+  },
+  {
+    "from": "/product-page/copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-1",
+    "to": "/shop",
+    "status": "CATCH_ALL",
+    "note": "No keyword/product match: catch-all 301 to /shop"
+  },
+  {
+    "from": "/product-page/copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-4",
+    "to": "/shop",
+    "status": "CATCH_ALL",
+    "note": "No keyword/product match: catch-all 301 to /shop"
+  },
+  {
+    "from": "/product-page/a-34",
+    "to": "/shop",
+    "status": "CATCH_ALL",
+    "note": "No keyword/product match: catch-all 301 to /shop"
+  },
+  {
+    "from": "/product-page/copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-21",
+    "to": "/shop",
+    "status": "CATCH_ALL",
+    "note": "No keyword/product match: catch-all 301 to /shop"
+  },
+  {
+    "from": "/product-page/5",
+    "to": "/shop",
+    "status": "CATCH_ALL",
+    "note": "No keyword/product match: catch-all 301 to /shop"
+  },
+  {
+    "from": "/product-page/copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-1",
+    "to": "/shop",
+    "status": "CATCH_ALL",
+    "note": "No keyword/product match: catch-all 301 to /shop"
+  },
+  {
+    "from": "/product-page/a-2",
+    "to": "/shop",
+    "status": "CATCH_ALL",
+    "note": "No keyword/product match: catch-all 301 to /shop"
+  },
+  {
+    "from": "/product-page/copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-46",
+    "to": "/shop",
+    "status": "CATCH_ALL",
+    "note": "No keyword/product match: catch-all 301 to /shop"
+  },
+  {
+    "from": "/product-page/a-11",
+    "to": "/shop",
+    "status": "CATCH_ALL",
+    "note": "No keyword/product match: catch-all 301 to /shop"
+  },
+  {
+    "from": "/product-page/copy-of-splendor-vi",
+    "to": "/shop",
+    "status": "CATCH_ALL",
+    "note": "No keyword/product match: catch-all 301 to /shop"
+  },
+  {
+    "from": "/product-page/a-21",
+    "to": "/shop",
+    "status": "CATCH_ALL",
+    "note": "No keyword/product match: catch-all 301 to /shop"
+  },
+  {
+    "from": "/product-page/copy-of-copy-of-bpp",
+    "to": "/shop",
+    "status": "CATCH_ALL",
+    "note": "No keyword/product match: catch-all 301 to /shop"
+  },
+  {
+    "from": "/product-page/a-27",
+    "to": "/shop",
+    "status": "CATCH_ALL",
+    "note": "No keyword/product match: catch-all 301 to /shop"
+  },
+  {
+    "from": "/product-page/a-13",
+    "to": "/shop",
+    "status": "CATCH_ALL",
+    "note": "No keyword/product match: catch-all 301 to /shop"
+  },
+  {
+    "from": "/product-page/copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-24",
+    "to": "/shop",
+    "status": "CATCH_ALL",
+    "note": "No keyword/product match: catch-all 301 to /shop"
+  },
+  {
+    "from": "/product-page/a-23",
+    "to": "/shop",
+    "status": "CATCH_ALL",
+    "note": "No keyword/product match: catch-all 301 to /shop"
+  },
+  {
+    "from": "/product-page/a-14",
+    "to": "/shop",
+    "status": "CATCH_ALL",
+    "note": "No keyword/product match: catch-all 301 to /shop"
+  },
+  {
+    "from": "/product-page/copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-2",
+    "to": "/shop",
+    "status": "CATCH_ALL",
+    "note": "No keyword/product match: catch-all 301 to /shop"
+  },
+  {
+    "from": "/product-page/1",
+    "to": "/shop",
+    "status": "CATCH_ALL",
+    "note": "No keyword/product match: catch-all 301 to /shop"
+  },
+  {
+    "from": "/product-page/a-43",
+    "to": "/shop",
+    "status": "CATCH_ALL",
+    "note": "No keyword/product match: catch-all 301 to /shop"
+  },
+  {
+    "from": "/product-page/copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-48",
+    "to": "/shop",
+    "status": "CATCH_ALL",
+    "note": "No keyword/product match: catch-all 301 to /shop"
+  },
+  {
+    "from": "/product-page/a-47",
+    "to": "/shop",
+    "status": "CATCH_ALL",
+    "note": "No keyword/product match: catch-all 301 to /shop"
+  },
+  {
+    "from": "/product-page/bpp",
+    "to": "/shop",
+    "status": "CATCH_ALL",
+    "note": "No keyword/product match: catch-all 301 to /shop"
+  },
+  {
+    "from": "/product-page/a-24",
+    "to": "/shop",
+    "status": "CATCH_ALL",
+    "note": "No keyword/product match: catch-all 301 to /shop"
+  },
+  {
+    "from": "/product-page/3",
+    "to": "/shop",
+    "status": "CATCH_ALL",
+    "note": "No keyword/product match: catch-all 301 to /shop"
+  },
+  {
+    "from": "/product-page/copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-26",
+    "to": "/shop",
+    "status": "CATCH_ALL",
+    "note": "No keyword/product match: catch-all 301 to /shop"
+  },
+  {
+    "from": "/product-page/a-17",
+    "to": "/shop",
+    "status": "CATCH_ALL",
+    "note": "No keyword/product match: catch-all 301 to /shop"
+  },
+  {
+    "from": "/product-page/bk12",
+    "to": "/shop",
+    "status": "CATCH_ALL",
+    "note": "No keyword/product match: catch-all 301 to /shop"
+  },
+  {
+    "from": "/product-page/copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-29",
+    "to": "/shop",
+    "status": "CATCH_ALL",
+    "note": "No keyword/product match: catch-all 301 to /shop"
+  },
+  {
+    "from": "/product-page/13",
+    "to": "/shop",
+    "status": "CATCH_ALL",
+    "note": "No keyword/product match: catch-all 301 to /shop"
+  },
+  {
+    "from": "/product-page/copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-12",
+    "to": "/shop",
+    "status": "CATCH_ALL",
+    "note": "No keyword/product match: catch-all 301 to /shop"
+  },
+  {
+    "from": "/product-page/copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-copy-of",
+    "to": "/shop",
+    "status": "CATCH_ALL",
+    "note": "No keyword/product match: catch-all 301 to /shop"
+  },
+  {
+    "from": "/product-page/copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-20",
+    "to": "/shop",
+    "status": "CATCH_ALL",
+    "note": "No keyword/product match: catch-all 301 to /shop"
+  },
+  {
+    "from": "/product-page/copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-11",
+    "to": "/shop",
+    "status": "CATCH_ALL",
+    "note": "No keyword/product match: catch-all 301 to /shop"
+  },
+  {
+    "from": "/product-page/a-42",
+    "to": "/shop",
+    "status": "CATCH_ALL",
+    "note": "No keyword/product match: catch-all 301 to /shop"
+  },
+  {
+    "from": "/product-page/a-10",
+    "to": "/shop",
+    "status": "CATCH_ALL",
+    "note": "No keyword/product match: catch-all 301 to /shop"
+  },
+  {
+    "from": "/product-page/a-7",
+    "to": "/shop",
+    "status": "CATCH_ALL",
+    "note": "No keyword/product match: catch-all 301 to /shop"
+  },
+  {
+    "from": "/product-page/copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-47",
+    "to": "/shop",
+    "status": "CATCH_ALL",
+    "note": "No keyword/product match: catch-all 301 to /shop"
+  },
+  {
+    "from": "/product-page/copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-5",
+    "to": "/shop",
+    "status": "CATCH_ALL",
+    "note": "No keyword/product match: catch-all 301 to /shop"
+  },
+  {
+    "from": "/product-page/a-16",
+    "to": "/shop",
+    "status": "CATCH_ALL",
+    "note": "No keyword/product match: catch-all 301 to /shop"
+  },
+  {
+    "from": "/product-page/copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-1",
+    "to": "/shop",
+    "status": "CATCH_ALL",
+    "note": "No keyword/product match: catch-all 301 to /shop"
+  },
+  {
+    "from": "/product-page/copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-3",
+    "to": "/shop",
+    "status": "CATCH_ALL",
+    "note": "No keyword/product match: catch-all 301 to /shop"
+  },
+  {
+    "from": "/product-page/copy-of-copy-of-copy-of-copy-of-copy-of-1",
+    "to": "/shop",
+    "status": "CATCH_ALL",
+    "note": "No keyword/product match: catch-all 301 to /shop"
+  },
+  {
+    "from": "/product-page/copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-9",
+    "to": "/shop",
+    "status": "CATCH_ALL",
+    "note": "No keyword/product match: catch-all 301 to /shop"
+  },
+  {
+    "from": "/product-page/a-39",
+    "to": "/shop",
+    "status": "CATCH_ALL",
+    "note": "No keyword/product match: catch-all 301 to /shop"
+  },
+  {
+    "from": "/product-page/copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-bpp",
+    "to": "/shop",
+    "status": "CATCH_ALL",
+    "note": "No keyword/product match: catch-all 301 to /shop"
+  },
+  {
+    "from": "/product-page/a-3",
+    "to": "/shop",
+    "status": "CATCH_ALL",
+    "note": "No keyword/product match: catch-all 301 to /shop"
+  },
+  {
+    "from": "/product-page/a-6",
+    "to": "/shop",
+    "status": "CATCH_ALL",
+    "note": "No keyword/product match: catch-all 301 to /shop"
+  },
+  {
+    "from": "/product-page/copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-32",
+    "to": "/shop",
+    "status": "CATCH_ALL",
+    "note": "No keyword/product match: catch-all 301 to /shop"
+  },
+  {
+    "from": "/product-page/crystal-16",
+    "to": "/shop",
+    "status": "CATCH_ALL",
+    "note": "No keyword/product match: catch-all 301 to /shop"
+  },
+  {
+    "from": "/product-page/a-29",
+    "to": "/shop",
+    "status": "CATCH_ALL",
+    "note": "No keyword/product match: catch-all 301 to /shop"
+  },
+  {
+    "from": "/product-page/a-15",
+    "to": "/shop",
+    "status": "CATCH_ALL",
+    "note": "No keyword/product match: catch-all 301 to /shop"
+  },
+  {
+    "from": "/product-page/a-41",
+    "to": "/shop",
+    "status": "CATCH_ALL",
+    "note": "No keyword/product match: catch-all 301 to /shop"
+  },
+  {
+    "from": "/product-page/a-20",
+    "to": "/shop",
+    "status": "CATCH_ALL",
+    "note": "No keyword/product match: catch-all 301 to /shop"
+  },
+  {
+    "from": "/product-page/a-9",
+    "to": "/shop",
+    "status": "CATCH_ALL",
+    "note": "No keyword/product match: catch-all 301 to /shop"
+  },
+  {
+    "from": "/product-page/copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-33",
+    "to": "/shop",
+    "status": "CATCH_ALL",
+    "note": "No keyword/product match: catch-all 301 to /shop"
+  },
+  {
+    "from": "/product-page/copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-6",
+    "to": "/shop",
+    "status": "CATCH_ALL",
+    "note": "No keyword/product match: catch-all 301 to /shop"
+  },
+  {
+    "from": "/product-page/1-2",
+    "to": "/shop",
+    "status": "CATCH_ALL",
+    "note": "No keyword/product match: catch-all 301 to /shop"
+  },
+  {
+    "from": "/product-page/a-1",
+    "to": "/shop",
+    "status": "CATCH_ALL",
+    "note": "No keyword/product match: catch-all 301 to /shop"
+  },
+  {
+    "from": "/product-page/a-40",
+    "to": "/shop",
+    "status": "CATCH_ALL",
+    "note": "No keyword/product match: catch-all 301 to /shop"
+  },
+  {
+    "from": "/product-page/a-33",
+    "to": "/shop",
+    "status": "CATCH_ALL",
+    "note": "No keyword/product match: catch-all 301 to /shop"
+  },
+  {
+    "from": "/product-page/a-35",
+    "to": "/shop",
+    "status": "CATCH_ALL",
+    "note": "No keyword/product match: catch-all 301 to /shop"
+  },
+  {
+    "from": "/product-page/copy-of-bpp",
+    "to": "/shop",
+    "status": "CATCH_ALL",
+    "note": "No keyword/product match: catch-all 301 to /shop"
+  },
+  {
+    "from": "/product-page/bk19",
+    "to": "/shop",
+    "status": "CATCH_ALL",
+    "note": "No keyword/product match: catch-all 301 to /shop"
+  },
+  {
+    "from": "/product-page/a-28",
+    "to": "/shop",
+    "status": "CATCH_ALL",
+    "note": "No keyword/product match: catch-all 301 to /shop"
+  },
+  {
+    "from": "/product-page/copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-16",
+    "to": "/shop",
+    "status": "CATCH_ALL",
+    "note": "No keyword/product match: catch-all 301 to /shop"
+  },
+  {
+    "from": "/product-page/copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-bpp",
+    "to": "/shop",
+    "status": "CATCH_ALL",
+    "note": "No keyword/product match: catch-all 301 to /shop"
+  },
+  {
+    "from": "/product-page/a-31",
+    "to": "/shop",
+    "status": "CATCH_ALL",
+    "note": "No keyword/product match: catch-all 301 to /shop"
+  },
+  {
+    "from": "/product-page/a-45",
+    "to": "/shop",
+    "status": "CATCH_ALL",
+    "note": "No keyword/product match: catch-all 301 to /shop"
+  },
+  {
+    "from": "/product-page/a-38",
+    "to": "/shop",
+    "status": "CATCH_ALL",
+    "note": "No keyword/product match: catch-all 301 to /shop"
+  },
+  {
+    "from": "/product-page/a-25",
+    "to": "/shop",
+    "status": "CATCH_ALL",
+    "note": "No keyword/product match: catch-all 301 to /shop"
+  },
+  {
+    "from": "/product-page/a-26",
+    "to": "/shop",
+    "status": "CATCH_ALL",
+    "note": "No keyword/product match: catch-all 301 to /shop"
+  },
+  {
+    "from": "/product-page/a-32",
+    "to": "/shop",
+    "status": "CATCH_ALL",
+    "note": "No keyword/product match: catch-all 301 to /shop"
+  },
+  {
+    "from": "/product-page/copy-of-copy-of-copy-of-1",
+    "to": "/shop",
+    "status": "CATCH_ALL",
+    "note": "No keyword/product match: catch-all 301 to /shop"
+  },
+  {
+    "from": "/product-page/copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-43",
+    "to": "/shop",
+    "status": "CATCH_ALL",
+    "note": "No keyword/product match: catch-all 301 to /shop"
+  },
+  {
+    "from": "/product-page/copy-of-copy-of-copy-of-bpp",
+    "to": "/shop",
+    "status": "CATCH_ALL",
+    "note": "No keyword/product match: catch-all 301 to /shop"
+  },
+  {
+    "from": "/product-page/a-4",
+    "to": "/shop",
+    "status": "CATCH_ALL",
+    "note": "No keyword/product match: catch-all 301 to /shop"
+  },
+  {
+    "from": "/product-page/assorted-baklawa-with-rosello-collection-box",
+    "to": "/product/rosello-25",
+    "status": "EXACT",
+    "note": "Exact Wix product -> Gifting product"
+  },
+  {
+    "from": "/product-page/2",
+    "to": "/shop",
+    "status": "CATCH_ALL",
+    "note": "No keyword/product match: catch-all 301 to /shop"
+  },
+  {
+    "from": "/product-page/copy-of-1",
+    "to": "/shop",
+    "status": "CATCH_ALL",
+    "note": "No keyword/product match: catch-all 301 to /shop"
+  },
+  {
+    "from": "/product-page/copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-8",
+    "to": "/shop",
+    "status": "CATCH_ALL",
+    "note": "No keyword/product match: catch-all 301 to /shop"
+  },
+  {
+    "from": "/product-page/copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-18",
+    "to": "/shop",
+    "status": "CATCH_ALL",
+    "note": "No keyword/product match: catch-all 301 to /shop"
+  },
+  {
+    "from": "/product-page/a-12",
+    "to": "/shop",
+    "status": "CATCH_ALL",
+    "note": "No keyword/product match: catch-all 301 to /shop"
+  },
+  {
+    "from": "/product-page/a-19",
+    "to": "/shop",
+    "status": "CATCH_ALL",
+    "note": "No keyword/product match: catch-all 301 to /shop"
+  },
+  {
+    "from": "/product-page/a-18",
+    "to": "/shop",
+    "status": "CATCH_ALL",
+    "note": "No keyword/product match: catch-all 301 to /shop"
+  },
+  {
+    "from": "/product-page/4",
+    "to": "/shop",
+    "status": "CATCH_ALL",
+    "note": "No keyword/product match: catch-all 301 to /shop"
+  },
+  {
+    "from": "/product-page/a-36",
+    "to": "/shop",
+    "status": "CATCH_ALL",
+    "note": "No keyword/product match: catch-all 301 to /shop"
+  },
+  {
+    "from": "/product-page/12",
+    "to": "/shop",
+    "status": "CATCH_ALL",
+    "note": "No keyword/product match: catch-all 301 to /shop"
+  },
+  {
+    "from": "/product-page/copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-35",
+    "to": "/shop",
+    "status": "CATCH_ALL",
+    "note": "No keyword/product match: catch-all 301 to /shop"
+  },
+  {
+    "from": "/product-page/7",
+    "to": "/shop",
+    "status": "CATCH_ALL",
+    "note": "No keyword/product match: catch-all 301 to /shop"
+  },
+  {
+    "from": "/product-page/a-8",
+    "to": "/shop",
+    "status": "CATCH_ALL",
+    "note": "No keyword/product match: catch-all 301 to /shop"
+  },
+  {
+    "from": "/product-page/copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-25",
+    "to": "/shop",
+    "status": "CATCH_ALL",
+    "note": "No keyword/product match: catch-all 301 to /shop"
+  },
+  {
+    "from": "/product-page/copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-28",
+    "to": "/shop",
+    "status": "CATCH_ALL",
+    "note": "No keyword/product match: catch-all 301 to /shop"
+  },
+  {
+    "from": "/product-page/copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-23",
+    "to": "/shop",
+    "status": "CATCH_ALL",
+    "note": "No keyword/product match: catch-all 301 to /shop"
+  },
+  {
+    "from": "/product-page/copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-44",
+    "to": "/shop",
+    "status": "CATCH_ALL",
+    "note": "No keyword/product match: catch-all 301 to /shop"
+  },
+  {
+    "from": "/product-page/a-46",
+    "to": "/shop",
+    "status": "CATCH_ALL",
+    "note": "No keyword/product match: catch-all 301 to /shop"
+  },
+  {
+    "from": "/product-page/a-37",
+    "to": "/shop",
+    "status": "CATCH_ALL",
+    "note": "No keyword/product match: catch-all 301 to /shop"
+  },
+  {
+    "from": "/product-page/copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-7",
+    "to": "/shop",
+    "status": "CATCH_ALL",
+    "note": "No keyword/product match: catch-all 301 to /shop"
+  },
+  {
+    "from": "/product-page/copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-13",
+    "to": "/shop",
+    "status": "CATCH_ALL",
+    "note": "No keyword/product match: catch-all 301 to /shop"
+  },
+  {
+    "from": "/product-page/copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-45",
+    "to": "/shop",
+    "status": "CATCH_ALL",
+    "note": "No keyword/product match: catch-all 301 to /shop"
+  },
+  {
+    "from": "/product-page/a-30",
+    "to": "/shop",
+    "status": "CATCH_ALL",
+    "note": "No keyword/product match: catch-all 301 to /shop"
+  },
+  {
+    "from": "/product-page/copy-of-copy-of-1",
+    "to": "/shop",
+    "status": "CATCH_ALL",
+    "note": "No keyword/product match: catch-all 301 to /shop"
+  },
+  {
+    "from": "/product-page/a-5",
+    "to": "/shop",
+    "status": "CATCH_ALL",
+    "note": "No keyword/product match: catch-all 301 to /shop"
+  },
+  {
+    "from": "/product-page/the-algerian-palm-gifts-hamper-box",
+    "to": "/luxury-gifts",
+    "status": "KEYWORD",
+    "note": "Keyword rule: hamper|gift -> /luxury-gifts"
+  },
+  {
+    "from": "/product-page/copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-copy-of-1",
+    "to": "/shop",
+    "status": "CATCH_ALL",
+    "note": "No keyword/product match: catch-all 301 to /shop"
+  },
+  {
+    "from": "/product-page/a-22",
+    "to": "/shop",
+    "status": "CATCH_ALL",
+    "note": "No keyword/product match: catch-all 301 to /shop"
+  }
+]
