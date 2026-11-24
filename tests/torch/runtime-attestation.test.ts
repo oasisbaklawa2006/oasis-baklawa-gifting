@@ -36,6 +36,8 @@ const ENV_KEYS = [
   "NODE_ENV",
   "SUPABASE_URL",
   "SUPABASE_SERVICE_ROLE_KEY",
+  "GIFTING_ENQUIRIES_ENDPOINT",
+  "GIFTING_ENQUIRIES_TOKEN",
 ] as const;
 
 const route = Route as unknown as {
@@ -191,6 +193,127 @@ describe("GET /api/runtime-attestation", () => {
     process.env["GIT_SHA"] = GIT_SHA;
     process.env["APP_ENVIRONMENT"] = "production";
     await expectNoMetadata(await request("GET"), 401);
+  });
+
+  describe("production with scoped enquiry persistence and no service-role key", () => {
+    const SCOPED_ENDPOINT = `https://${PROJECT_REF}.supabase.co/functions/v1/gifting-enquiries`;
+    const SCOPED_TOKEN = "scoped-enquiry-token-0123456789-abcdefghij";
+
+    function configureScopedProduction(): void {
+      process.env["TORCH_ATTEST_TOKEN"] = TOKEN;
+      process.env["GIT_SHA"] = GIT_SHA;
+      process.env["APP_ENVIRONMENT"] = "production";
+      process.env["GIFTING_ENQUIRIES_ENDPOINT"] = SCOPED_ENDPOINT;
+      process.env["GIFTING_ENQUIRIES_TOKEN"] = SCOPED_TOKEN;
+    }
+
+    it("attests the Core project from the endpoint without any database credential", async () => {
+      configureScopedProduction();
+      expect(process.env["SUPABASE_URL"]).toBeUndefined();
+      expect(process.env["SUPABASE_SERVICE_ROLE_KEY"]).toBeUndefined();
+      const response = await request("GET", TOKEN);
+      expect(response.status).toBe(200);
+      const text = await response.text();
+      expect(JSON.parse(text)).toEqual({
+        app: "gifting",
+        gitSha: GIT_SHA,
+        environment: "production",
+        supabaseProjectRef: PROJECT_REF,
+        activeFeatureFlags: { paymentLaunchOperational: false },
+        demoMode: false,
+      });
+      expect(text).not.toContain(SCOPED_TOKEN);
+      expect(text).not.toContain(SCOPED_ENDPOINT);
+    });
+
+    it.each([
+      ["a token shorter than the receiver requires", { GIFTING_ENQUIRIES_TOKEN: "too-short" }],
+      ["a missing token", { GIFTING_ENQUIRIES_TOKEN: "" }],
+      ["a missing endpoint", { GIFTING_ENQUIRIES_ENDPOINT: "" }],
+      [
+        "an http endpoint",
+        {
+          GIFTING_ENQUIRIES_ENDPOINT: `http://${PROJECT_REF}.supabase.co/functions/v1/gifting-enquiries`,
+        },
+      ],
+      [
+        "an endpoint with credentials",
+        {
+          GIFTING_ENQUIRIES_ENDPOINT: `https://u:p@${PROJECT_REF}.supabase.co/functions/v1/gifting-enquiries`,
+        },
+      ],
+      [
+        "an endpoint with a port",
+        {
+          GIFTING_ENQUIRIES_ENDPOINT: `https://${PROJECT_REF}.supabase.co:8443/functions/v1/gifting-enquiries`,
+        },
+      ],
+      [
+        "an endpoint with a query string",
+        {
+          GIFTING_ENQUIRIES_ENDPOINT: `https://${PROJECT_REF}.supabase.co/functions/v1/gifting-enquiries?x=1`,
+        },
+      ],
+      [
+        "an endpoint with a fragment",
+        {
+          GIFTING_ENQUIRIES_ENDPOINT: `https://${PROJECT_REF}.supabase.co/functions/v1/gifting-enquiries#x`,
+        },
+      ],
+      [
+        "a different function path",
+        { GIFTING_ENQUIRIES_ENDPOINT: `https://${PROJECT_REF}.supabase.co/functions/v1/other` },
+      ],
+      [
+        "a host that is not a Supabase project",
+        { GIFTING_ENQUIRIES_ENDPOINT: "https://example.com/functions/v1/gifting-enquiries" },
+      ],
+      [
+        "a nested subdomain",
+        {
+          GIFTING_ENQUIRIES_ENDPOINT: `https://x.${PROJECT_REF}.supabase.co/functions/v1/gifting-enquiries`,
+        },
+      ],
+      [
+        "a project ref of the wrong length",
+        { GIFTING_ENQUIRIES_ENDPOINT: "https://short.supabase.co/functions/v1/gifting-enquiries" },
+      ],
+    ])("stays unbootable (503) with %s", async (_label, override) => {
+      configureScopedProduction();
+      Object.assign(process.env, override);
+      await expectNoMetadata(await request("GET", TOKEN), 503);
+    });
+
+    it("does not let a half-configured legacy database block the scoped endpoint", async () => {
+      configureScopedProduction();
+      process.env["SUPABASE_URL"] = `https://${PROJECT_REF}.supabase.co`;
+      const response = await request("GET", TOKEN);
+      expect(response.status).toBe(200);
+      expect((await response.json()).supabaseProjectRef).toBe(PROJECT_REF);
+    });
+
+    it("attests the scoped endpoint project even when legacy database credentials are present", async () => {
+      configureScopedProduction();
+      const DB_REF = "zzzzzzzzzzzzzzzzzzzz";
+      process.env["SUPABASE_URL"] = `https://${DB_REF}.supabase.co`;
+      process.env["SUPABASE_SERVICE_ROLE_KEY"] = SERVICE_ROLE_KEY;
+      const body = await (await request("GET", TOKEN)).json();
+      expect(body.supabaseProjectRef).toBe(PROJECT_REF);
+      expect(body.supabaseProjectRef).not.toBe(DB_REF);
+    });
+
+    it("stays unbootable instead of falling back to the database when the scoped pair is incomplete", async () => {
+      configureScopedProduction();
+      delete process.env["GIFTING_ENQUIRIES_TOKEN"];
+      process.env["SUPABASE_URL"] = `https://${PROJECT_REF}.supabase.co`;
+      process.env["SUPABASE_SERVICE_ROLE_KEY"] = SERVICE_ROLE_KEY;
+      await expectNoMetadata(await request("GET", TOKEN), 503);
+    });
+
+    it("still requires the attestation token", async () => {
+      configureScopedProduction();
+      await expectNoMetadata(await request("GET"), 401);
+    });
   });
 
   it("returns the exact six-key live contract in preview", async () => {
