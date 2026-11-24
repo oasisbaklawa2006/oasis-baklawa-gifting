@@ -44,6 +44,8 @@ export const EXACT_WIX_LEGACY_REDIRECTS: Readonly<Record<string, string>> = {
 
 export const WIX_PRODUCT_PAGE_PREFIX = "/product-page/";
 export const WIX_PRODUCT_CATCH_ALL = "/shop";
+// First match wins: preserve Baklawa category precedence for mixed Baklawa/gift slugs.
+// Exact product mappings take priority over both keyword rules.
 export const WIX_PRODUCT_KEYWORD_RULES: ReadonlyArray<{ pattern: RegExp; to: string }> = [
   { pattern: /baklaw|baklav/i, to: "/baklawa" },
   { pattern: /hamper|gift/i, to: "/luxury-gifts" },

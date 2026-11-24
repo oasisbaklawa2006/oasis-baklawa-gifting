@@ -109,6 +109,11 @@ describe("resolveWixLegacyRedirect rules", () => {
     expect(resolveWixLegacyRedirect("/product-page/gift-set-2")).toBe("/luxury-gifts");
   });
 
+  it("preserves Baklawa precedence for overlapping product and gifting keywords", () => {
+    expect(resolveWixLegacyRedirect("/product-page/baklawa-gift-box")).toBe("/baklawa");
+    expect(resolveWixLegacyRedirect("/product-page/GIFT-BAKLAVA-hamper/")).toBe("/baklawa");
+  });
+
   it("sends unmatched product pages to /shop and the exact product to its route", () => {
     expect(resolveWixLegacyRedirect("/product-page/a-1")).toBe("/shop");
     expect(
