@@ -74,6 +74,35 @@ function resolveFlags(): Record<string, boolean> | null {
   return Object.values(flags).every((v) => typeof v === "boolean") ? flags : null;
 }
 
+const SCOPED_ENQUIRY_PATH = "/functions/v1/gifting-enquiries";
+
+/**
+ * Option A production persists enquiries through Core's scoped Gifting Enquiries
+ * endpoint and holds no database credential. The Core project that endpoint belongs
+ * to is the project this runtime writes to, so its ref is attested instead.
+ * Anything that is not an exact, https, credential-free Core function URL plus a
+ * Connect token of the length the receiver requires is unbootable.
+ */
+function resolveScopedEnquiryProject(env: Env): { ref: string; demoMode: false } | null {
+  const token = (env["GIFTING_ENQUIRIES_TOKEN"] ?? "").trim();
+  if (token.length < MIN_TOKEN_LENGTH) return null;
+  const endpoint = URL.parse((env["GIFTING_ENQUIRIES_ENDPOINT"] ?? "").trim());
+  if (
+    !endpoint ||
+    endpoint.protocol !== "https:" ||
+    endpoint.username ||
+    endpoint.password ||
+    endpoint.port ||
+    endpoint.search ||
+    endpoint.hash ||
+    endpoint.pathname !== SCOPED_ENQUIRY_PATH
+  ) {
+    return null;
+  }
+  const ref = /^([^.]+)\.supabase\.co$/.exec(endpoint.hostname)?.[1];
+  return ref && PROJECT_REF.test(ref) ? { ref, demoMode: false } : null;
+}
+
 function resolveSupabase(
   env: Env,
   environment: AttestationEnvironment,
@@ -81,9 +110,12 @@ function resolveSupabase(
   const config = readSupabaseServerConfig(env);
   // Absent config is a bootable in-memory demo only outside production
   // (persistence and catalogue guard on these vars and fall back to memory).
-  // In production the website database is required, so absence is unbootable.
+  // In production the website must persist somewhere durable: either the website
+  // database, or Core's scoped enquiry endpoint with no database credential.
   if (config.status === "absent") {
-    return environment === "production" ? null : { ref: null, demoMode: true };
+    return environment === "production"
+      ? resolveScopedEnquiryProject(env)
+      : { ref: null, demoMode: true };
   }
   if (config.status !== "configured") return null;
   if (!config.serviceRoleKey.trim()) return null;

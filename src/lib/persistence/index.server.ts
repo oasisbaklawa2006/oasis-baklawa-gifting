@@ -1,9 +1,13 @@
 /**
  * REPOSITORY SELECTION (server-only)
  *
- * The project database is the durable store. Without it the shared health
- * check reports ephemeral storage. Public lead submission requires a durable
- * repository, while saved-basket recovery can still use memory.
+ * Lead storage, in order of preference:
+ *   1. The project database, when its server credentials exist (existing behaviour).
+ *   2. Core's scoped Gifting Enquiries queue, when the endpoint and Connect token exist.
+ *      This needs no database credential and is the Option A production path.
+ *   3. Process memory, which is never durable. Public lead submission refuses it, so
+ *      missing configuration fails closed rather than silently accepting enquiries.
+ * Saved-basket recovery can still use memory.
  */
 
 import {
@@ -12,13 +16,20 @@ import {
   databaseRecoveryRepository,
 } from "./database.server";
 import { createMemoryLeadsRepository, createMemoryRecoveryRepository } from "./memory-repositories";
+import {
+  SCOPED_ENQUIRY_PROVIDER,
+  scopedEnquiryConfigured,
+  scopedEnquiryLeadsRepository,
+} from "./scoped-enquiry.server";
 import type { LeadsRepository, RecoveryRepository } from "./types";
 
 const memoryLeads = createMemoryLeadsRepository();
 const memoryRecovery = createMemoryRecoveryRepository();
 
 export function leadsRepository(): LeadsRepository {
-  return databaseConfigured() ? databaseLeadsRepository : memoryLeads;
+  if (databaseConfigured()) return databaseLeadsRepository;
+  if (scopedEnquiryConfigured()) return scopedEnquiryLeadsRepository;
+  return memoryLeads;
 }
 
 export function recoveryRepository(): RecoveryRepository {
@@ -40,9 +51,12 @@ export async function persistenceHealth(): Promise<PersistenceHealth> {
   return {
     provider: leads.provider,
     durability: leads.durability,
-    note: durable
-      ? "Enquiries and saved-basket links are stored in the project database and survive restarts and deploys. Records awaiting Oasis Central carry an explicit pending-sync state."
-      : "The project database is not configured. Enquiry and subscription forms are unavailable. Saved-basket links use server memory and are lost on restart.",
+    note:
+      leads.provider === SCOPED_ENQUIRY_PROVIDER
+        ? "Enquiries are delivered to Core's Gifting Enquiries queue and are only accepted after Core returns a matching receipt. Newsletter and rewards sign-ups are not stored in this configuration, and saved-basket links use server memory."
+        : durable
+          ? "Enquiries and saved-basket links are stored in the project database and survive restarts and deploys. Records awaiting Oasis Central carry an explicit pending-sync state."
+          : "The project database is not configured. Enquiry and subscription forms are unavailable. Saved-basket links use server memory and are lost on restart.",
     leads: await leads.counts(),
     recovery: await recovery.counts(),
   };
