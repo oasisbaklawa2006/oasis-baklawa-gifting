@@ -83,6 +83,13 @@ const SCOPED_ENQUIRY_PATH = "/functions/v1/gifting-enquiries";
  * Anything that is not an exact, https, credential-free Core function URL plus a
  * Connect token of the length the receiver requires is unbootable.
  */
+function scopedEnquirySelected(env: Env): boolean {
+  return Boolean(
+    (env["GIFTING_ENQUIRIES_ENDPOINT"] ?? "").trim() ||
+    (env["GIFTING_ENQUIRIES_TOKEN"] ?? "").trim(),
+  );
+}
+
 function resolveScopedEnquiryProject(env: Env): { ref: string; demoMode: false } | null {
   const token = (env["GIFTING_ENQUIRIES_TOKEN"] ?? "").trim();
   if (token.length < MIN_TOKEN_LENGTH) return null;
@@ -107,6 +114,10 @@ function resolveSupabase(
   env: Env,
   environment: AttestationEnvironment,
 ): { ref: string | null; demoMode: boolean } | null {
+  // Strict precedence: when the scoped enquiry endpoint is selected it is the write target,
+  // so it is what gets attested, whatever legacy database credentials are also present.
+  // An incomplete or invalid scoped pair is unbootable (503) rather than falling back.
+  if (scopedEnquirySelected(env)) return resolveScopedEnquiryProject(env);
   const config = readSupabaseServerConfig(env);
   // Absent config is a bootable in-memory demo only outside production
   // (persistence and catalogue guard on these vars and fall back to memory).

@@ -6,11 +6,18 @@ Gifting Enquiries receiver using a scoped Connect bearer token instead.
 
 ## Lead storage selection (`src/lib/persistence/index.server.ts`)
 
-| Configured                                           | Leads repository            | Durable | Notes                                         |
-| ---------------------------------------------------- | --------------------------- | ------- | --------------------------------------------- |
-| `SUPABASE_URL` + `SUPABASE_SERVICE_ROLE_KEY`         | `database` (existing)       | yes     | Unchanged legacy path. Not used in Option A.  |
-| `GIFTING_ENQUIRIES_ENDPOINT` + `GIFTING_ENQUIRIES_TOKEN` | `core-gifting-enquiries` | yes     | Option A. Success only after a matching receipt. |
-| neither                                              | memory                      | no      | Public lead submission fails closed.          |
+| Configured                                                    | Leads repository         | Durable | Notes                                                                              |
+| ------------------------------------------------------------- | ------------------------ | ------- | ---------------------------------------------------------------------------------- |
+| `GIFTING_ENQUIRIES_ENDPOINT` and/or `GIFTING_ENQUIRIES_TOKEN` | `core-gifting-enquiries` | yes     | Option A. Strict, unconditional precedence. Success only after a matching receipt. |
+| `SUPABASE_URL` + `SUPABASE_SERVICE_ROLE_KEY` only             | `database` (legacy)      | yes     | Used only when no scoped setting is present. Never wins over the scoped endpoint.  |
+| neither                                                       | memory                   | no      | Public lead submission fails closed.                                               |
+
+**Precedence rule (owner decision):** the scoped endpoint always wins. If either scoped
+variable is set, enquiries go to the scoped repository even when legacy database
+credentials are also present. An incomplete scoped pair fails closed (the enquiry is
+refused) and never falls back to the database. Runtime attestation follows the same
+rule, so the attested project is always the real write target. Saved-basket recovery
+is a separate repository and is unchanged.
 
 ## Fail-closed behaviour
 

@@ -41,6 +41,21 @@ export function readScopedEnquiryConfig(
   return endpoint && token ? { endpoint, token } : null;
 }
 
+/**
+ * True when ANY scoped-enquiry setting is present. Option A gives the scoped endpoint
+ * strict, unconditional precedence over the legacy database credentials: once the
+ * operator has set either scoped variable, enquiries go to the scoped repository (which
+ * fails closed if the pair is incomplete) and never fall back to the database.
+ */
+export function scopedEnquiryRequested(
+  env: Record<string, string | undefined> = process.env,
+): boolean {
+  return Boolean(
+    (env["GIFTING_ENQUIRIES_ENDPOINT"] ?? "").trim() ||
+    (env["GIFTING_ENQUIRIES_TOKEN"] ?? "").trim(),
+  );
+}
+
 export function scopedEnquiryConfigured(
   env: Record<string, string | undefined> = process.env,
 ): boolean {

@@ -148,8 +148,25 @@ describe("Option A scoped enquiry persistence (no service-role key)", () => {
     expect(health.note).toContain("Gifting Enquiries queue");
   });
 
-  it("leaves the database path in charge when its credentials exist", () => {
+  it("lets the scoped endpoint win even when legacy database credentials are present", () => {
     configureOptionA();
+    process.env["SUPABASE_URL"] = "https://abcdefghijklmnopqrst.supabase.co";
+    process.env["SUPABASE_SERVICE_ROLE_KEY"] = SERVICE_ROLE_KEY;
+    expect(leadsRepository().provider).toBe(SCOPED_ENQUIRY_PROVIDER);
+  });
+
+  it("never falls back to the database when the scoped pair is incomplete", async () => {
+    process.env["GIFTING_ENQUIRIES_ENDPOINT"] = ENDPOINT;
+    process.env["SUPABASE_URL"] = "https://abcdefghijklmnopqrst.supabase.co";
+    process.env["SUPABASE_SERVICE_ROLE_KEY"] = SERVICE_ROLE_KEY;
+    const repository = leadsRepository();
+    expect(repository.provider).not.toBe("database");
+    expect(repository.durability).toBe("ephemeral");
+    await expect(saveLead(draft)).resolves.toMatchObject({ ok: false });
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
+
+  it("uses the database only when no scoped setting is present", () => {
     process.env["SUPABASE_URL"] = "https://abcdefghijklmnopqrst.supabase.co";
     process.env["SUPABASE_SERVICE_ROLE_KEY"] = SERVICE_ROLE_KEY;
     expect(leadsRepository().provider).toBe("database");

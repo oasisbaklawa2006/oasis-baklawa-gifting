@@ -284,20 +284,30 @@ describe("GET /api/runtime-attestation", () => {
       await expectNoMetadata(await request("GET", TOKEN), 503);
     });
 
-    it("does not let the endpoint rescue a half-configured database", async () => {
+    it("does not let a half-configured legacy database block the scoped endpoint", async () => {
       configureScopedProduction();
       process.env["SUPABASE_URL"] = `https://${PROJECT_REF}.supabase.co`;
-      await expectNoMetadata(await request("GET", TOKEN), 503);
+      const response = await request("GET", TOKEN);
+      expect(response.status).toBe(200);
+      expect((await response.json()).supabaseProjectRef).toBe(PROJECT_REF);
     });
 
-    it("keeps the database project when both are configured", async () => {
+    it("attests the scoped endpoint project even when legacy database credentials are present", async () => {
       configureScopedProduction();
-      process.env["GIFTING_ENQUIRIES_ENDPOINT"] =
-        "https://zzzzzzzzzzzzzzzzzzzz.supabase.co/functions/v1/gifting-enquiries";
-      process.env["SUPABASE_URL"] = `https://${PROJECT_REF}.supabase.co`;
+      const DB_REF = "zzzzzzzzzzzzzzzzzzzz";
+      process.env["SUPABASE_URL"] = `https://${DB_REF}.supabase.co`;
       process.env["SUPABASE_SERVICE_ROLE_KEY"] = SERVICE_ROLE_KEY;
       const body = await (await request("GET", TOKEN)).json();
       expect(body.supabaseProjectRef).toBe(PROJECT_REF);
+      expect(body.supabaseProjectRef).not.toBe(DB_REF);
+    });
+
+    it("stays unbootable instead of falling back to the database when the scoped pair is incomplete", async () => {
+      configureScopedProduction();
+      delete process.env["GIFTING_ENQUIRIES_TOKEN"];
+      process.env["SUPABASE_URL"] = `https://${PROJECT_REF}.supabase.co`;
+      process.env["SUPABASE_SERVICE_ROLE_KEY"] = SERVICE_ROLE_KEY;
+      await expectNoMetadata(await request("GET", TOKEN), 503);
     });
 
     it("still requires the attestation token", async () => {

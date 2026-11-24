@@ -1,10 +1,12 @@
 /**
  * REPOSITORY SELECTION (server-only)
  *
- * Lead storage, in order of preference:
- *   1. The project database, when its server credentials exist (existing behaviour).
- *   2. Core's scoped Gifting Enquiries queue, when the endpoint and Connect token exist.
- *      This needs no database credential and is the Option A production path.
+ * Lead storage, in order of precedence:
+ *   1. Core's scoped Gifting Enquiries queue, when either scoped setting
+ *      (`GIFTING_ENQUIRIES_ENDPOINT` / `GIFTING_ENQUIRIES_TOKEN`) is present. This is the
+ *      Option A production path and takes strict, unconditional precedence: legacy database
+ *      credentials never win when it is selected, and an incomplete pair fails closed.
+ *   2. The project database, when its server credentials exist and no scoped setting is set.
  *   3. Process memory, which is never durable. Public lead submission refuses it, so
  *      missing configuration fails closed rather than silently accepting enquiries.
  * Saved-basket recovery can still use memory.
@@ -20,6 +22,7 @@ import {
   SCOPED_ENQUIRY_PROVIDER,
   scopedEnquiryConfigured,
   scopedEnquiryLeadsRepository,
+  scopedEnquiryRequested,
 } from "./scoped-enquiry.server";
 import type { LeadsRepository, RecoveryRepository } from "./types";
 
@@ -27,8 +30,12 @@ const memoryLeads = createMemoryLeadsRepository();
 const memoryRecovery = createMemoryRecoveryRepository();
 
 export function leadsRepository(): LeadsRepository {
+  if (scopedEnquiryRequested()) {
+    // Selected scoped endpoint: an incomplete pair is refused (memory never accepts public
+    // enquiries), never rescued by the legacy database credentials.
+    return scopedEnquiryConfigured() ? scopedEnquiryLeadsRepository : memoryLeads;
+  }
   if (databaseConfigured()) return databaseLeadsRepository;
-  if (scopedEnquiryConfigured()) return scopedEnquiryLeadsRepository;
   return memoryLeads;
 }
 
