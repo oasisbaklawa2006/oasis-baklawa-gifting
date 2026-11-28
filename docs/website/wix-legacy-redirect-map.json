@@ -67,9 +67,9 @@
   },
   {
     "from": "/copy-of-fusion-sweets",
-    "to": null,
-    "status": "PENDING_CONFIRMATION",
-    "note": "Low confidence, not confirmed: proposed /gourmet-food"
+    "to": "/gourmet-food",
+    "status": "OVERRIDE",
+    "note": "Owner decision (28 Nov 2026)"
   },
   {
     "from": "/recipes",
@@ -199,9 +199,9 @@
   },
   {
     "from": "/coming-soon-01",
-    "to": null,
-    "status": "PENDING_CONFIRMATION",
-    "note": "Low confidence, not confirmed: proposed /collections"
+    "to": "/",
+    "status": "OVERRIDE",
+    "note": "Owner decision (28 Nov 2026)"
   },
   {
     "from": "/copy-of-contact-us",
