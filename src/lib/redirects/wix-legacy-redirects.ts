@@ -3,6 +3,8 @@
 
 export const EXACT_WIX_LEGACY_REDIRECTS: Readonly<Record<string, string>> = {
   "/questions": "/faq",
+  "/copy-of-fusion-sweets": "/gourmet-food",
+  "/coming-soon-01": "/",
   "/copy-of-new-landing": "/",
   "/you-are-invited-you-for-aahar-by-oasis-baklawa": "/business",
   "/new-corporate": "/corporate",
